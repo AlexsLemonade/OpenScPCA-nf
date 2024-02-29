@@ -1,0 +1,8 @@
+# ignore nextflow logs
+.nextflow*
+
+# ignore work directory
+/work/
+
+# ignore hidden `DS_Store`
+.DS_Store
