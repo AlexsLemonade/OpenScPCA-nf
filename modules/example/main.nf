@@ -6,7 +6,7 @@ process say_hello{
     path "hello.txt"
   script:
     """
-    example_hello.py $name > hello.txt
+    hello.py $name > hello.txt
     """
 }
 
