@@ -77,10 +77,11 @@ resource "aws_iam_policy" "nf_readwrite_S3" {
           "s3:GetObjectVersion"
         ]
         Resource = [
-          "arn:aws:s3:::openscpca-nf-data/*",
-          "arn:aws:s3:::openscpca-nf-results/*",
-          "arn:aws:s3:::openscpca-nf-data",
-          "arn:aws:s3:::openscpca-nf-results"
+          aws_s3_bucket.nf_work_bucket.arn,
+          "${aws_s3_bucket.nf_work_bucket.arn}/*"
+          # Need to add the results buckets as well?
+          # "arn:aws:s3:::openscpca-nf-results/*",
+          # "arn:aws:s3:::openscpca-nf-results"
         ]
       },
       {
@@ -121,9 +122,10 @@ resource "aws_iam_policy" "nf_read_S3" {
           "s3:ListMultipartUploadParts"
         ]
         Resource = [
-          "arn:aws:s3:::ccdl-scpca-data/*",
-          "arn:aws:s3:::nextflow-ccdl-data/*",
-          "arn:aws:s3:::nextflow-ccdl-results/*"
+          "${aws_s3_bucket.nf_work_bucket.arn}/*"
+          # replace with buckets needed for reading when known
+          # "arn:aws:s3:::openscpca-nf-results/*",
+          # "arn:aws:s3:::openscpca-data-release/*"
         ]
       },
       {
@@ -157,11 +159,13 @@ resource "aws_iam_policy" "nf_read_S3" {
           "s3:GetAccessPointPolicy"
         ]
         Resource = [
-          "arn:aws:s3:::ccdl-scpca-data",
-          "arn:aws:s3:::nextflow-ccdl-data",
-          "arn:aws:s3:::nextflow-ccdl-results",
+          aws_s3_bucket.nf_work_bucket.arn,
           "arn:aws:s3:*:*:accesspoint/*",
           "arn:aws:s3:*:*:job/*"
+          # Add other buckets for reading
+          # "arn:aws:s3:::openscpca-data-release",
+          # "arn:aws:s3:::openscpca-nf-results",
+          #
         ]
       },
       {
