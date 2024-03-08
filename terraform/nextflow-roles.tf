@@ -4,22 +4,20 @@
 
 ### Batch Role
 resource "aws_iam_role" "nf_batch_role" {
-  name               = "openscpca-nf-batch-service-role"
-  tags               = var.default_tags
-  assume_role_policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-    {
-        "Action": "sts:AssumeRole",
-        "Effect": "Allow",
-        "Principal": {
-        "Service": "batch.amazonaws.com"
+  name = "openscpca-nf-batch-service-role"
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Action" : "sts:AssumeRole",
+        "Effect" : "Allow",
+        "Principal" : {
+          "Service" : "batch.amazonaws.com"
         }
-    }
+      }
     ]
-}
-EOF
+  })
+
 }
 
 resource "aws_iam_role_policy_attachment" "nf_batch_role" {
@@ -30,22 +28,19 @@ resource "aws_iam_role_policy_attachment" "nf_batch_role" {
 
 ### ECS Role
 resource "aws_iam_role" "nf_ecs_role" {
-  name               = "openscpca-nf-ecs-instance-role"
-  tags               = var.default_tags
-  assume_role_policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-    {
-        "Action": "sts:AssumeRole",
-        "Effect": "Allow",
-        "Principal": {
-        "Service": "ec2.amazonaws.com"
+  name = "openscpca-nf-ecs-instance-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = "sts:AssumeRole",
+        Effect = "Allow",
+        Principal = {
+          Service = "ecs.amazonaws.com"
         }
-    }
+      }
     ]
-}
-EOF
+  })
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_ec2_container" {
@@ -70,22 +65,18 @@ resource "aws_iam_role_policy_attachment" "ecs_auto_scale_ebs" {
 
 ### Spotfleet Role
 resource "aws_iam_role" "nf_spotfleet_role" {
-  name               = "opesnscpca-nextflow-spotfleet-role"
-  assume_role_policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-    {
-        "Action": "sts:AssumeRole",
-        "Effect": "Allow",
-        "Principal": {
-        "Service": "spotfleet.amazonaws.com"
+  name = "opesnscpca-nextflow-spotfleet-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      { Action = "sts:AssumeRole",
+        Effect = "Allow",
+        Principal = {
+          Service = "spotfleet.amazonaws.com"
         }
-    }
+      }
     ]
-}
-EOF
-  tags               = var.default_tags
+  })
 }
 
 resource "aws_iam_role_policy_attachment" "nf_spotfleet_tagging" {

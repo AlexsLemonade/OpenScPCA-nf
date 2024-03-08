@@ -3,7 +3,6 @@
 resource "aws_security_group" "nf_security" {
   name   = "openscpca-nf-security-group"
   vpc_id = aws_vpc.nf_vpc.id
-  tags   = var.default_tags
 
   egress {
     from_port   = 0
@@ -28,36 +27,27 @@ resource "aws_security_group" "nf_security" {
 
 resource "aws_vpc" "nf_vpc" {
   cidr_block = "10.1.0.0/16"
-  tags = merge(
-    {
-      Name = "openscpca-nf-vpc"
-    },
-    var.default_tags
-  )
+  tags = {
+    Name = "openscpca-nf-vpc"
+  }
   enable_dns_hostnames = true
 }
 
 resource "aws_internet_gateway" "nf_gateway" {
   vpc_id = aws_vpc.nf_vpc.id
 
-  tags = merge(
-    {
-      Name = "openscpca-nf-gateway"
-    },
-    var.default_tags
-  )
+  tags = {
+    Name = "openscpca-nf-gateway"
+  }
 
 }
 
 resource "aws_subnet" "nf_subnet" {
   vpc_id     = aws_vpc.nf_vpc.id
   cidr_block = "10.1.1.0/24"
-  tags = merge(
-    {
-      Name = "opesnscpca-nextflow-subnet"
-    },
-    var.default_tags
-  )
+  tags = {
+    Name = "opesnscpca-nextflow-subnet"
+  }
   map_public_ip_on_launch = true
 }
 
@@ -69,12 +59,9 @@ resource "aws_route_table" "nf_route_table" {
     gateway_id = aws_internet_gateway.nf_gateway.id
   }
 
-  tags = merge(
-    {
-      Name = "openscpca-nf-route-table"
-    },
-    var.default_tags
-  )
+  tags = {
+    Name = "openscpca-nf-route-table"
+  }
 }
 
 resource "aws_route_table_association" "nf_route_table_association" {

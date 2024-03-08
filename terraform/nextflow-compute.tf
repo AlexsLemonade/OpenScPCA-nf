@@ -4,7 +4,6 @@
 
 resource "aws_iam_instance_profile" "nf_ecs_instance_role" {
   name = "openscpca-nf-ecs-instance-role"
-  tags = var.default_tags
   role = aws_iam_role.nf_ecs_role.name
 }
 
@@ -12,7 +11,6 @@ resource "aws_iam_instance_profile" "nf_ecs_instance_role" {
 
 resource "aws_batch_compute_environment" "nf_spot" {
   compute_environment_name = "openscpca-nf-spot-compute"
-  tags                     = var.default_tags
   compute_resources {
     instance_role = aws_iam_instance_profile.nf_ecs_instance_role.arn
     instance_type = [
@@ -39,12 +37,9 @@ resource "aws_batch_compute_environment" "nf_spot" {
       aws_subnet.nf_subnet.id,
     ]
     type = "SPOT"
-    tags = merge(
-      var.default_tags,
-      {
-        parent = "openscpca-nf-spot-compute"
-      }
-    )
+    tags = {
+      parent = "openscpca-nf-spot-compute"
+    }
   }
 
   service_role = aws_iam_role.nf_batch_role.arn
@@ -56,7 +51,6 @@ resource "aws_batch_compute_environment" "nf_spot" {
 # Create an ondemand environment with up to 256 vcpus
 resource "aws_batch_compute_environment" "nf_ondemand" {
   compute_environment_name = "openscpca-nf-ondemand-compute"
-  tags                     = var.default_tags
   compute_resources {
     instance_role = aws_iam_instance_profile.nf_ecs_instance_role.arn
     instance_type = [
@@ -81,12 +75,10 @@ resource "aws_batch_compute_environment" "nf_ondemand" {
       aws_subnet.nf_subnet.id,
     ]
     type = "EC2"
-    tags = merge(
-      var.default_tags,
-      {
-        parent = "openscpca-nf-ondemand-compute"
-      }
-    )
+    tags = {
+      parent = "openscpca-nf-ondemand-compute"
+    }
+
   }
   service_role = aws_iam_role.nf_batch_role.arn
   type         = "MANAGED"
