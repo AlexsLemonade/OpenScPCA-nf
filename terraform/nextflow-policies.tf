@@ -179,28 +179,3 @@ resource "aws_iam_policy" "nf_read_S3" {
     ]
   })
 }
-
-resource "aws_iam_policy" "nf_manage_ebs" {
-  name        = "nextflow-ccdl-manage-ebs"
-  description = "A policy that allows to manage (attach/create/delete) EBS volumes."
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Action = [
-          "ec2:AttachVolume",
-          "ec2:DescribeVolumeStatus",
-          "ec2:DescribeVolumes",
-          "ec2:DescribeTags",
-          "ec2:ModifyInstanceAttribute",
-          "ec2:DescribeVolumeAttribute",
-          "ec2:CreateVolume",
-          "ec2:DeleteVolume",
-          "ec2:CreateTags"
-        ]
-        Resource = "*"
-      }
-    ]
-  })
-}

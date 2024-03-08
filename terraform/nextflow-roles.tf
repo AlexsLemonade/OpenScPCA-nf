@@ -58,11 +58,6 @@ resource "aws_iam_role_policy_attachment" "ecs_read_s3" {
   policy_arn = aws_iam_policy.nf_read_S3.arn
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_auto_scale_ebs" {
-  role       = aws_iam_role.nf_ecs_role.name
-  policy_arn = aws_iam_policy.nf_manage_ebs.arn
-}
-
 ### Spotfleet Role
 resource "aws_iam_role" "nf_spotfleet_role" {
   name = "opesnscpca-nextflow-spotfleet-role"
