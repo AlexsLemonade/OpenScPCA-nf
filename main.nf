@@ -6,7 +6,7 @@ include { example } from './modules/example'
 // **** Parameter checks ****
 param_error = false
 
-if(param_error){
+if (param_error) {
   System.exit(1)
 }
 
