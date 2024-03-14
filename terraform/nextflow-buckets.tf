@@ -2,11 +2,6 @@ resource "aws_s3_bucket" "nf_work_bucket" {
   bucket = "openscpca-nf-data"
 }
 
-resource "aws_s3_bucket_acl" "nf_work_bucket" {
-  bucket = aws_s3_bucket.nf_work_bucket.id
-  acl    = "private"
-}
-
 resource "aws_s3_bucket_versioning" "nf_work_bucket" {
   bucket = aws_s3_bucket.nf_work_bucket.id
   versioning_configuration {
@@ -38,7 +33,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "nf_work_bucket" {
       prefix = "work/"
     }
     abort_incomplete_multipart_upload {
-      days_after_initiation = 0
+      days_after_initiation = 1
     }
     expiration {
       days = 30

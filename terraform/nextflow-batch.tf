@@ -1,16 +1,4 @@
-# AWS Batch setup
-provider "aws" {
-  region = "us-east-2"
-  default_tags {
-    tags = {
-      team    = "science"
-      project = "openscpca"
-      purpose = "openscpca-nf-batch"
-      config  = "https://github.com/AlexsLemonade/OpenScPCA-nf/terraform"
-    }
-  }
-}
-
+# AWS Batch setup for Nextflow
 
 resource "aws_batch_job_queue" "nf_default_queue" {
   name     = "openscpca-nf-batch-default-queue"
