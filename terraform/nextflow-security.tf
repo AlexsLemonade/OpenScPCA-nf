@@ -46,7 +46,7 @@ resource "aws_subnet" "nf_subnet" {
   vpc_id     = aws_vpc.nf_vpc.id
   cidr_block = "10.1.1.0/24"
   tags = {
-    Name = "opesnscpca-nextflow-subnet"
+    Name = "opesnscpca-nf-subnet"
   }
   map_public_ip_on_launch = true
 }

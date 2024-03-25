@@ -1,4 +1,4 @@
-# This file sets the access settings for the nextflow-batch group
+# This file sets the access settings for the openscpca-nf-batch group
 # Currently includes read access to all s3, and write access to select buckets
 
 resource "aws_iam_group" "nf_group" {

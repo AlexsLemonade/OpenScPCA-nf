@@ -60,7 +60,7 @@ resource "aws_iam_role_policy_attachment" "ecs_read_s3" {
 
 ### Spotfleet Role
 resource "aws_iam_role" "nf_spotfleet_role" {
-  name = "openscpca-nextflow-spotfleet-role"
+  name = "openscpca-nf-spotfleet-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [

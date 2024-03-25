@@ -41,13 +41,14 @@ resource "aws_iam_policy" "nf_readwrite_S3" {
 
 # This policy gives read access to S3 buckets, used for nextflow inputs
 resource "aws_iam_policy" "nf_read_S3" {
-  name = "nextflow-ccdl-read-s3"
+  name = "openscpca-nf-read-s3"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
         Effect = "Allow"
         Action = [
+          "s3:HeadObject",
           "s3:GetObject",
           "s3:ListBucket"
         ]
@@ -55,7 +56,6 @@ resource "aws_iam_policy" "nf_read_S3" {
           "arn:aws:s3:::analysis-s3-992382809252-us-east-2", # current data release bucket
           "arn:aws:s3:::analysis-s3-992382809252-us-east-2/*"
           # replace with buckets needed for reading when known
-          # "arn:aws:s3:::openscpca-data-release/*"
         ]
         # },
         # {
