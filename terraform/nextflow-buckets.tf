@@ -13,6 +13,11 @@ resource "aws_kms_key" "nf_work_key" {
   description = "OpenScPCA Nextflow work bucket key"
 }
 
+resource "aws_kms_alias" "nf_work_key" {
+  name          = "alias/openscpca-nf-work"
+  target_key_id = aws_kms_key.nf_work_key.key_id
+}
+
 resource "aws_s3_bucket_server_side_encryption_configuration" "nf_work_bucket" {
   bucket = aws_s3_bucket.nf_work_bucket.id
 
