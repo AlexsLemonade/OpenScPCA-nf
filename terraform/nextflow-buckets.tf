@@ -9,22 +9,13 @@ resource "aws_s3_bucket_versioning" "nf_work_bucket" {
   }
 }
 
-resource "aws_kms_key" "nf_work_key" {
-  description = "OpenScPCA Nextflow work bucket key"
-}
-
-resource "aws_kms_alias" "nf_work_key" {
-  name          = "alias/openscpca-nf-work"
-  target_key_id = aws_kms_key.nf_work_key.key_id
-}
-
 resource "aws_s3_bucket_server_side_encryption_configuration" "nf_work_bucket" {
   bucket = aws_s3_bucket.nf_work_bucket.id
 
   rule {
     apply_server_side_encryption_by_default {
       # workload-analysis-researcher-s3 key
-      kms_master_key_id = aws_kms_key.nf_work_key.arn
+      kms_master_key_id = "arn:aws:kms:us-east-2:992382809252:key/851995f3-26b6-48c1-9d61-c32dd7a8ee83"
       sse_algorithm     = "aws:kms"
     }
   }
