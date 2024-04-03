@@ -1,5 +1,5 @@
 process say_hello{
-  container 'python:3.10'
+  container 'python:3.11'
   input:
     val name
   output:
