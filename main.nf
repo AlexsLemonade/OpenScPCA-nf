@@ -27,9 +27,9 @@ if (param_error) {
 // **** Main workflow ****
 workflow {
   example()
-  // project channel of [project_name, project_path]
+  // project channel of [project_id, project_path]
   project_ch = Channel.fromPath(Utils.getProjectPaths(release_dir))
-    .map{[it.name, it]}
+    .map{[it.name, it]} // name is the directory name, which will be SCPCP000000 format
 
   simulate_sce(project_ch)
 }

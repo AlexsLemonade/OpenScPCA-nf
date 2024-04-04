@@ -9,16 +9,18 @@ process permute_metadata {
     tuple val(project_id),
           path(metadata_file, stageAs: 'input/*')
   output:
-    tuple val(project_id), path("${metadata_file.fileName.name}")
+    tuple val(project_id), path(permuted_file)
   script:
+    permuted_file = metadata_file.fileName.name
     """
     permute-metadata.R \
       --metadata_file ${metadata_file} \
-      --output_file ${metadata_file.fileName.name}
+      --output_file ${permuted_file}
     """
   stub:
+    permuted_metadata = metadata_file.fileName.name
     """
-    touch ${metadata_file.fileName.name}
+    touch ${permuted_file}
     """
 }
 
@@ -81,24 +83,24 @@ workflow simulate_sce {
   take:
     project_ch  // Channel of project names and project directories
   main:
-    // metadata file for each project
+    // metadata file for each project: [project_id, metadata_file]
     metadata_ch = project_ch.map{[it[0], it[1] / 'single_cell_metadata.tsv']}
     permuted_metadata_ch = permute_metadata(metadata_ch)
 
-    // get bulk files for each project, if present
+    // get bulk files for each project, if present: [project_id, bulk_quant_file, bulk_metadata_file]
     bulk_ch = project_ch.map{[it[0], it[1] / 'bulk_quant.tsv', it[1] / 'bulk_metadata.tsv']}
       .filter{it[1].exists()}
     permute_bulk(bulk_ch)
 
-    // list rds files for each project and sample
+    // list rds files for each project and sample: [project_id, [sample_dir1, sample_dir2, ...]]
     sample_ch = project_ch.map{[it[0], it[1].listFiles().findAll{it.isDirectory()}]}
-      .transpose() // transpose to get a channel of project ids and sample directories
-      // get rds file list for each sample
+      .transpose() // transpose to get a channel of [project_id, sample_dir]
+      // get rds file list for each sample: [project_id, sample_id, [rds_file1, rds_file2, ...]]
       .map{[it[0], it[1].name, it[1].listFiles().findAll{it.name.endsWith(".rds")}]}
       .combine(permuted_metadata_ch, by: 0) // combine with permuted metadata
+      // final output: [project_id, sample_id, [rds_file1, rds_file2, ...], permuted_metadata_file]
+
     // simulate samples for each project
     simulate_sample(sample_ch)
-
-
 
 }
