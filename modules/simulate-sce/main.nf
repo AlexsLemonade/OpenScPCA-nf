@@ -1,7 +1,8 @@
 params.sim_pubdir = 's3://openscpca-temp-simdata/test'
+params.simulate-sce_container = 'ccdl/openscpca-simulate-sce:latest'
 
 process permute_metadata {
-  container 'ghcr.io/alexslemonade/scpca-tools:v0.3.2'
+  container params.simulate-sce_container
   tag "$project_id"
   publishDir "${params.sim_pubdir}/${project_id}", mode: 'copy'
   input:
@@ -22,7 +23,7 @@ process permute_metadata {
 }
 
 process simulate_sample {
-  container 'ghcr.io/alexslemonade/scpca-tools:v0.3.2'
+  container params.simulate-sce_container
   tag "$project_id-$sample_id"
   publishDir "${params.sim_pubdir}/${project_id}", mode: 'copy'
   input:
@@ -53,7 +54,7 @@ process simulate_sample {
 }
 
 process permute_bulk{
-  container 'ghcr.io/alexslemonade/scpca-tools:v0.3.2'
+  container params.simulate-sce_container
   tag "$project_id"
   publishDir "${params.sim_pubdir}/${project_id}", mode: 'copy'
   input:
