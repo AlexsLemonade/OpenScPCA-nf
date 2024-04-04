@@ -25,6 +25,10 @@ resource "aws_iam_role_policy_attachment" "nf_batch_role" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSBatchServiceRole"
 }
 
+resource "aws_iam_role_policy_attachment" "batch_kms" {
+  role       = aws_iam_role.nf_batch_role.name
+  policy_arn = "arn:aws:iam::992382809252:policy/workload-analysis-kms-readwrite"
+}
 
 ### ECS Role
 resource "aws_iam_role" "nf_ecs_role" {
@@ -58,6 +62,12 @@ resource "aws_iam_role_policy_attachment" "ecs_read_s3" {
   policy_arn = aws_iam_policy.nf_read_S3.arn
 }
 
+resource "aws_iam_role_policy_attachment" "ecs_kms" {
+  role       = aws_iam_role.nf_ecs_role.name
+  policy_arn = "arn:aws:iam::992382809252:policy/workload-analysis-kms-readwrite"
+}
+
+
 ### Spotfleet Role
 resource "aws_iam_role" "nf_spotfleet_role" {
   name = "openscpca-nf-spotfleet-role"
@@ -82,4 +92,9 @@ resource "aws_iam_role_policy_attachment" "nf_spotfleet_tagging" {
 resource "aws_iam_role_policy_attachment" "nf_spotfleet_autoscale" {
   role       = aws_iam_role.nf_spotfleet_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2SpotFleetAutoscaleRole"
+}
+
+resource "aws_iam_role_policy_attachment" "nf_spotfleet_kms" {
+  role       = aws_iam_role.nf_spotfleet_role.name
+  policy_arn = "arn:aws:iam::992382809252:policy/workload-analysis-kms-readwrite"
 }

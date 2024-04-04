@@ -13,7 +13,6 @@ resource "aws_iam_policy" "nf_readwrite_S3" {
         Sid    = "ReadWriteWorkResults"
         Effect = "Allow",
         Action = [
-          "s3:HeadBucket",
           "s3:ListBucket",
           "s3:*Object"
         ]
@@ -21,7 +20,9 @@ resource "aws_iam_policy" "nf_readwrite_S3" {
           aws_s3_bucket.nf_work_bucket.arn,
           "${aws_s3_bucket.nf_work_bucket.arn}/*",
           "arn:aws:s3:::openscpca-nf-workflow-results",
-          "arn:aws:s3:::openscpca-nf-workflow-results/*"
+          "arn:aws:s3:::openscpca-nf-workflow-results/*",
+          "arn:aws:s3:::openscpca-temp-simdata",
+          "arn:aws:s3:::openscpca-temp-simdata/*"
         ]
       }
     ]
@@ -39,9 +40,9 @@ resource "aws_iam_policy" "nf_read_S3" {
         Sid    = "ReleaseBucketReadAccess"
         Effect = "Allow"
         Action = [
+          "s3:ListBucket",
           "s3:HeadObject",
-          "s3:GetObject",
-          "s3:ListBucket"
+          "s3:GetObject"
         ]
         Resource = [
           "arn:aws:s3:::analysis-s3-992382809252-us-east-2", # current data release bucket
