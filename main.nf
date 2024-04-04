@@ -30,5 +30,6 @@ workflow {
   // project channel of [project_name, project_path]
   project_ch = Channel.fromPath(Utils.getProjectPaths(release_dir))
     .map{[it.name, it]}
+
   simulate_sce(project_ch)
 }

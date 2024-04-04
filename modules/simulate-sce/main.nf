@@ -1,6 +1,9 @@
+params.sim_pubdir = 's3://openscpca-temp-simdata/test'
+
 process permute_metadata {
   container 'ghcr.io/alexslemonade/scpca-tools:v0.3.2'
   tag "$project_id"
+  publishDir "${params.sim_pubdir}/${project_id}", mode: 'copy'
   input:
     tuple val(project_id),
           path(metadata_file, stageAs: 'input/*')
@@ -8,7 +11,7 @@ process permute_metadata {
     tuple val(project_id), path("${metadata_file.fileName.name}")
   script:
     """
-    permute_metadata.R \
+    permute-metadata.R \
       --metadata_file ${metadata_file} \
       --output_file ${metadata_file.fileName.name}
     """
@@ -21,6 +24,7 @@ process permute_metadata {
 process simulate_sample {
   container 'ghcr.io/alexslemonade/scpca-tools:v0.3.2'
   tag "$project_id-$sample_id"
+  publishDir "${params.sim_pubdir}/${project_id}", mode: 'copy'
   input:
     tuple val(project_id),
           val(sample_id),
@@ -51,6 +55,7 @@ process simulate_sample {
 process permute_bulk{
   container 'ghcr.io/alexslemonade/scpca-tools:v0.3.2'
   tag "$project_id"
+  publishDir "${params.sim_pubdir}/${project_id}", mode: 'copy'
   input:
     tuple val(project_id),
           path(bulk_quant, stageAs: 'input/*'),
@@ -78,19 +83,21 @@ workflow simulate_sce {
     // metadata file for each project
     metadata_ch = project_ch.map{[it[0], it[1] / 'single_cell_metadata.tsv']}
     permuted_metadata_ch = permute_metadata(metadata_ch)
-    permuted_metadata_ch.view()
 
-    // // list rds files for each project and sample
-    // sample_ch = project_ch.map{[it[0], it[1].listFiles().findAll{it.isDirectory()}]}
-    //   .transpose() // transpose to get a channel of project ids and sample directories
-    //   .map{[it[0], it[1].name, it[1].listFiles().findAll{it.name.endsWith(".rds")}]}
-    //   .combine(permuted_metadata_ch, by: 0) // combine with permuted metadata
-    // // simulate samples for each project
-    // simulate_sample(sample_ch)
+    // get bulk files for each project, if present
+    bulk_ch = project_ch.map{[it[0], it[1] / 'bulk_quant.tsv', it[1] / 'bulk_metadata.tsv']}
+      .filter{it[1].exists()}
+    permute_bulk(bulk_ch)
 
-    // // get bulk files for each project, if present
-    // bulk_ch = project_ch.map{[it[0], it[1] / 'bulk_quant.tsv', it[1] / 'bulk_metadata.tsv']}
-    //   .filter{it[1].exists()}
-    // permute_bulk(bulk_ch)
+    // list rds files for each project and sample
+    sample_ch = project_ch.map{[it[0], it[1].listFiles().findAll{it.isDirectory()}]}
+      .transpose() // transpose to get a channel of project ids and sample directories
+      // get rds file list for each sample
+      .map{[it[0], it[1].name, it[1].listFiles().findAll{it.name.endsWith(".rds")}]}
+      .combine(permuted_metadata_ch, by: 0) // combine with permuted metadata
+    // simulate samples for each project
+    simulate_sample(sample_ch)
+
+
 
 }
