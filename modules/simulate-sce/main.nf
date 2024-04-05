@@ -18,7 +18,7 @@ process permute_metadata {
       --output_file ${permuted_file}
     """
   stub:
-    permuted_metadata = metadata_file.fileName.name
+    permuted_file = metadata_file.fileName.name
     """
     touch ${permuted_file}
     """
