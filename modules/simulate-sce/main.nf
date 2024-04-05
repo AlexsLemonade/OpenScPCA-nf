@@ -26,6 +26,7 @@ process permute_metadata {
 
 process simulate_sample {
   container params.simulate_sce_container
+  label "mem_8"
   tag "$project_id-$sample_id"
   publishDir "${params.sim_pubdir}/${project_id}", mode: 'copy'
   input:
