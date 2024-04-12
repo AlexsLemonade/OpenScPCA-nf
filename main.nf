@@ -28,8 +28,8 @@ if (param_error) {
 workflow {
   example()
   // project channel of [project_id, project_path]
-  project_ch = Channel.fromPath(Utils.getProjectPaths(release_dir))
-    .map{[it.name, it]} // name is the directory name, which will be SCPCP000000 format
+  // project_ch = Channel.fromPath(Utils.getProjectPaths(release_dir))
+  //   .map{[it.name, it]} // name is the directory name, which will be SCPCP000000 format
 
-  simulate_sce(project_ch)
+  // simulate_sce(project_ch)
 }
