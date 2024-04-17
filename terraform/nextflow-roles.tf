@@ -25,7 +25,12 @@ resource "aws_iam_role_policy_attachment" "nf_batch_role" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSBatchServiceRole"
 }
 
-resource "aws_iam_role_policy_attachment" "batch_kms" {
+resource "aws_iam_role_policy_attachment" "nf_batch_full_access" {
+  role       = aws_iam_role.nf_batch_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSBatchFullAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "batch_km" {
   role       = aws_iam_role.nf_batch_role.name
   policy_arn = "arn:aws:iam::992382809252:policy/workload-analysis-kms-readwrite"
 }
@@ -62,7 +67,12 @@ resource "aws_iam_role_policy_attachment" "ecs_read_s3" {
   policy_arn = aws_iam_policy.nf_read_S3.arn
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_kms" {
+resource "aws_iam_role_policy_attachment" "ecs_auto_scale_ebs" {
+  role       = aws_iam_role.nf_ecs_role.name
+  policy_arn = aws_iam_policy.nf_manage_ebs.arn
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_km" {
   role       = aws_iam_role.nf_ecs_role.name
   policy_arn = "arn:aws:iam::992382809252:policy/workload-analysis-kms-readwrite"
 }
@@ -74,7 +84,8 @@ resource "aws_iam_role" "nf_spotfleet_role" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
-      { Action = "sts:AssumeRole",
+      {
+        Action = "sts:AssumeRole",
         Effect = "Allow",
         Principal = {
           Service = "spotfleet.amazonaws.com"
@@ -83,6 +94,7 @@ resource "aws_iam_role" "nf_spotfleet_role" {
     ]
   })
 }
+
 
 resource "aws_iam_role_policy_attachment" "nf_spotfleet_tagging" {
   role       = aws_iam_role.nf_spotfleet_role.name
@@ -94,7 +106,7 @@ resource "aws_iam_role_policy_attachment" "nf_spotfleet_autoscale" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2SpotFleetAutoscaleRole"
 }
 
-resource "aws_iam_role_policy_attachment" "nf_spotfleet_kms" {
+resource "aws_iam_role_policy_attachment" "nf_spotfleet_km" {
   role       = aws_iam_role.nf_spotfleet_role.name
   policy_arn = "arn:aws:iam::992382809252:policy/workload-analysis-kms-readwrite"
 }
