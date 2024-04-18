@@ -15,7 +15,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "nf_work_bucket" {
   rule {
     apply_server_side_encryption_by_default {
       # workload-analysis-researcher-s3 key
-      kms_master_key_id = "arn:aws:kms:us-east-2:992382809252:key/851995f3-26b6-48c1-9d61-c32dd7a8ee83"
+      kms_master_key_id = aws_kms_key.nf_work_key.arn
       sse_algorithm     = "aws:kms"
     }
   }

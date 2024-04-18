@@ -9,7 +9,7 @@ resource "aws_launch_template" "nf_lt_standard" {
       volume_size           = 128 #GiB
       volume_type           = "gp3"
       encrypted             = true
-      km_key_id            = "arn:aws:km:us-east-2:992382809252:key/851995f3-26b6-48c1-9d61-c32dd7a8ee83"
+      kms_key_id            = aws_kms_key.nf_work_key.arn
       delete_on_termination = true
     }
   }

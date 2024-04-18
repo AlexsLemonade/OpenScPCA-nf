@@ -3,7 +3,7 @@
 
 # S3 Group policies taken from AWS Nextflow batch setup
 
-# This policy allows read and write access to specific buckets for nextflow processing and output
+# This policy allows read and write access to specific buckets for nextflow processing
 resource "aws_iam_policy" "nf_readwrite_S3" {
   name = "openscpca-nf-readwrite-s3"
   policy = jsonencode({
@@ -47,20 +47,30 @@ resource "aws_iam_policy" "nf_readwrite_S3" {
           "arn:aws:s3:::openscpca-temp-simdata",
           "arn:aws:s3:::openscpca-temp-simdata/*"
         ]
+        # },
+        # {
+        #   Effect = "Allow",
+        #   Action = [
+        #     "s3:GetAccountPublicAccessBlock",
+        #     "s3:ListAllMyBuckets",
+        #     "s3:ListAccessPoints",
+        #     "s3:HeadBucket"
+        #   ]
+        #   Resource = "*"
       }
     ]
   })
 }
 
 
-# This policy gives read access to S3 buckets used for nextflow inputs
+# This policy gives read access to S3 buckets, used for nextflow inputs
 resource "aws_iam_policy" "nf_read_S3" {
   name = "openscpca-nf-read-s3"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Sid    = "ReleaseBucketReadAccess"
+        Sid    = "BucketReadAccess"
         Effect = "Allow"
         Action = [
           "s3:GetBucket*",

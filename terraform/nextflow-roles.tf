@@ -30,7 +30,7 @@ resource "aws_iam_role_policy_attachment" "nf_batch_full_access" {
   policy_arn = "arn:aws:iam::aws:policy/AWSBatchFullAccess"
 }
 
-resource "aws_iam_role_policy_attachment" "batch_km" {
+resource "aws_iam_role_policy_attachment" "batch_kms" {
   role       = aws_iam_role.nf_batch_role.name
   policy_arn = "arn:aws:iam::992382809252:policy/workload-analysis-kms-readwrite"
 }
@@ -72,7 +72,7 @@ resource "aws_iam_role_policy_attachment" "ecs_auto_scale_ebs" {
   policy_arn = aws_iam_policy.nf_manage_ebs.arn
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_km" {
+resource "aws_iam_role_policy_attachment" "ecs_kms" {
   role       = aws_iam_role.nf_ecs_role.name
   policy_arn = "arn:aws:iam::992382809252:policy/workload-analysis-kms-readwrite"
 }
@@ -106,7 +106,7 @@ resource "aws_iam_role_policy_attachment" "nf_spotfleet_autoscale" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2SpotFleetAutoscaleRole"
 }
 
-resource "aws_iam_role_policy_attachment" "nf_spotfleet_km" {
+resource "aws_iam_role_policy_attachment" "nf_spotfleet_kms" {
   role       = aws_iam_role.nf_spotfleet_role.name
   policy_arn = "arn:aws:iam::992382809252:policy/workload-analysis-kms-readwrite"
 }
