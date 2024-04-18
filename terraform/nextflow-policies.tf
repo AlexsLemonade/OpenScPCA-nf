@@ -88,8 +88,6 @@ resource "aws_iam_policy" "nf_read_S3" {
           "s3:GetReplicationConfiguration"
         ]
         Resource = [
-          "arn:aws:s3:::analysis-s3-992382809252-us-east-2", # current data release bucket
-          "arn:aws:s3:::analysis-s3-992382809252-us-east-2/*",
           "arn:aws:s3:::openscpca-data-release", # data release bucket
           "arn:aws:s3:::openscpca-data-release/*",
           "arn:aws:s3:*:*:accesspoint/*",

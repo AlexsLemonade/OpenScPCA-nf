@@ -17,7 +17,7 @@ resource "aws_kms_key_policy" "nf_work_key" {
         Sid    = "EnableUserPermissions"
         Effect = "Allow"
         Principal = {
-          AWS = "arn:aws:iam::992382809252:root"
+          AWS = "arn:aws:iam::${local.account_id}:root"
         }
         Action   = "kms:*"
         Resource = "*"
@@ -26,7 +26,7 @@ resource "aws_kms_key_policy" "nf_work_key" {
         Sid    = "AllowAdministration"
         Effect = "Allow"
         Principal = {
-          AWS = "arn:aws:iam::992382809252:root"
+          AWS = "arn:aws:iam::${local.account_id}:root"
         }
         Action = [
           "kms:Create*",
@@ -49,7 +49,7 @@ resource "aws_kms_key_policy" "nf_work_key" {
         Sid    = "AllowUse"
         Effect = "Allow"
         Principal = {
-          AWS = "arn:aws:iam::992382809252:root"
+          AWS = "arn:aws:iam::${local.account_id}:root"
         }
         Action = [
           "kms:DescribeKey",
@@ -63,9 +63,10 @@ resource "aws_kms_key_policy" "nf_work_key" {
         Effect = "Allow"
         Principal = {
           AWS = [
-            "arn:aws:iam::992382809252:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling",
+            "arn:aws:iam::${local.account_id}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling",
             aws_iam_role.nf_batch_role.arn,
-            aws_iam_role.nf_ecs_role.arn
+            aws_iam_role.nf_ecs_role.arn,
+            aws_iam_role.nf_spotfleet_role.arn
           ]
         },
         Action = [
@@ -81,7 +82,12 @@ resource "aws_kms_key_policy" "nf_work_key" {
         Sid    = "AllowServiceRolePersistentAttachment"
         Effect = "Allow"
         Principal = {
-          AWS = "arn:aws:iam::992382809252:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
+          AWS = [
+            "arn:aws:iam::${local.account_id}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling",
+            aws_iam_role.nf_batch_role.arn,
+            aws_iam_role.nf_ecs_role.arn,
+            aws_iam_role.nf_spotfleet_role.arn
+          ]
         },
         Action   = "km:CreateGrant"
         Resource = "*"
