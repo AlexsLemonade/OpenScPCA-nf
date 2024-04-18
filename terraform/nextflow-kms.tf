@@ -10,8 +10,8 @@ resource "aws_kms_alias" "nf_work_key" {
 resource "aws_kms_key_policy" "nf_work_key" {
   key_id = aws_kms_key.nf_work_key.id
   policy = jsonencode({
-    Version = "2008-10-17"
-    Id      = "example"
+    Version = "2012-10-17"
+    Id      = "openscpca-nf-work-key-policy"
     Statement = [
       {
         Sid    = "EnableUserPermissions"
@@ -22,12 +22,68 @@ resource "aws_kms_key_policy" "nf_work_key" {
         Action   = "kms:*"
         Resource = "*"
       },
+      {
+        Sid    = "AllowAdministration"
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::992382809252:root"
+        }
+        Action = [
+          "kms:Create*",
+          "kms:Describe*",
+          "kms:Enable*",
+          "kms:List*",
+          "kms:Put*",
+          "kms:Update*",
+          "kms:Revoke*",
+          "kms:Disable*",
+          "kms:Get*",
+          "kms:Delete*",
+          "kms:GenerateDataKey*",
+          "kms:ScheduleKeyDeletion",
+          "kms:CancelKeyDeletion"
+        ]
+        Resource = "*"
+      },
+      {
+        Sid    = "AllowUse"
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::992382809252:root"
+        }
+        Action = [
+          "kms:DescribeKey",
+          "kms:Decrypt"
+        ]
+        Resource = "*"
+      },
+      {
+        Sid    = "AllowCCDLMembersAccess"
+        Effect = "Allow"
+        Principal = {
+          AWS = [
+            "arn:aws:iam::589864003899:user/ally-hawkins",
+            "arn:aws:iam::589864003899:user/josh",
+            "arn:aws:iam::589864003899:user/stephanie",
+            "arn:aws:iam::589864003899:user/jaclyntaroni"
+          ]
+        }
+        Action = [
+          "kms:GenerateDataKey",
+          "kms:Decrypt"
+        ]
+        Resource = aws_kms_key.nf_work_key.arn
+      },
       # Autoscaling role policies based on https://docs.aws.amazon.com/autoscaling/ec2/userguide/key-policy-requirements-EBS-encryption.html
       {
         Sid    = "AllowServiceRole"
         Effect = "Allow"
         Principal = {
-          AWS = "arn:aws:iam::992382809252:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
+          AWS = [
+            "arn:aws:iam::992382809252:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling",
+            aws_iam_role.nf_batch_role.arn,
+            aws_iam_role.nf_ecs_role.arn
+          ]
         },
         Action = [
           "kms:Encrypt",
