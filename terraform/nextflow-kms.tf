@@ -57,23 +57,6 @@ resource "aws_kms_key_policy" "nf_work_key" {
         ]
         Resource = "*"
       },
-      {
-        Sid    = "AllowCCDLMembersAccess"
-        Effect = "Allow"
-        Principal = {
-          AWS = [
-            "arn:aws:iam::589864003899:user/ally-hawkins",
-            "arn:aws:iam::589864003899:user/josh",
-            "arn:aws:iam::589864003899:user/stephanie",
-            "arn:aws:iam::589864003899:user/jaclyntaroni"
-          ]
-        }
-        Action = [
-          "kms:GenerateDataKey",
-          "kms:Decrypt"
-        ]
-        Resource = aws_kms_key.nf_work_key.arn
-      },
       # Autoscaling role policies based on https://docs.aws.amazon.com/autoscaling/ec2/userguide/key-policy-requirements-EBS-encryption.html
       {
         Sid    = "AllowServiceRole"
