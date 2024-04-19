@@ -13,5 +13,11 @@ resource "aws_launch_template" "nf_lt_standard" {
       delete_on_termination = true
     }
   }
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens = "required"
+    http_put_response_hop_limit = 1
+    instance_metadata_tags = "enabled"
+  }
   update_default_version = true
 }
