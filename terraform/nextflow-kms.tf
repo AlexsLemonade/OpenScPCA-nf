@@ -89,7 +89,7 @@ resource "aws_kms_key_policy" "nf_work_key" {
             aws_iam_role.nf_spotfleet_role.arn
           ]
         },
-        Action   = "km:CreateGrant"
+        Action   = "kms:CreateGrant"
         Resource = "*"
         Condition = {
           Bool = {
