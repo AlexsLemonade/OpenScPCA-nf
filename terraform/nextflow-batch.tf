@@ -16,6 +16,6 @@ resource "aws_batch_job_queue" "nf_priority_queue" {
   priority = 1
   compute_environment_order {
     order               = 1
-    compute_environment = aws_batch_compute_environment.nf_spot.arn
+    compute_environment = aws_batch_compute_environment.nf_ondemand.arn
   }
 }
