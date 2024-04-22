@@ -34,7 +34,8 @@ resource "aws_batch_compute_environment" "nf_spot" {
       aws_security_group.nf_security.id,
     ]
     subnets = [
-      aws_subnet.nf_subnet.id,
+      # aws_subnet.nf_subnet.id,
+      "subnet-0b187aaa5c26858d4"
     ]
     type = "SPOT"
     tags = {
@@ -72,7 +73,8 @@ resource "aws_batch_compute_environment" "nf_ondemand" {
       aws_security_group.nf_security.id,
     ]
     subnets = [
-      aws_subnet.nf_subnet.id,
+      # aws_subnet.nf_subnet.id,
+      "subnet-0b187aaa5c26858d4"
     ]
     type = "EC2"
     tags = {

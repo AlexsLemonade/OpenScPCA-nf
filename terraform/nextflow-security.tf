@@ -1,8 +1,10 @@
 # VPC and network security settings
 
 resource "aws_security_group" "nf_security" {
-  name   = "openscpca-nf-security-group"
-  vpc_id = aws_vpc.nf_vpc.id
+  name = "openscpca-nf-security-group"
+  # vpc_id = aws_vpc.nf_vpc.id
+  # testing with the workload vpc
+  vpc_id = "vpc-04fd1c970b958aa23"
 
   ingress {
     description = "Allow all traffic from vpc security group"
