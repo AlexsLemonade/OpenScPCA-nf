@@ -51,7 +51,7 @@ process simulate_sample {
     mkdir ${sample_id}
     for f in ${rds_files}; do
       touch ${sample_id}/\$(basename \$f)
-      touch ${sample_id}/\$(basename \${f%.rds}.hdf5)
+      touch ${sample_id}/\$(basename \${f%.rds}.h5ad)
     done
     """
 }
