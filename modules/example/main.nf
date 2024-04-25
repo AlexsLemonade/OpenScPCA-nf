@@ -1,12 +1,15 @@
+def publish_base = Utils.getResultsPath(params.results_bucket, params.results_prefix, "example")
 process say_hello{
   container 'python:3.11'
+  publishDir publish_base, mode: 'copy'
   input:
     val name
   output:
-    path "hello.txt"
+    path outfile
   script:
+    outfile = "hello-${name}.txt"
     """
-    hello.py $name > hello.txt
+    hello.py $name > $outfile
     """
 }
 

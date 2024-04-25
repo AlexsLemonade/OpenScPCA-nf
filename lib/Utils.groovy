@@ -35,4 +35,13 @@ class Utils {
     def projects = getProjects(release_path)
     return projects.collect{release_path / it}
   }
+
+  static def getResultsPath(bucket, release, module){
+    def bucket_path = Nextflow.file("s3://${bucket}")
+    if (!bucket_path.exists()) {
+      throw new IllegalArgumentException("Bucket ${bucket} does not exist")
+    }
+    def results_path = bucket_path / release / module
+    return results_path
+  }
 }
