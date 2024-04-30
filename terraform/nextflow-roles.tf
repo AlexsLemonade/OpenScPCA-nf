@@ -45,11 +45,19 @@ resource "aws_iam_role" "nf_ecs_role" {
         Action = "sts:AssumeRole",
         Effect = "Allow",
         Principal = {
-          Service = "ecs.amazonaws.com"
+          Service = [
+            "ec2.amazonaws.com",
+            "ecs.amazonaws.com"
+          ]
         }
       }
     ]
   })
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_ssm_core" {
+  role       = aws_iam_role.nf_ecs_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_ec2_container" {
