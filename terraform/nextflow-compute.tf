@@ -34,7 +34,6 @@ resource "aws_batch_compute_environment" "nf_spot" {
       aws_security_group.nf_security.id,
     ]
     subnets = [
-      # aws_subnet.nf_subnet.id, # subnet defined in nextflow-security.tf
       "subnet-0b187aaa5c26858d4", # workload private subnet 1
       "subnet-0d8b713be5d4e540b"  # workload private subnet 2
     ]
@@ -74,7 +73,6 @@ resource "aws_batch_compute_environment" "nf_ondemand" {
       aws_security_group.nf_security.id,
     ]
     subnets = [
-      # aws_subnet.nf_subnet.id, # subnet defined in nextflow-security.tf
       "subnet-0b187aaa5c26858d4", # workload private subnet 1
       "subnet-0d8b713be5d4e540b"  # workload private subnet 2
     ]
