@@ -2,9 +2,10 @@
 
 resource "aws_security_group" "nf_security" {
   name = "openscpca-nf-security-group"
-  # vpc_id = aws_vpc.nf_vpc.id
-  # testing with the workload vpc
+  # use the workload vpc
   vpc_id = "vpc-04fd1c970b958aa23"
+  # if using the VPC defined below, use the following line instead
+  # vpc_id = aws_vpc.nf_vpc.id
 
   ingress {
     description = "Allow all traffic from vpc security group"
@@ -33,6 +34,8 @@ resource "aws_security_group" "nf_security" {
 #   key_name = "nextflow-key"
 #   public_key = "PUT_YOUR_PUBLIC_KEY_HERE"
 # }
+
+# The VPC below is not currently being used, but is left here for reference
 
 resource "aws_vpc" "nf_vpc" {
   cidr_block = "10.1.0.0/16"
