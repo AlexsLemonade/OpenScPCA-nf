@@ -128,6 +128,8 @@ simulate_sce <- function(sce, ncells, replacement_metadata, processed) {
     )
 
   # replace sample metadata fields with permuted values
+  # make sure sex is a character type before replacement (usually in case of NA values)
+  metadata(sce_sim)$sample_metadata$sex <- as.character(metadata(sce)$sample_metadata$sex)
   metadata(sce_sim)$sample_metadata <- metadata(sce_sim)$sample_metadata |>
     dplyr::rows_update(replacement_metadata, by = "sample_id")
 
