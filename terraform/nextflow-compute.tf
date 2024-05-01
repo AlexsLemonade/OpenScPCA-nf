@@ -1,5 +1,5 @@
 # This file creates the compute environments used by the default and priority queues
-# The default environment is a 1024 vCPU spot cluster
+# The default environment is a 300 vCPU spot cluster
 # Priority environment is a 256 vCPU on demand cluster
 
 resource "aws_iam_instance_profile" "nf_ecs_instance_role" {
@@ -23,7 +23,7 @@ resource "aws_batch_compute_environment" "nf_spot" {
     allocation_strategy = "SPOT_PRICE_CAPACITY_OPTIMIZED"
     spot_iam_fleet_role = aws_iam_role.nf_spotfleet_role.arn
     bid_percentage      = 60
-    max_vcpus           = 1024
+    max_vcpus           = 300 # matches quota limit at https://us-east-2.console.aws.amazon.com/servicequotas/home/services/ec2/quotas/L-34B43A08
     min_vcpus           = 0
     # standard launch template
     launch_template {
