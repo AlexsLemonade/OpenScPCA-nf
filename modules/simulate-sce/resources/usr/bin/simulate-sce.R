@@ -128,8 +128,6 @@ simulate_sce <- function(sce, ncells, replacement_metadata, processed) {
     )
 
   # replace sample metadata fields with permuted values
-  # make sure sex is a character type before replacement (usually in case of NA values)
-  metadata(sce_sim)$sample_metadata$sex <- as.character(metadata(sce)$sample_metadata$sex)
   metadata(sce_sim)$sample_metadata <- metadata(sce_sim)$sample_metadata |>
     dplyr::rows_update(replacement_metadata, by = "sample_id")
 
@@ -251,7 +249,8 @@ simulate_sce <- function(sce, ncells, replacement_metadata, processed) {
 
 set.seed(opts$seed)
 
-metadata <- readr::read_tsv(opts$metadata_file, col_types = "c")
+# make sure sex is read as a character to prevent all females -> logical false
+metadata <- readr::read_tsv(opts$metadata_file, readr::cols(sex = "c"))
 
 # get file list
 sce_files <- list.files(
