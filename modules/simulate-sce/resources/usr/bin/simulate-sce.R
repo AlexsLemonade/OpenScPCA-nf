@@ -250,7 +250,7 @@ simulate_sce <- function(sce, ncells, replacement_metadata, processed) {
 set.seed(opts$seed)
 
 # make sure sex is read as a character to prevent all females -> logical false
-metadata <- readr::read_tsv(opts$metadata_file, readr::cols(sex = "c"))
+metadata <- readr::read_tsv(opts$metadata_file, col_types = readr::cols(sex = "c"))
 
 # get file list
 sce_files <- list.files(
