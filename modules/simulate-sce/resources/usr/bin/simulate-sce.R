@@ -249,7 +249,7 @@ simulate_sce <- function(sce, ncells, replacement_metadata, processed) {
 
 set.seed(opts$seed)
 
-metadata <- readr::read_tsv(opts$metadata_file, show_col_types = FALSE)
+metadata <- readr::read_tsv(opts$metadata_file, col_types = "c")
 
 # get file list
 sce_files <- list.files(
