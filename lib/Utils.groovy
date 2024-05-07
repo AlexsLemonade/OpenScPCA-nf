@@ -6,20 +6,21 @@ import nextflow.Nextflow
  */
 class Utils {
   static def getReleasePath(bucket, release = "current"){
-    def bucket_path = Nextflow.file("${bucket}")
+    def bucket_path = Nextflow.file(bucket)
     if (!bucket_path.exists()) {
-      throw new IllegalArgumentException("Bucket ${bucket} does not exist")
+      throw new IllegalArgumentException("Bucket '${bucket}' does not exist")
     }
     if (!release) {
       throw new IllegalArgumentException("release can not be blank")
     }
-    else if (release == "current") {
+    if (release == "current") {
       def today = new Date().format('yyyy-MM-dd')
       release = bucket_path.list().findAll{it <= today}.max()
     }
     def release_path = bucket_path / release
+    println("Using release '${release}' from '${bucket}'")
     if (!release_path.exists()) {
-      throw new IllegalArgumentException("Release ${release} does not exist in ${bucket}")
+      throw new IllegalArgumentException("Release '${release}' does not exist in '${bucket}'")
     }
     return release_path
   }

@@ -7,12 +7,13 @@
 params.reuse_merge = false
 
 // merge workflow variables
-def publish_merge_base = "${params.results_bucket}/${params.release_version}/merge_sce"
+def publish_merge_base = "${params.results_bucket}/${params.release_prefix}/merge_sce"
 def merge_report_template = "${projectDir}/modules/merge-sce/resources/merge-report.rmd"
 
+
 // merge individual SCE objects into one SCE object
-process merge_sce {
-  container ghcr.io/alexslemonade/scpcatools-slim:edge
+process merge_group {
+  container "ghcr.io/alexslemonade/scpcatools-slim:edge"
   tag "${merge_group_id}"
   label 'mem_max'
   label 'long_running'
@@ -22,28 +23,27 @@ process merge_sce {
   output:
     tuple val(merge_group_id), path(merged_sce_file), val(has_adt)
   script:
-    def input_library_ids = library_ids.join(',')
-    def input_sces = processed_files.join(',')
-    def merged_sce_file = "${merge_group_id}_merged.rds"
+    input_library_ids = library_ids.join(',')
+    input_sces = processed_files.join(',')
+    merged_sce_file = "${merge_group_id}_merged.rds"
     """
     merge_sces.R \
-      --input_library_ids "${input_library_ids}" \
-      --input_sce_files "${input_sces}" \
-      --output_sce_file "${merged_sce_file}" \
-      --n_hvg ${params.num_hvg} \
+      --input_library_ids '${input_library_ids}' \
+      --input_sce_files '${input_sces}' \
+      --output_sce_file '${merged_sce_file}' \
       --threads ${task.cpus}
     """
+
   stub:
-    def merged_sce_file = "${merge_group_id}_merged.rds"
+    merged_sce_file = "${merge_group_id}_merged.rds"
     """
     touch ${merged_sce_file}
     """
-
 }
 
 // create merge report
 process generate_merge_report {
-  container ghcr.io/alexslemonade/scpcatools-reports:edge
+  container "ghcr.io/alexslemonade/scpcatools-reports:edge"
   tag "${merge_group_id}"
   publishDir "${publish_merge_base}/${merge_group_id}"
   label 'mem_max'
@@ -53,7 +53,7 @@ process generate_merge_report {
   output:
     path(merge_report)
   script:
-    def merge_report = "${merge_group_id}_merged-summary-report.html"
+    merge_report = "${merge_group_id}_merged-summary-report.html"
     """
     #!/usr/bin/env Rscript
 
@@ -66,14 +66,14 @@ process generate_merge_report {
     )
     """
   stub:
-    def merge_report = "${merge_group_id}_merged-summary-report.html"
+    merge_report = "${merge_group_id}_merged-summary-report.html"
     """
     touch ${merge_report}
     """
 }
 
 process export_anndata {
-    container ghcr.io/alexslemonade/scpcatools-anndata:edge
+    container "ghcr.io/alexslemonade/scpcatools-anndata:edge"
     label 'mem_max'
     label 'long_running'
     tag "${merge_group_id}"
@@ -83,8 +83,8 @@ process export_anndata {
     output:
       tuple val(merge_group_id), path("${merge_group_id}_merged_*.h5ad")
     script:
-      def rna_h5ad_file = "${merge_group_id}_merged_rna.h5ad"
-      def feature_h5ad_file = "${merge_group_id}_merged_adt.h5ad"
+      rna_h5ad_file = "${merge_group_id}_merged_rna.h5ad"
+      feature_h5ad_file = "${merge_group_id}_merged_adt.h5ad"
       """
       sce_to_anndata.R \
         --input_sce_file ${merged_sce_file} \
@@ -98,18 +98,19 @@ process export_anndata {
       ${has_adt ? "move_counts_anndata.py --anndata_file ${feature_h5ad_file}" : ''}
       """
     stub:
-      def rna_h5ad_file = "${merge_group_id}_merged_rna.h5ad"
-      def feature_h5ad_file = "${merge_group_id}_merged_adt.h5ad"
+      rna_h5ad_file = "${merge_group_id}_merged_rna.h5ad"
+      feature_h5ad_file = "${merge_group_id}_merged_adt.h5ad"
       """
       touch ${rna_h5ad_file}
       ${has_adt ? "touch ${feature_h5ad_file}" : ''}
       """
 }
 
-workflow merge_sce{
+workflow merge_sce {
   take:
     project_ch  // Channel of [project_id, file(project_dir)]
   main:
+
     project_branch = project_ch
       .branch{
         // multiplexed libraries are subdirectories with more than one sample id
@@ -138,7 +139,7 @@ workflow merge_sce{
         make_merge: true
       }
 
-    pre_merged_ch = library_branch.has_merge
+    pre_merged_ch = libraries_branch.has_merge
       .map{[ // [project id, merged_file, has_adt] to match the output of merge_sce
         it[0],
         file("${publish_merge_base}/${it[0]}/${it[0]}_merged.rds"),
@@ -146,9 +147,9 @@ workflow merge_sce{
       ]}
 
     // merge SCE objects
-    merge_sce(grouped_libraries_ch.make_merge)
+    merge_group(libraries_branch.make_merge)
 
-    merged_ch = merge_sce.out.mix(pre_merged_ch)
+    merged_ch = merge_group.out.mix(pre_merged_ch)
 
     // generate merge report
     generate_merge_report(merged_ch, file(merge_report_template))

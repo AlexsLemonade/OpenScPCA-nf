@@ -170,7 +170,7 @@ if ("cellassign" %in% all_celltypes) {
   # Add `"Cell type annotation not performed"` string to libraries without CellAssign,
   #  and make the max prediction `NA_real_` for extra safety
   sce_list <- sce_list |>
-    purrr::map(\(sce){
+    purrr::map(\(sce) {
       if (!"cellassign" %in% metadata(sce)$celltype_methods) {
         colData(sce)$cellassign_celltype_annotation <- "Cell type annotation not performed"
         colData(sce)$cellassign_max_prediction <- NA_real_
