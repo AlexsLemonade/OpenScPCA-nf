@@ -1,3 +1,10 @@
+#!/usr/bin/env nextflow
+
+// Workflow to create simulated/permuted metadata, bulk, and SCE objects
+// for testing OpenSCPCA workflows
+
+
+// module parameters
 params.sim_pubdir = 's3://openscpca-sim-data/test'
 params.simulate_sce_container = 'ccdl/openscpca-simulate-sce:latest'
 

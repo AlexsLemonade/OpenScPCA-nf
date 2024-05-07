@@ -1,5 +1,4 @@
 #!/usr/bin/env nextflow
-nextflow.enable.dsl=2
 
 // Workflow to merge SCE objects into a single object.
 // This workflow does NOT perform integration, i.e. batch correction.
@@ -7,11 +6,9 @@ nextflow.enable.dsl=2
 // module parameters
 params.reuse_merge = false
 
-
-// workflow variables
-def module_dir = "${projectDir}/modules/merge-sce"
+// merge workflow variables
 def publish_merge_base = "${params.results_bucket}/${params.release_version}/merge_sce"
-def merge_report_template = "${module_dir}/resources/merge-report.rmd"
+def merge_report_template = "${projectDir}/modules/merge-sce/resources/merge-report.rmd"
 
 // merge individual SCE objects into one SCE object
 process merge_sce {

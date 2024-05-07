@@ -2,7 +2,10 @@
 .nextflow*
 
 # ignore work directory
-/work/
+work/
+
+# ignore test results
+test/results/
 
 # ignore hidden `DS_Store`
 .DS_Store
