@@ -150,7 +150,7 @@ if ("singler" %in% all_celltypes) {
   # Check if the label used for annotation was ontology in at least 1 SCE
   use_ontology <- sce_list |>
     purrr::map_lgl(\(sce) {
-      any(metadata(sce)$singler_reference_label == "label.ont")
+      "label.ont" %in% metadata(sce)$singler_reference_label
     }) |>
     any()
 
