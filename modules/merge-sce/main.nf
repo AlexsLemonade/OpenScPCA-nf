@@ -21,7 +21,7 @@ process merge_sce {
   label 'long_running'
   publishDir "${publish_merge_base}/${merge_group_id}"
   input:
-    tuple val(merge_group_id), val(library_ids), path(processed_files)
+    tuple val(merge_group_id), val(library_ids), path(processed_files), val(has_adt)
   output:
     tuple path(merged_sce_file), val(merge_group_id), val(has_adt)
   script:
@@ -111,32 +111,18 @@ process export_anndata {
 
 workflow merge_sce{
   take:
-    project_ch  // Channel of project names and project directories
+    project_ch  // Channel of [project_id, project_dir]
   main:
-    // grab run ids to include
-    run_ids = params.merge_run_ids?.tokenize(',') ?: []
-    // if no run ids, run all
-    run_all = run_ids[0] == "All"
-
-    // read in run metafile and filter to projects of interest
-    libraries_ch = Channel.fromPath(params.run_metafile)
-      .splitCsv(header: true, sep: '\t')
-      // filter to only include specified project ids
-      .filter{it.scpca_project_id in project_ids}
-      // filter to run all ids or just specified ones
-      .filter{
-        run_all
-        || (it.scpca_run_id in run_ids)
-        || (it.scpca_library_id in run_ids)
-        || (it.scpca_sample_id in run_ids)
+    // get all SCE files by project
+    // this will be a channel of [project_id, [library_ids], [processed_sce_files], has_adt]
+    libraries_ch = project_ch
+      .map{project_id, project_dir -> {
+        def processed_files = files("${project_dir}/**_processed.rds")
+        def library_ids = processed_files.name.collect{it.replace('_processed.rds', '')}
+        def has_adt = file("${project_dir}/**_processed_adt.h5ad") as Boolean // true if there are any adt files
+        return [project_id, library_ids, processed_files, has_adt]
       }
-      .map{[
-        seq_unit: it.seq_unit,
-        technology: it.technology,
-        project_id: it.scpca_project_id,
-        library_id: it.scpca_library_id,
-        sample_id: it.scpca_sample_id.split(";").sort().join(",")
-      ]}
+    }
 
     // get all projects that contain at least one library with CITEseq
     adt_projects = libraries_ch

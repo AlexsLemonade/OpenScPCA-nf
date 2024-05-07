@@ -82,7 +82,7 @@ process permute_bulk{
 
 workflow simulate_sce {
   take:
-    project_ch  // Channel of project names and project directories
+    project_ch  // Channel of [project_id, file(project_dir)]
   main:
     // metadata file for each project: [project_id, metadata_file]
     metadata_ch = project_ch.map{[it[0], it[1] / 'single_cell_metadata.tsv']}
