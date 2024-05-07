@@ -23,7 +23,7 @@ process merge_sce {
   input:
     tuple val(merge_group_id), val(library_ids), path(processed_files), val(has_adt)
   output:
-    tuple path(merged_sce_file), val(merge_group_id), val(has_adt)
+    tuple val(merge_group_id), path(merged_sce_file), val(has_adt)
   script:
     def input_library_ids = library_ids.join(',')
     def input_sces = processed_files.join(',')
@@ -48,10 +48,10 @@ process merge_sce {
 process generate_merge_report {
   container ghcr.io/alexslemonade/scpcatools-reports:edge
   tag "${merge_group_id}"
-  publishDir "${params.results_dir}/${merge_group_id}/merged"
+  publishDir "${publish_merge_base}/${merge_group_id}"
   label 'mem_max'
   input:
-    tuple path(merged_sce_file), val(merge_group_id), val(has_adt)
+    tuple val(merge_group_id), path(merged_sce_file), val(has_adt)
     path(report_template)
   output:
     path(merge_report)
@@ -80,9 +80,9 @@ process export_anndata {
     label 'mem_max'
     label 'long_running'
     tag "${merge_group_id}"
-    publishDir "${params.results_dir}/${merge_group_id}/merged", mode: 'copy'
+    publishDir "${publish_merge_base}/${merge_group_id}"
     input:
-      tuple path(merged_sce_file), val(merge_group_id), val(has_adt)
+      tuple val(merge_group_id), path(merged_sce_file), val(has_adt)
     output:
       tuple val(merge_group_id), path("${merge_group_id}_merged_*.h5ad")
     script:
@@ -111,87 +111,47 @@ process export_anndata {
 
 workflow merge_sce{
   take:
-    project_ch  // Channel of [project_id, project_dir]
+    project_ch  // Channel of [project_id, file(project_dir)]
   main:
-    // get all SCE files by project
-    // this will be a channel of [project_id, [library_ids], [processed_sce_files], has_adt]
-    libraries_ch = project_ch
-      .map{project_id, project_dir -> {
-        def processed_files = files("${project_dir}/**_processed.rds")
-        def library_ids = processed_files.name.collect{it.replace('_processed.rds', '')}
-        def has_adt = file("${project_dir}/**_processed_adt.h5ad") as Boolean // true if there are any adt files
-        return [project_id, library_ids, processed_files, has_adt]
-      }
-    }
-
-    // get all projects that contain at least one library with CITEseq
-    adt_projects = libraries_ch
-      .filter{it.technology.startsWith('CITEseq')}
-      .collect{it.project_id}
-      .map{it.unique()}
-
-    multiplex_projects = libraries_ch
-      .filter{it.technology.startsWith('cellhash')}
-      .collect{it.project_id}
-      .map{it.unique()}
-
-    filtered_libraries_ch = libraries_ch
-      // only include single-cell/single-nuclei which ensures we don't try to merge libraries from spatial or bulk data
-      .filter{it.seq_unit in ['cell', 'nucleus']}
-      // remove any multiplexed projects
-      // future todo: only filter library ids that are multiplexed, but keep all other non-multiplexed libraries
+    project_branch = project_ch
       .branch{
-        multiplexed: it.project_id in multiplex_projects.getVal()
+        // multiplexed libraries are subdirectories with more than one sample id
+        multiplexed: files(it[1] / "*", type: "dir").any{it.name =~ /SCPCS\d+_SCPCS\d+/}
         single_sample: true
       }
 
-    filtered_libraries_ch.multiplexed
-      .unique{ it.project_id }
+    // get all SCE files by project
+    // this will be a channel of [project_id, [library_ids], [processed_sce_files], has_adt]
+    libraries_ch = project_branch.single_sample
+      .map{project_id, project_dir -> {
+        def processed_files = files(project_dir / "**_processed.rds")
+        def library_ids = processed_files.collect{it.name.replace('_processed.rds', '')}
+        def has_adt = files(project_dir / "**_processed_adt.h5ad").size > 0 // true if there are any adt files
+        return [project_id, library_ids, processed_files, has_adt]
+      }}
+
+    project_branch.multiplexed
       .subscribe{
-        log.warn("Not merging ${it.project_id} because it contains multiplexed libraries.")
+        log.warn("Not merging ${it[0]} because it contains multiplexed libraries.")
       }
 
-    // print out warning message for any libraries not included in merging
-    filtered_libraries_ch.single_sample
-      .map{[
-        it.library_id,
-        file("${params.results_dir}/${it.project_id}/${it.sample_id}/${it.library_id}_processed.rds")
-      ]}
-    .filter{!(it[1].exists() && it[1].size() > 0)}
-    .subscribe{
-      log.warn("Processed files do not exist for ${it[0]}. This library will not be included in the merged object.")
-    }
-
-    grouped_libraries_ch = filtered_libraries_ch.single_sample
-      // create tuple of [project id, library_id, processed_sce_file]
-      .map{[
-        it.project_id,
-        it.library_id,
-        file("${params.results_dir}/${it.project_id}/${it.sample_id}/${it.library_id}_processed.rds")
-      ]}
-      // only include libraries that have been processed through scpca-nf and aren't empty
-      .filter{it[2].exists() && it[2].size() > 0}
-      // only one row per library ID, this removes all the duplicates that may be present due to CITE/hashing
-      .unique()
-      // group tuple by project id: [project_id, [library_id1, library_id2, ...], [sce_file1, sce_file2, ...]]
-      .groupTuple(by: 0)
+    libraries_branch = libraries_ch
       .branch{
         has_merge: file("${publish_merge_base}/${it[0]}/${it[0]}_merged.rds").exists() && params.reuse_merge
         make_merge: true
       }
 
-    pre_merged_ch = grouped_libraries_ch.has_merge
-      .map{[ // merge file, project id, has adt
-        file("${publish_merge_base}/${it[0]}/${it[0]}_merged.rds"),
+    pre_merged_ch = library_branch.has_merge
+      .map{[ // [project id, merged_file, has_adt] to match the output of merge_sce
         it[0],
-        it[1]
+        file("${publish_merge_base}/${it[0]}/${it[0]}_merged.rds"),
+        it[3]
       ]}
 
     // merge SCE objects
     merge_sce(grouped_libraries_ch.make_merge)
 
     merged_ch = merge_sce.out.mix(pre_merged_ch)
-
 
     // generate merge report
     generate_merge_report(merged_ch, file(merge_report_template))
