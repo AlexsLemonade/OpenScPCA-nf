@@ -6,7 +6,7 @@ import nextflow.Nextflow
  */
 class Utils {
   static def getReleasePath(bucket, release = "current"){
-    def bucket_path = Nextflow.file("s3://${bucket}")
+    def bucket_path = Nextflow.file("${bucket}")
     if (!bucket_path.exists()) {
       throw new IllegalArgumentException("Bucket ${bucket} does not exist")
     }
