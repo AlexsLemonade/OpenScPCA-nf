@@ -58,13 +58,15 @@ process generate_merge_report {
   script:
     def merge_report = "${merge_group_id}_merged-summary-report.html"
     """
-    Rscript -e "rmarkdown::render( \
-      '${report_template}', \
-      output_file = '${merge_report}', \
-      params = list(merge_group = '${merge_group_id}', \
-                    merged_sce_file = '${merged_sce_file}', \
-                    batch_column = 'library_id') \
-      )"
+    #!/usr/bin/env Rscript
+
+    rmarkdown::render(
+      '${report_template}',
+      output_file = '${merge_report}',
+      params = list(merge_group = '${merge_group_id}',
+                    merged_sce_file = '${merged_sce_file}',
+                    batch_column = 'library_id')
+    )
     """
   stub:
     def merge_report = "${merge_group_id}_merged-summary-report.html"
