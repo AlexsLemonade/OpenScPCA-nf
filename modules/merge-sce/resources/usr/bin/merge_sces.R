@@ -239,10 +239,11 @@ adt_present_columns <- sce_list |>
   # if input is empty, then there are no "adt" altExps anyways
   purrr::reduce(union, .init = NULL)
 
-# ensure that there are indeed no "adt" altExps if adt_present_columns is empty
+# determine if adt is present for each SCE object
 adt_present <- sce_list |>
   purrr::map_lgl(\(sce) "adt" %in% altExpNames(sce))
 
+# ensure that there are indeed no "adt" altExps if adt_present_columns is empty
 if (is.null(adt_present_columns) && any(adt_present)) {
   stop("Error in determining which adt altExp columns should be retained.")
 }
