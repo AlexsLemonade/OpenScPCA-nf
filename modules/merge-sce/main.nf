@@ -125,6 +125,7 @@ workflow merge_sce {
     libraries_ch = project_branch.single_sample
       .map{project_id, project_dir -> {
         def processed_files = files(project_dir / "**_processed.rds")
+        processed_files = processed_files.findAll{it.size() > 0} // remove empty files
         def library_ids = processed_files.collect{it.name.replace('_processed.rds', '')}
         def has_adt = files(project_dir / "**_processed_adt.h5ad").size > 0 // true if there are any adt files
         return [project_id, library_ids, processed_files, has_adt]
