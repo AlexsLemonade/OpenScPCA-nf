@@ -5,6 +5,7 @@
 
 // module parameters
 params.reuse_merge = false
+params.num_hvg = 2000 // number of HVGs to select
 
 // merge workflow variables
 def publish_merge_base = "${params.results_bucket}/${params.release_prefix}/merge_sce"
@@ -31,6 +32,7 @@ process merge_group {
       --input_library_ids '${input_library_ids}' \
       --input_sce_files '${input_sces}' \
       --output_sce_file '${merged_sce_file}' \
+      --n_hvg ${params.num_hvg} \
       --threads ${task.cpus}
     """
 
