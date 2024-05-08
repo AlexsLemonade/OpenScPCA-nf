@@ -1,1 +1,1 @@
-/user/local/bin/nextflow  -C nextflow.config run main.nf
+/usr/local/bin/nextflow  -C nextflow.config run main.nf
