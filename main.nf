@@ -31,6 +31,7 @@ workflow {
   run_all = project_ids.isEmpty() || project_ids[0].toLowerCase() == 'all'
 
   // example()
+
   // project channel of [project_id, project_path]
   project_ch = Channel.fromPath(Utils.getProjectPaths(release_dir))
     .map{[it.name, it]} // name is the directory name, which will be SCPCP000000 format
