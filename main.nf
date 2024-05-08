@@ -27,7 +27,7 @@ if (param_error) {
 
 // **** Main workflow ****
 workflow {
-  project_ids = params.project?.tokenize(',') ?: []
+  project_ids = params.project?.tokenize(';, ') ?: []
   run_all = project_ids.isEmpty() || project_ids[0].toLowerCase() == 'all'
 
   // example()
