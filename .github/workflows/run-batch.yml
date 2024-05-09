@@ -1,20 +1,20 @@
 name: Batch CodeDeploy CI
 
 on:
-  workflow_dispatch:
   push:
     tags: [ v*.*.* ]
+  workflow_dispatch:
 
 permissions:
-      id-token: write   # This is required for requesting the JWT
-      contents: read    # This is required for actions/checkout
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
 
 jobs:
   build:
     name: Run Code Deploy Job
     runs-on: ubuntu-latest
-    environment: 'prod'     
- 
+    environment: "prod"
+
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
