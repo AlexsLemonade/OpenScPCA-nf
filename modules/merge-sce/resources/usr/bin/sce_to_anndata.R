@@ -183,7 +183,6 @@ if (opt$feature_name == "cellhash") {
   warning("Conversion of altExp data from multiplexed data is not supported.
              The altExp will not be converted.")
   quit(save = "no")
-  # convert altExp
 }
 
 # check for output file
