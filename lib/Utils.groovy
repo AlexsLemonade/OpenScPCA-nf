@@ -36,4 +36,27 @@ class Utils {
     def projects = getProjects(release_path)
     return projects.collect{release_path / it}
   }
+
+  static def getProjectFiles(project_path, format = "sce", process_level = "processed"){
+    project_path = Nextflow.file(project_path, type: 'dir')
+    process_level = process_level.toLowerCase()
+    if (!(process_level in ["raw", "filtered", "processed"])){
+      throw new IllegalArgumentException("Unknown process_level '${process_level}'")
+      }
+    def files = []
+    switch (format.toLowerCase()){
+      case ["anndata", "h5ad"]:
+        files = Nextflow.files(project_path / "**_${process_level}_*.h5ad")
+        break
+      case ["sce", "rds"]:
+        def extension="rds"
+        files = Nextflow.files(project_path / "**_${process_level}.rds")
+        break
+      default:
+        throw new IllegalArgumentException("Unknown format '${format}'")
+        break
+    }
+    files = files.findAll{it.size() > 0}
+    return files
+ }
 }
