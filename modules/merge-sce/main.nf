@@ -124,11 +124,11 @@ workflow merge_sce {
     // get all SCE files by project
     // this will be a channel of [project_id, [library_ids], [processed_sce_files]]
     libraries_ch = project_branch.single_sample
-      .map{project_id, project_dir -> {
+      .map{ project_id, project_dir ->
         def processed_files = Utils.getProjectFiles(project_dir, format: "sce", process_level: "processed")
         def library_ids = processed_files.collect{it.name.replace('_processed.rds', '')}
         return [project_id, library_ids, processed_files]
-      }}
+      }
 
     project_branch.multiplexed
       .subscribe{

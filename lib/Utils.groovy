@@ -6,7 +6,8 @@ import nextflow.Nextflow
  */
 class Utils {
   static def getReleasePath(bucket, release = "current"){
-    def bucket_path = Nextflow.file(bucket)
+
+    def bucket_path = Nextflow.file(bucket, type: 'dir')
     if (!bucket_path.exists()) {
       throw new IllegalArgumentException("Bucket '${bucket}' does not exist")
     }
@@ -37,8 +38,12 @@ class Utils {
     return projects.collect{release_path / it}
   }
 
-  static def getProjectFiles(project_path, format = "sce", process_level = "processed"){
-    project_path = Nextflow.file(project_path, type: 'dir')
+  static def getProjectFiles(Map args, project_dir){
+    def format = args.format ?: "sce"
+    def process_level = args.process_level ?: "processed"
+
+    project_dir = Nextflow.file(project_dir, type: 'dir')
+    println(project_dir)
     process_level = process_level.toLowerCase()
     if (!(process_level in ["raw", "filtered", "processed"])){
       throw new IllegalArgumentException("Unknown process_level '${process_level}'")
@@ -46,11 +51,11 @@ class Utils {
     def files = []
     switch (format.toLowerCase()){
       case ["anndata", "h5ad"]:
-        files = Nextflow.files(project_path / "**_${process_level}_*.h5ad")
+        files = Nextflow.files(project_dir / "**_${process_level}_*.h5ad")
         break
       case ["sce", "rds"]:
         def extension="rds"
-        files = Nextflow.files(project_path / "**_${process_level}.rds")
+        files = Nextflow.files(project_dir / "**_${process_level}.rds")
         break
       default:
         throw new IllegalArgumentException("Unknown format '${format}'")
