@@ -164,50 +164,56 @@ scpcaTools::sce_to_anndata(
 message("Exported RNA")
 
 # AltExp to AnnData -----------------------------------------------------------
-
-# if feature data exists, grab it and export to AnnData
-if (!is.null(opt$feature_name)) {
-  # make sure the feature data is present
-  if (!(opt$feature_name %in% altExpNames(sce))) {
-    stop("feature_name must match name of altExp in provided SCE object.")
-
-    # if the feature name is cell hash, skip conversion
-  } else if (opt$feature_name == "cellhash") {
-    warning("Conversion of altExp data from multiplexed data is not supported.
-             The altExp will not be converted.")
-
-    # convert altExp
-  } else {
-    # check for output file
-    if (!(stringr::str_ends(opt$output_feature_h5, ".h5ad|.hdf5|.h5"))) {
-      stop("output feature file name must end in .h5ad, .hdf5, or .h5")
-    }
-
-    # extract altExp
-    alt_sce <- altExp(sce, opt$feature_name)
-
-    # only convert altExp with > 1 rows
-    if (nrow(alt_sce) > 1) {
-      # add sample metadata from main sce to alt sce metadata
-      metadata(alt_sce)$sample_metadata <- sample_metadata
-
-      # make sce czi compliant
-      alt_sce <- format_czi(alt_sce)
-      message("alt formatted")
-
-      # export altExp sce as anndata object
-      scpcaTools::sce_to_anndata(
-        alt_sce,
-        anndata_file = opt$output_feature_h5
-      )
-    } else {
-      # warn that the altExp cannot be converted
-      warning(
-        glue::glue("
-          Only 1 row found in altExp named: {opt$feature_name}.
-          This altExp will not be converted to an AnnData object.
-        ")
-      )
-    }
+# end if there is no altExp data or no requested feature
+if (is.null(opt$feature_name) || length(altExpNames(sce)) == 0) {
+  if (opt$feature_name) {
+    warning("No altExp data to convert.")
   }
+  quit(save = "no")
 }
+# check if feature name is in altExp
+if (!(opt$feature_name %in% altExpNames(sce))) {
+  warning("feature_name should match name of an altExp in provided SCE object.
+             The altExp will not be converted.")
+  quit(save = "no")
+}
+
+# if the feature name is cell hash, skip conversion
+if (opt$feature_name == "cellhash") {
+  warning("Conversion of altExp data from multiplexed data is not supported.
+             The altExp will not be converted.")
+  quit(save = "no")
+  # convert altExp
+}
+
+# check for output file
+if (!(stringr::str_ends(opt$output_feature_h5, ".h5ad|.hdf5|.h5"))) {
+  stop("output feature file name must end in .h5ad, .hdf5, or .h5")
+}
+
+# extract altExp
+alt_sce <- altExp(sce, opt$feature_name)
+
+# only convert altExp with > 1 rows
+if (nrow(alt_sce) <= 1) {
+  warning(
+    glue::glue("
+      Only 1 row found in altExp named: {opt$feature_name}.
+      This altExp will not be converted to an AnnData object.
+    ")
+  )
+  quit(save = "no")
+}
+
+# add sample metadata from main sce to alt sce metadata
+metadata(alt_sce)$sample_metadata <- sample_metadata
+
+# make sce czi compliant
+alt_sce <- format_czi(alt_sce)
+message("alt formatted")
+
+# export altExp sce as anndata object
+scpcaTools::sce_to_anndata(
+  alt_sce,
+  anndata_file = opt$output_feature_h5
+)

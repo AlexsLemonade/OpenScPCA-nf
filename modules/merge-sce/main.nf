@@ -21,9 +21,9 @@ process merge_group {
   label 'long_running'
   publishDir "${publish_merge_base}/${merge_group_id}"
   input:
-    tuple val(merge_group_id), val(library_ids), path(processed_files), val(has_adt)
+    tuple val(merge_group_id), val(library_ids), path(processed_files)
   output:
-    tuple val(merge_group_id), path(merged_sce_file), val(has_adt)
+    tuple val(merge_group_id), path(merged_sce_file)
   script:
     input_library_ids = library_ids.join(',')
     input_sces = processed_files.join(',')
@@ -51,7 +51,7 @@ process generate_merge_report {
   publishDir "${publish_merge_base}/${merge_group_id}"
   label 'mem_max'
   input:
-    tuple val(merge_group_id), path(merged_sce_file), val(has_adt)
+    tuple val(merge_group_id), path(merged_sce_file)
     path(report_template)
   output:
     path(merge_report)
@@ -82,7 +82,7 @@ process export_anndata {
     tag "${merge_group_id}"
     publishDir "${publish_merge_base}/${merge_group_id}"
     input:
-      tuple val(merge_group_id), path(merged_sce_file), val(has_adt)
+      tuple val(merge_group_id), path(merged_sce_file)
     output:
       tuple val(merge_group_id), path("${merge_group_id}_merged_*.h5ad")
     script:
@@ -92,9 +92,9 @@ process export_anndata {
       sce_to_anndata.R \
         --input_sce_file ${merged_sce_file} \
         --output_rna_h5 ${rna_h5ad_file} \
+        --feature_name adt \
         --output_feature_h5 ${feature_h5ad_file} \
         --is_merged \
-        ${has_adt ? "--feature_name adt" : ''}
 
       # move normalized counts to X in AnnData
       move_counts_anndata.py --anndata_file ${rna_h5ad_file}
@@ -122,14 +122,12 @@ workflow merge_sce {
       }
 
     // get all SCE files by project
-    // this will be a channel of [project_id, [library_ids], [processed_sce_files], has_adt]
+    // this will be a channel of [project_id, [library_ids], [processed_sce_files]]
     libraries_ch = project_branch.single_sample
       .map{project_id, project_dir -> {
-        def processed_files = files(project_dir / "**_processed.rds")
-        processed_files = processed_files.findAll{it.size() > 0} // remove empty files
+        def processed_files = Utils.getProjectFiles(project_dir, format: "sce", process_level: "processed")
         def library_ids = processed_files.collect{it.name.replace('_processed.rds', '')}
-        def has_adt = files(project_dir / "**_processed_adt.h5ad").size > 0 // true if there are any adt files
-        return [project_id, library_ids, processed_files, has_adt]
+        return [project_id, library_ids, processed_files]
       }}
 
     project_branch.multiplexed
