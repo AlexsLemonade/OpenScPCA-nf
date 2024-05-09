@@ -2,6 +2,8 @@ name: Batch CodeDeploy CI
 
 on:
   workflow_dispatch:
+  push:
+    tags: [ v*.*.* ]
 
 permissions:
       id-token: write   # This is required for requesting the JWT
