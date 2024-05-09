@@ -98,14 +98,16 @@ process export_anndata {
 
       # move normalized counts to X in AnnData
       move_counts_anndata.py --anndata_file ${rna_h5ad_file}
-      ${has_adt ? "move_counts_anndata.py --anndata_file ${feature_h5ad_file}" : ''}
+      if [ -f "${feature_h5ad_file}" ]; then
+        move_counts_anndata.py --anndata_file ${feature_h5ad_file}
+      fi
       """
     stub:
       rna_h5ad_file = "${merge_group_id}_merged_rna.h5ad"
       feature_h5ad_file = "${merge_group_id}_merged_adt.h5ad"
       """
       touch ${rna_h5ad_file}
-      ${has_adt ? "touch ${feature_h5ad_file}" : ''}
+      touch ${feature_h5ad_file}
       """
 }
 
@@ -142,10 +144,9 @@ workflow merge_sce {
       }
 
     pre_merged_ch = libraries_branch.has_merge
-      .map{[ // [project id, merged_file, has_adt] to match the output of merge_sce
+      .map{[ // [project id, merged_file] to match the output of merge_group
         it[0],
-        file("${publish_merge_base}/${it[0]}/${it[0]}_merged.rds"),
-        it[3]
+        file("${publish_merge_base}/${it[0]}/${it[0]}_merged.rds")
       ]}
 
     // merge SCE objects
