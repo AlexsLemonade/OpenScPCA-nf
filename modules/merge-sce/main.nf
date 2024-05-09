@@ -8,7 +8,8 @@ params.reuse_merge = false
 params.num_hvg = 2000 // number of HVGs to select
 
 // merge workflow variables
-def publish_merge_base = "${params.results_bucket}/${params.release_prefix}/merge_sce"
+def module_name = "merge-sce"
+def publish_merge_base = "${params.results_bucket}/${params.release_prefix}/${module_name}"
 def merge_report_template = "${projectDir}/modules/merge-sce/resources/merge-report.rmd"
 
 
