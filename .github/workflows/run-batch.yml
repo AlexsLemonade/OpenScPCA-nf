@@ -2,7 +2,7 @@ name: Batch CodeDeploy CI
 
 on:
   push:
-    tags: [ v*.*.* ]
+    tags: [v*.*.*]
   workflow_dispatch:
 
 permissions:
@@ -16,34 +16,32 @@ jobs:
     environment: "prod"
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
-    
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        role-to-assume: arn:aws:iam::992382809252:role/GithubOpenId-nextflow
-        role-session-name: githubActionSession
-        aws-region: us-east-1
- 
-    - name: Create zip archive
-      run: |
-        zip -r  source.zip  . -x '*. git*'
-      working-directory: ${{ github.workspace }}
- 
-    - name: Copy zip to S3
-      run: aws s3 cp source.zip s3://pipeline-artifact-992382809252-us-east-2/
-      env:
-        AWS_DEFAULT_REGION: us-east-2
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::992382809252:role/GithubOpenId-nextflow
+          role-session-name: githubActionSession
+          aws-region: us-east-1
 
-    - name: Trigger AWS CodeDeploy deployment
-      run: |
-        aws deploy create-deployment \
-          --application-name Batch \
-          --deployment-group-name Batch-deployment-group \
-          --s3-location bucket=pipeline-artifact-992382809252-us-east-2,key=source.zip,bundleType=zip \
-          --region us-east-2
-      env:
-        AWS_DEFAULT_REGION: us-east-2
-      
+      - name: Create zip archive
+        run: |
+          zip -r  source.zip  . -x '*. git*'
+        working-directory: ${{ github.workspace }}
+
+      - name: Copy zip to S3
+        run: aws s3 cp source.zip s3://pipeline-artifact-992382809252-us-east-2/
+        env:
+          AWS_DEFAULT_REGION: us-east-2
+
+      - name: Trigger AWS CodeDeploy deployment
+        run: |
+          aws deploy create-deployment \
+            --application-name Batch \
+            --deployment-group-name Batch-deployment-group \
+            --s3-location bucket=pipeline-artifact-992382809252-us-east-2,key=source.zip,bundleType=zip \
+            --region us-east-2
+        env:
+          AWS_DEFAULT_REGION: us-east-2
