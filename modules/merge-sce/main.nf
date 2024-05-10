@@ -98,7 +98,7 @@ process export_anndata {
 
       # move normalized counts to X in AnnData
       move_counts_anndata.py --anndata_file ${rna_h5ad_file}
-      if [ -f "${feature_h5ad_file}" ]; then
+      if [ -f ${feature_h5ad_file} ]; then
         move_counts_anndata.py --anndata_file ${feature_h5ad_file}
       fi
       """

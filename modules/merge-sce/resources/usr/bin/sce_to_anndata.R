@@ -166,7 +166,7 @@ message("Exported RNA")
 # AltExp to AnnData -----------------------------------------------------------
 # end if there is no altExp data or no requested feature
 if (is.null(opt$feature_name) || length(altExpNames(sce)) == 0) {
-  if (opt$feature_name) {
+  if (!is.null(opt$feature_name)) {
     warning("No altExp data to convert.")
   }
   quit(save = "no")
