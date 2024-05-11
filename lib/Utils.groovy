@@ -51,6 +51,7 @@ class Utils {
     def files = []
     switch (format.toLowerCase()){
       case ["anndata", "h5ad"]:
+        // find all h5ad files in the project directory (** searches all subdirectories)
         files = Nextflow.files(project_dir / "**_${process_level}_*.h5ad")
         break
       case ["sce", "rds"]:

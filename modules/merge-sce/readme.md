@@ -10,6 +10,5 @@ There have been some small changes, in particular:
 - Containers have been updated to use a more recent version of `scpcaTools`, with underlying updates to Bioconductor and Python packages.
 - The workflow is run on a project level, and all SCE files within a project are merged.
   - the assumption in this workflow is that all libraries within a project are to be merged, so there (currently) are no options to specify which specific samples to merge.
-- Presence of ADTs is determined within the workflow by the presence of `_adt.h5ad` files among the sample files.
   - The `--include_adt` flag was also removed from the `merge_sces.R` script, replaced by looking directly at the SCE objects
-  - This means that if there are ADTs in the project, they will be present in the merged SCE file, but there will be merged AnnData files depending only on whether there were individual AnnData ADT files.
+  - The `sce_to_anndata.R` script now only warns if the requested feature altExp is not found in the SCE file, rather than erroring out.
