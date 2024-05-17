@@ -13,7 +13,7 @@ Further instructions for this will be added in the future, and we expect this to
 The following base command will run the workflow, assuming all AWS permissions are set up correctly:
 
 ```bash
-nextflow run alexslemonade/openscpca-nf -profile batch
+nextflow run AlexsLemonade/OpenScPCA-nf -profile batch
 ```
 
 The workflow also has a couple of entry points other than the main workflow, for testing and creating simulated data.
@@ -27,7 +27,7 @@ nextflow run AlexsLemonade/OpenScPCA-nf -profile batch -entry test
 To run the workflow that creates simulated SCE objects for the OpenScPCA project, you can use the following command:
 
 ```bash
-nextflow run alexslemonade/openscpca-nf -profile batch -entry simulate
+nextflow run AlexsLemonade/OpenScPCA-nf -profile batch -entry simulate
 ```
 
 ## Repository setup
