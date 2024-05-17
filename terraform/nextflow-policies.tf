@@ -45,7 +45,12 @@ resource "aws_iam_policy" "nf_readwrite_S3" {
           "arn:aws:s3:::openscpca-nf-workflow-results",
           "arn:aws:s3:::openscpca-nf-workflow-results/*",
           "arn:aws:s3:::openscpca-temp-simdata",
-          "arn:aws:s3:::openscpca-temp-simdata/*"
+          "arn:aws:s3:::openscpca-temp-simdata/*",
+          "arn:aws:s3:::openscpca-test-data-release-public-access",
+          "arn:aws:s3:::openscpca-test-data-release-public-access/*",
+          "arn:aws:s3:::openscpca-test-workflow-results-public-access",
+          "arn:aws:s3:::openscpca-test-workflow-results-public-access/*"
+
         ]
         # },
         # {

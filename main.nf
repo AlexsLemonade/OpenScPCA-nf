@@ -3,6 +3,7 @@
 // **** Included processes from modules ****
 include { example } from './modules/example'
 include { simulate_sce } from './modules/simulate-sce'
+include { merge_sce } from './modules/merge-sce'
 
 // **** Parameter checks ****
 param_error = false
@@ -24,16 +25,29 @@ if (param_error) {
   System.exit(1)
 }
 
-// **** Main workflow ****
-workflow {
+workflow test {
+  example()
+}
+
+workflow simulate {
   project_ids = params.project?.tokenize(',') ?: []
   run_all = project_ids.isEmpty() || project_ids[0].toLowerCase() == 'all'
 
-  example()
+  project_ch = Channel.fromPath(Utils.getProjectPaths(release_dir))
+    .map{[it.name, it]} // name is the directory name, which will be SCPCP000000 format
+    .filter{ run_all || it[0] in project_ids }
+  simulate_sce(project_ch)
+}
+
+// **** Main workflow ****
+workflow {
+  project_ids = params.project?.tokenize(';, ') ?: []
+  run_all = project_ids.isEmpty() || project_ids[0].toLowerCase() == 'all'
+
   // project channel of [project_id, project_path]
   project_ch = Channel.fromPath(Utils.getProjectPaths(release_dir))
     .map{[it.name, it]} // name is the directory name, which will be SCPCP000000 format
     .filter{ run_all || it[0] in project_ids }
 
-  // simulate_sce(project_ch)
+  merge_sce(project_ch)
 }
