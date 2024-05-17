@@ -25,7 +25,7 @@ if (param_error) {
   System.exit(1)
 }
 
-workflow example {
+workflow test {
   example()
 }
 
