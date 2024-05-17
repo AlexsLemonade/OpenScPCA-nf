@@ -18,14 +18,14 @@ process permute_metadata {
   output:
     tuple val(project_id), path(permuted_file)
   script:
-    def permuted_file = metadata_file.fileName.name
+    permuted_file = metadata_file.fileName.name
     """
     permute-metadata.R \
       --metadata_file ${metadata_file} \
       --output_file ${permuted_file}
     """
   stub:
-    def permuted_file = metadata_file.fileName.name
+    permuted_file = metadata_file.fileName.name
     """
     touch ${permuted_file}
     """
