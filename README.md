@@ -18,10 +18,10 @@ nextflow run alexslemonade/openscpca-nf -profile batch
 
 The workflow also has a couple of entry points other than the main workflow, for testing and creating simulated data.
 
-To run a test version the workflow to check permissions and infrastructure setup:
+To run a test version of the workflow to check permissions and infrastructure setup:
 
 ```bash
-nextflow run alexslemonade/openscpca-nf -profile batch -entry test
+nextflow run AlexsLemonade/OpenScPCA-nf -profile batch -entry test
 ```
 
 To run the workflow that creates simulated SCE objects for the OpenScPCA project, you can use the following command:
