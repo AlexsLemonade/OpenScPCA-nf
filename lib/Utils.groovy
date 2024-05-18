@@ -43,7 +43,6 @@ class Utils {
     def process_level = args.process_level ?: "processed"
 
     project_dir = Nextflow.file(project_dir, type: 'dir')
-    println(project_dir)
     process_level = process_level.toLowerCase()
     if (!(process_level in ["raw", "filtered", "processed"])){
       throw new IllegalArgumentException("Unknown process_level '${process_level}'")
