@@ -5,7 +5,7 @@
 
 
 // module parameters
-params.sim_pubdir = 's3://openscpca-sim-data/test'
+params.sim_pubdir = 's3://openscpca-test-data-release-public-access/test'
 params.simulate_sce_container = 'ccdl/openscpca-simulate-sce:latest'
 
 process permute_metadata {
