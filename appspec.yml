@@ -14,10 +14,6 @@ permissions:
     group: ec2-user
 
 hooks:
-  BeforeInstall:
-    - location: ./scripts/install_dependencies.sh
-      timeout: 300
-      runas: root
   AfterInstall:
     - location: ./scripts/tmux_launch.sh
       timeout: 300
