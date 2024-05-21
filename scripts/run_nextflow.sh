@@ -55,12 +55,11 @@ fi
 if [ "$RUN_MODE" == "simulated" ] || [ "$RUN_MODE" == "full" ]; then
   nextflow run AlexsLemonade/OpenScPCA-nf \
     -revision $GITHUB_TAG \
-    -entry main \
     -profile "${profile},simulated" \
     -with-report ${datetime}_simulated_report.html \
     -with-trace  ${datetime}_simulated_trace.txt
 
-  cp .nextflow.log ${datetime}_main.log
+  cp .nextflow.log ${datetime}_simulated.log
 fi
 
 
