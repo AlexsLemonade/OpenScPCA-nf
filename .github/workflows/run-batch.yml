@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       revision:
-        description: Branch or tag to deploy
+        description: Branch or tag of workflow to run
         required: true
         default: main
       run_mode:
@@ -15,6 +15,7 @@ on:
         options:
           - test
           - simulated
+          - scpca
           - full
 
 permissions:
@@ -42,6 +43,7 @@ jobs:
         env:
           # use the github tag if a push event, or the workflow input if a manual trigger
           revision: ${{ github.event_name == 'push' && github.ref_name || inputs.revision }}
+          # default run mode is full for release events, otherwise use the specified mode
           run_mode: ${{ github.event_name == 'push' && 'full' || inputs.run_mode }}
         run: |
           echo '#!/bin/bash' > scripts/tmux_launch.sh
