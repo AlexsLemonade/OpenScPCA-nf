@@ -37,8 +37,9 @@ jobs:
           revision: ${{ github.event_name == 'push' && github.ref_name || inputs.revision }}
         run: |
           echo '#!/bin/bash' > scripts/tmux_launch.sh
-          echo "GITHUB_TAG=$revision" >> scripts/tmux_launch.sh
+          echo "export GITHUB_TAG=$revision" >> scripts/tmux_launch.sh
           echo 'tmux new-session -d -s nextflow /opt/nextflow/scripts/run_nextflow.sh' >> scripts/tmux_launch.sh
+          chmod +x scripts/tmux_launch.sh
 
       - name: Create zip archive of scripts
         run: |
