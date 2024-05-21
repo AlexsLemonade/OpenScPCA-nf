@@ -8,10 +8,10 @@ date=$(date "+%Y-%m-%d")
 datetime=$(date "+%Y-%m-%dT%H%M")
 
 cd /opt/nextflow
-nextflow pull AlexsLemonade/OpenScPCA-nf -r $GITHUB_TAG
+nextflow pull AlexsLemonade/OpenScPCA-nf -revision $GITHUB_TAG
 
 nextflow run AlexsLemonade/OpenScPCA-nf \
-  -r $GITHUB_TAG \
+  -revision $GITHUB_TAG \
   -profile batch \
   -entry test \
   -with-report ${datetime}_test_report.html \
