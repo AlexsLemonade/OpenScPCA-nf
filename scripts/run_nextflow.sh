@@ -18,7 +18,6 @@ if [ "$RUN_MODE" == "test" ]; then
     -revision $GITHUB_TAG \
     -entry test \
     -profile $profile \
-    -entry test \
     -with-report ${datetime}_test_report.html \
     -with-trace  ${datetime}_test_trace.txt
 
