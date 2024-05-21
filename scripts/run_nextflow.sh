@@ -68,7 +68,7 @@ fi
 if [ "$RUN_MODE" == "scpca" ] || [ "$RUN_MODE" == "full" ]; then
   nextflow run AlexsLemonade/OpenScPCA-nf \
     -revision $GITHUB_TAG \
-    -profile profile \
+    -profile $profile \
     -with-report ${datetime}_scpca_report.html \
     -with-trace  ${datetime}_scpca_trace.txt
 
