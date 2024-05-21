@@ -6,9 +6,17 @@ on:
   workflow_dispatch:
     inputs:
       revision:
-        description: "branch or tag to deploy"
+        description: Branch or tag of workflow to run
         required: true
-        default: "main"
+        default: main
+      run_mode:
+        description: Workflow run mode
+        type: choice
+        options:
+          - test
+          - simulated
+          - scpca
+          - full
 
 permissions:
   id-token: write # This is required for requesting the JWT
@@ -35,9 +43,12 @@ jobs:
         env:
           # use the github tag if a push event, or the workflow input if a manual trigger
           revision: ${{ github.event_name == 'push' && github.ref_name || inputs.revision }}
+          # default run mode is full for release events, otherwise use the specified mode
+          run_mode: ${{ github.event_name == 'push' && 'full' || inputs.run_mode }}
         run: |
           echo '#!/bin/bash' > scripts/tmux_launch.sh
           echo "export GITHUB_TAG=$revision" >> scripts/tmux_launch.sh
+          echo "export RUN_MODE=$run_mode" >> scripts/tmux_launch.sh
           echo 'tmux new-session -d -s nextflow /opt/nextflow/scripts/run_nextflow.sh' >> scripts/tmux_launch.sh
           chmod +x scripts/tmux_launch.sh
 
