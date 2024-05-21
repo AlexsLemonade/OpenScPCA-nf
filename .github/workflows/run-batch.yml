@@ -50,9 +50,9 @@ jobs:
           echo 'tmux new-session -d -s nextflow /opt/nextflow/scripts/run_nextflow.sh' >> scripts/tmux_launch.sh
           chmod +x scripts/tmux_launch.sh
 
-      - name: Create zip archive of scripts
+      - name: Create zip archive
         run: |
-          zip -r  source.zip  scripts/
+          zip -r source.zip . -i appspec.yml LICENSE scripts/**
         working-directory: ${{ github.workspace }}
 
       - name: Copy zip to S3
