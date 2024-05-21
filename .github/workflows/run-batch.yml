@@ -4,6 +4,11 @@ on:
   push:
     tags: [v*.*.*]
   workflow_dispatch:
+    inputs:
+      revision:
+        description: "branch or tag to deploy"
+        required: true
+        default: "main"
 
 permissions:
   id-token: write # This is required for requesting the JWT
@@ -26,9 +31,18 @@ jobs:
           role-session-name: githubActionSession
           aws-region: us-east-1
 
-      - name: Create zip archive
+      - name: Create tmux launch script
+        env:
+          # use the github tag if a push event, or the workflow input if a manual trigger
+          revision: ${{ github.event_name == 'push' && github.ref_name || inputs.revision }}
         run: |
-          zip -r  source.zip  . -x '*. git*'
+          echo '#!/bin/bash' > scripts/tmux_launch.sh
+          echo "GITHUB_TAG=$revision" >> scripts/tmux_launch.sh
+          echo 'tmux new-session -d -s nextflow /opt/nextflow/scripts/run_nextflow.sh' >> scripts/tmux_launch.sh
+
+      - name: Create zip archive of scripts
+        run: |
+          zip -r  source.zip  scripts/
         working-directory: ${{ github.workspace }}
 
       - name: Copy zip to S3
