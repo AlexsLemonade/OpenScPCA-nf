@@ -52,6 +52,7 @@ process simulate_sample {
       --output_dir ${sample_id}
 
     sce-to-anndata.R --dir ${sample_id}
+    move-anndata-counts.R --dir ${sample_id}
     """
   stub:
     """
