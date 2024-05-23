@@ -6,7 +6,7 @@
 
 // module parameters
 params.sim_pubdir = 's3://openscpca-test-data-release-public-access/test'
-params.simulate_sce_container = 'ccdl/openscpca-simulate-sce:latest'
+params.simulate_sce_container = 'public.ecr.aws/openscpca/simulate-sce:latest'
 
 process permute_metadata {
   container params.simulate_sce_container
@@ -52,6 +52,7 @@ process simulate_sample {
       --output_dir ${sample_id}
 
     sce-to-anndata.R --dir ${sample_id}
+    move-anndata-counts.R --dir ${sample_id}
     """
   stub:
     """
