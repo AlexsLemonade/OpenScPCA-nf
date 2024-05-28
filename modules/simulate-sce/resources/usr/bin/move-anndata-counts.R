@@ -1,4 +1,4 @@
-#!usr/bin/env Rscript
+#!/usr/bin/env Rscript
 
 # Script to move the logcounts layer to the X slot in an anndata object
 
