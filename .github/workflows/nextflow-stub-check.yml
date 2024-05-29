@@ -18,12 +18,12 @@ jobs:
       - name: Check main workflow
         uses: docker://nextflow/nextflow:24.04.2
         with:
-          args: nextflow run main.nf -stub -profile stub -ansi-log false -log stub-run.log
+          args: nextflow -log stub-run.log run main.nf -stub -profile stub -ansi-log false
 
       - name: Check simulate workflow
         uses: docker://nextflow/nextflow:24.04.2
         with:
-          args: nextflow run main.nf -stub -profile stub -ansi-log false -entry simulate -log simulate-run.log
+          args: nextflow -log simulate-run.log run main.nf -stub -profile stub -ansi-log false -entry simulate
 
       - name: Join log files
         if: ${{ !cancelled() }}
