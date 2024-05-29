@@ -30,7 +30,7 @@ workflow test {
 }
 
 workflow simulate {
-  project_ids = params.project?.tokenize(',') ?: []
+  project_ids = params.project?.tokenize(';, ') ?: []
   run_all = project_ids.isEmpty() || project_ids[0].toLowerCase() == 'all'
 
   project_ch = Channel.fromPath(Utils.getProjectPaths(release_dir))
