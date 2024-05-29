@@ -18,7 +18,7 @@ The script that launches the workflow is [run_workflow.sh](scripts/run_nextflow.
 
 The GHA workflow will run automatically when a new release tag is created, which will include the following steps:
 
-1. Run the `simulate` entry point to create simulated SCE objects for the OpenScPCA project.
+1. Run the workflow using the `simulate` entry point to create simulated SCE objects for the OpenScPCA project.
 2. Run the main workflow using the simulated data.
 3. Run the main workflow using the real ScPCA data.
 4. Upload all Nextflow logs, traces, and html run reports to `s3://openscpca-nf-data/logs/full/`, organized by date.
@@ -35,6 +35,7 @@ For each run, all Nextflow logs, traces, and html run reports will be uploaded t
 
 ### Running the workflow manually
 
+Alternatively, you can run the workflow locally. 
 The following base command will run the main workflow, assuming all AWS permissions are set up correctly:
 
 ```bash
@@ -57,7 +58,8 @@ To run a test version of the workflow to check permissions and infrastructure se
 nextflow run AlexsLemonade/OpenScPCA-nf -profile batch -entry test
 ```
 
-To run the workflow that creates simulated SCE objects for the OpenScPCA project, you can use the following command, but note that you will need to specify directory for the simulation output, as the default output bucket is not writeable except by a few specific roles:
+To run the workflow that creates simulated SCE objects for the OpenScPCA project, you can use the following command, which specifies running the workflow with the `simulate` entry point. 
+Note that you will need to specify the directory for the simulation output using the `--sim_pubdir` argument, as the default output bucket is not writeable except by a few specific roles:
 
 ```bash
 nextflow run AlexsLemonade/OpenScPCA-nf -profile batch -entry simulate --sim_pubdir {SIMDIR}
