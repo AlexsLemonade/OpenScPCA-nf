@@ -1,9 +1,6 @@
 name: Check nextflow stub
 
 on:
-  push:
-    branches:
-      - jashapiro/resourceLimits
   pull_request:
     branches:
       - main
