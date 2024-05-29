@@ -32,7 +32,7 @@ The run modes available are:
 - `test`: runs only a simple test workflow to check configuration
 - `simulated`: runs the workflow using simulated data
 - `scpca`: runs the workflow using the current ScPCA data release
-- `full`: simulates data based on the current ScPCA datarelease, then runs the workflow using the simulated data and current ScPCA data release (this is same as the behavior of the automatic release workflow)
+- `full`: simulates data based on the current ScPCA data release, then runs the workflow using the simulated data and current ScPCA data release (this is same as the behavior of the automatic release workflow)
 
 For each run, all Nextflow logs, traces, and html run reports will be uploaded to `s3://openscpca-nf-data/logs/{run_mode}/`, organized by date of the run.
 
