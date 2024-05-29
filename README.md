@@ -57,7 +57,7 @@ To run a test version of the workflow to check permissions and infrastructure se
 nextflow run AlexsLemonade/OpenScPCA-nf -profile batch -entry test
 ```
 
-To run the workflow that creates simulated SCE objects for the OpenScPCA project, you can use the following command, but note that you will need to specify directory for the simulation output, as the default bucket is not generally writeable, even with the correct permissions:
+To run the workflow that creates simulated SCE objects for the OpenScPCA project, you can use the following command, but note that you will need to specify directory for the simulation output, as the default output bucket is not writeable except by a few specific roles:
 
 ```bash
 nextflow run AlexsLemonade/OpenScPCA-nf -profile batch -entry simulate --sim_pubdir {SIMDIR}
