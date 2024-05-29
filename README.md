@@ -82,7 +82,7 @@ nextflow run AlexsLemonade/OpenScPCA-nf -profile batch -entry simulate --sim_pub
 ### Stub runs
 
 All of the above commands will run the complete workflow processes.
-To test the general logic of the workflow without , you can use a stub run by including the `-stub` argument and `-profile stub`.
+To test the general logic of the workflow without running the full workflow you can use a stub run by including the `-stub` argument and `-profile stub`.
 
 ```bash
 nextflow run AlexsLemonade/OpenScPCA-nf -stub -profile stub
