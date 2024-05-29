@@ -11,16 +11,19 @@ on:
 jobs:
   nf-stub-check:
     runs-on: ubuntu-latest
-    container: nextflow/nextflow:24.04.2
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Check main workflow
-        run: nextflow run main.nf -stub -profile stub -ansi-log false -log stub-run.log
+        uses: docker://nextflow/nextflow:24.04.2
+        with:
+          args: nextflow run main.nf -stub -profile stub -ansi-log false -log stub-run.log
 
       - name: Check simulate workflow
-        run: nextflow run main.nf -stub -profile stub -entry simulate -ansi-log false -log simulate-run.log
+        uses: docker://nextflow/nextflow:24.04.2
+        with:
+          args: nextflow run main.nf -stub -profile stub -ansi-log false -entry simulate -log simulate-run.log
 
       - name: Join log files
         if: ${{ !cancelled() }}
@@ -28,7 +31,7 @@ jobs:
 
       - name: Upload nextflow log
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: nextflow-log
           path: nextflow-runs.log
