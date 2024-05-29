@@ -12,9 +12,12 @@ In general, you must have `workload` access in an OpenScPCA AWS account to run t
 
 ### Running the workflow from GitHub Actions
 
-The most common way to run the workflow will be through GitHub Actions (GHA), using the [Batch CodeDeploy workflow](https://github.com/AlexsLemonade/OpenScPCA-nf/actions/workflows/run-batch.yml).
-This will send an AWS CodeDeploy action to the `Nextflow-workload` instance in the OpenScPCA AWS account, which will launch the Nextflow workflow on AWS Batch.
-The script that launches the workflow is [run_workflow.sh](scripts/run_nextflow.sh), which is run in a tmux session on the `Nextflow-workload` instance, allowing the workflow to run in the background and be monitored by logging into the instance.
+The most common way to run the workflow will be to run the GitHub Action (GHA) responsible for running the workflow. 
+The GHA is run automatically when a new release tag is created or by manually triggering the workflow. 
+
+The GHA that runs the workflow uses the [Batch CodeDeploy workflow](https://github.com/AlexsLemonade/OpenScPCA-nf/actions/workflows/run-batch.yml) to send an AWS CodeDeploy action to the `Nextflow-workload` instance in the OpenScPCA AWS account.
+This will launch the Nextflow workflow on AWS Batch by running the the [run_workflow.sh](scripts/run_nextflow.sh) script in a tmux session on the `Nextflow-workload` instance. 
+Using tmux allows the workflow to run in the background and be monitored by logging into the instance.
 
 The GHA workflow will run automatically when a new release tag is created, which will include the following steps:
 
