@@ -33,8 +33,7 @@ workflow simulate {
   project_ids = params.project?.tokenize(';, ') ?: []
   run_all = project_ids.isEmpty() || project_ids[0].toLowerCase() == 'all'
 
-  project_ch = Channel.fromPath(Utils.getProjectPaths(release_dir))
-    .map{[it.name, it]} // name is the directory name, which will be SCPCP000000 format
+  project_ch = Channel.fromList(Utils.getProjectTuples(release_dir))
     .filter{ run_all || it[0] in project_ids }
   simulate_sce(project_ch)
 }
@@ -44,10 +43,9 @@ workflow {
   project_ids = params.project?.tokenize(';, ') ?: []
   run_all = project_ids.isEmpty() || project_ids[0].toLowerCase() == 'all'
 
-  // project channel of [project_id, project_path]
-  project_ch = Channel.fromPath(Utils.getProjectPaths(release_dir))
-    .map{[it.name, it]} // name is the directory name, which will be SCPCP000000 format
-    .filter{ run_all || it[0] in project_ids }
+  // sample channel of [sample_id, project_id, sample_path]
+  sample_ch = Channel.fromList(Utils.getSampleTuples(release_dir))
+    .filter{ run_all || it[1] in project_ids }
 
-  merge_sce(project_ch)
+  merge_sce(sample_ch)
 }
