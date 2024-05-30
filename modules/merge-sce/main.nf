@@ -5,6 +5,7 @@
 
 // module parameters
 params.reuse_merge = false
+params.max_merge_libraries = 75 // maximum number of libraries to merge (current number is a guess, based on 59 working, but 104 not)
 params.num_hvg = 2000 // number of HVGs to select
 
 // merge workflow variables
@@ -131,13 +132,23 @@ workflow merge_sce {
         def library_ids = processed_files.collect{it.name.replace('_processed.rds', '')}
         return [project_id, library_ids, processed_files]
       }
+      .branch{
+        // check the number of libraries
+        mergeable: it[1].size() < params.max_merge_libraries
+        oversized: true
+      }
 
     project_branch.multiplexed
       .subscribe{
         log.warn("Not merging ${it[0]} because it contains multiplexed libraries.")
       }
 
-    libraries_branch = libraries_ch
+    libraries_ch.oversized
+      .subscribe{
+        log.warn("Not merging ${it[0]} because it has too many libraries.")
+      }
+
+    libraries_branch = libraries_ch.mergeable
       .branch{
         has_merge: file("${publish_merge_base}/${it[0]}/${it[0]}_merged.rds").exists() && params.reuse_merge
         make_merge: true
