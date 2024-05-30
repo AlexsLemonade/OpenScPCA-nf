@@ -118,9 +118,8 @@ workflow merge_sce {
   main:
     // create a channel of [project_id, file(project_dir)] with one per project
     project_ch = sample_ch
-      .map{it[1]} // project_ids
+      .map{[it[1], it[2].parent]} // parent of the sample_dir is the project_dir
       .unique()
-      .map{[it, file("${params.results_bucket}/${params.release_prefix}/${it}", type: "dir")]}
 
     project_branch = project_ch
       .branch{
