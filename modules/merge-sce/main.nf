@@ -131,13 +131,23 @@ workflow merge_sce {
         def library_ids = processed_files.collect{it.name.replace('_processed.rds', '')}
         return [project_id, library_ids, processed_files]
       }
+      .branch{
+        // only merge projects with fewer than 75 libraries (this is a guess... we know we can do 59 but not 104)
+        mergeable: it[1].size() < 75
+        oversized: true
+      }
 
     project_branch.multiplexed
       .subscribe{
         log.warn("Not merging ${it[0]} because it contains multiplexed libraries.")
       }
 
-    libraries_branch = libraries_ch
+    libraries_ch.oversized
+      .subscribe{
+        log.warn("Not merging ${it[0]} because it has too many libraries.")
+      }
+
+    libraries_branch = libraries_ch.mergeable
       .branch{
         has_merge: file("${publish_merge_base}/${it[0]}/${it[0]}_merged.rds").exists() && params.reuse_merge
         make_merge: true
