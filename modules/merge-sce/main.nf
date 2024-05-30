@@ -5,6 +5,7 @@
 
 // module parameters
 params.reuse_merge = false
+params.max_libraries = 75 // maximum number of libraries to merge (current number is a guess, based on 59 working, but 104 not)
 params.num_hvg = 2000 // number of HVGs to select
 
 // merge workflow variables
@@ -132,8 +133,8 @@ workflow merge_sce {
         return [project_id, library_ids, processed_files]
       }
       .branch{
-        // only merge projects with fewer than 75 libraries (this is a guess... we know we can do 59 but not 104)
-        mergeable: it[1].size() < 75
+        // check the number of libraries
+        mergeable: it[1].size() < params.max_libraries
         oversized: true
       }
 
