@@ -32,17 +32,23 @@ class Utils {
     return projects
   }
 
-  static def getProjectPaths(release_path){
-    release_path = Nextflow.file(release_path, type: 'dir')
-    def projects = getProjects(release_path)
-    return projects.collect{release_path / it}
+  static def getProjectTuples(release_path){
+    // create a list of tuples of [project_id, project_path]
+    def project_paths = Nextflow.files(release_path / "SCPCP*", type: 'dir')
+    return project_paths.collect{new Tuple(it.name, it)}
   }
 
-  static def getProjectFiles(Map args, project_dir){
+  static def getSampleTuples(release_path){
+    // create a list of tuples of [sample_id, project_id, project_path]
+    def sample_paths = Nextflow.files(release_path / "SCPCP*" / "SCPCS*", type: 'dir')
+    return sample_paths.collect{new Tuple(it.name, it.parent.name, it)}
+  }
+
+  static def getLibraryFiles(Map args, parent_dir){
     def format = args.format ?: "sce"
     def process_level = args.process_level ?: "processed"
 
-    project_dir = Nextflow.file(project_dir, type: 'dir')
+    parent_dir = Nextflow.file(parent_dir, type: 'dir')
     process_level = process_level.toLowerCase()
     if (!(process_level in ["raw", "filtered", "processed"])){
       throw new IllegalArgumentException("Unknown process_level '${process_level}'")
@@ -51,11 +57,11 @@ class Utils {
     switch (format.toLowerCase()){
       case ["anndata", "h5ad"]:
         // find all h5ad files in the project directory (** searches all subdirectories)
-        files = Nextflow.files(project_dir / "**_${process_level}_*.h5ad")
+        files = Nextflow.files(parent_dir / "**_${process_level}_*.h5ad")
         break
       case ["sce", "rds"]:
         def extension="rds"
-        files = Nextflow.files(project_dir / "**_${process_level}.rds")
+        files = Nextflow.files(parent_dir / "**_${process_level}.rds")
         break
       default:
         throw new IllegalArgumentException("Unknown format '${format}'")

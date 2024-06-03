@@ -11,7 +11,7 @@ process say_hello{
 }
 
 workflow example {
-  names_ch = Channel.from(["Alex", "World"])
+  names_ch = Channel.fromList(["Alex", "World"])
   say_hello(names_ch).subscribe{
     log.info(it.getText())
   }

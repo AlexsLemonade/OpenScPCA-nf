@@ -114,8 +114,12 @@ process export_anndata {
 
 workflow merge_sce {
   take:
-    project_ch  // Channel of [project_id, file(project_dir)]
+    sample_ch  // Channel of [sample_id, project_id, file(sample_dir)]
   main:
+    // create a channel of [project_id, file(project_dir)] with one per project
+    project_ch = sample_ch
+      .map{[it[1], it[2].parent]} // parent of the sample_dir is the project_dir
+      .unique()
 
     project_branch = project_ch
       .branch{
@@ -128,7 +132,7 @@ workflow merge_sce {
     // this will be a channel of [project_id, [library_ids], [processed_sce_files]]
     libraries_ch = project_branch.single_sample
       .map{ project_id, project_dir ->
-        def processed_files = Utils.getProjectFiles(project_dir, format: "sce", process_level: "processed")
+        def processed_files = Utils.getLibraryFiles(project_dir, format: "sce", process_level: "processed")
         def library_ids = processed_files.collect{it.name.replace('_processed.rds', '')}
         return [project_id, library_ids, processed_files]
       }
@@ -150,7 +154,7 @@ workflow merge_sce {
 
     libraries_branch = libraries_ch.mergeable
       .branch{
-        has_merge: file("${publish_merge_base}/${it[0]}/${it[0]}_merged.rds").exists() && params.reuse_merge
+        has_merge: params.reuse_merge && file("${publish_merge_base}/${it[0]}/${it[0]}_merged.rds").exists()
         make_merge: true
       }
 
