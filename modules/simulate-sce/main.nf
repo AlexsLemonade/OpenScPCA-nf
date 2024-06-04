@@ -10,7 +10,7 @@ params.simulate_sce_container = 'public.ecr.aws/openscpca/simulate-sce:latest'
 process permute_metadata {
   container params.simulate_sce_container
   tag "$project_id"
-  publishDir "${params.sim_pubdir}/${project_id}", mode: 'copy'
+  publishDir "${params.sim_bucket}/${params.release_prefix}/${project_id}", mode: 'copy'
   input:
     tuple val(project_id),
           path(metadata_file, stageAs: 'input/*')
@@ -56,9 +56,9 @@ process simulate_sample {
   stub:
     """
     mkdir ${sample_id}
-    for f in ${rds_files}; do
-      touch ${sample_id}/\$(basename \$f)
-      touch ${sample_id}/\$(basename \${f%.rds}.h5ad)
+    for file in ${rds_files}; do
+      touch "${sample_id}/\$(basename \$file)"
+      touch "${sample_id}/\$(basename \${file%.rds}.h5ad)"
     done
     """
 }
