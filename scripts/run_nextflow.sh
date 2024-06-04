@@ -1,20 +1,32 @@
 #!/bin/bash
 set -u
 
-# Run the OpenScPCA Nextflow pipeline with options to specify the run mode
-# Available run modes are:
+# Run the OpenScPCA Nextflow pipeline with options to specify the run mode and output
+#
+# Available RUN_MODE values are:
 #   test:      run the test workflow only
 #   simulated: run the main workflow with simulated data
 #   scpca:     run the main workflow with real data from ScPCA
-#   full:      run the data simulation workflow,
-#              followed by the main pipeline with both simulated and real data
+#   full:      run the data simulation workflow, followed
+#              by the main pipeline with both simulated and real data,
+#
+# OUTPUT_MODE is either `staging` or `prod`, and determines which buckets are used for output
 
 GITHUB_TAG=${GITHUB_TAG:-main}
 RUN_MODE=${RUN_MODE:-test}
+OUTPUT_MODE=${OUTPUT_MODE:-staging}
 
-profile="batch"
 date=$(date "+%Y-%m-%d")
 datetime=$(date "+%Y-%m-%dT%H%M")
+
+profile="batch"
+sim_profile="${profile},simulated"
+# Add prod profiles if output is set to prod
+if [ "$OUTPUT_MODE" == "prod" ]; then
+  profile="${profile},prod"
+  sim_profile="${profile},prod_simulated"
+fi
+
 
 cd /opt/nextflow
 nextflow pull AlexsLemonade/OpenScPCA-nf -revision $GITHUB_TAG
@@ -55,7 +67,7 @@ fi
 if [ "$RUN_MODE" == "simulated" ] || [ "$RUN_MODE" == "full" ]; then
   nextflow run AlexsLemonade/OpenScPCA-nf \
     -revision $GITHUB_TAG \
-    -profile "${profile},simulated" \
+    -profile $sim_profile \
     -with-report ${datetime}_simulated_report.html \
     -with-trace  ${datetime}_simulated_trace.txt
 
