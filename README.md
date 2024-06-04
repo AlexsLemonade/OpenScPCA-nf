@@ -36,7 +36,8 @@ The run modes available are:
 - `full`: simulates data based on the current ScPCA data release, then runs the workflow using the simulated data and current ScPCA data release (this is same as the behavior of the automatic release workflow)
 
 By default, the output mode will be set to `staging`, so all outputs will be saved to S3 buckets that are not shared with users and can not overwrite current production data.
-With the `prod` output mode, results will be accessible visible to users.
+With the `prod` output mode, results will be accessible to users.
+`prod` output mode should used for versioned releases of the workflow, and when running on new ScPCA data releases.
 
 The following buckets are used for each output mode.
 
