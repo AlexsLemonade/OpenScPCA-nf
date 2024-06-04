@@ -24,7 +24,7 @@ sim_profile="${profile},simulated"
 # Add prod profiles if output is set to prod
 if [ "$OUTPUT_MODE" == "prod" ]; then
   profile="${profile},prod"
-  sim_profile="${profile},prod-simulated"
+  sim_profile="${profile},prod_simulated"
 fi
 
 
