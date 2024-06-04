@@ -10,7 +10,7 @@ The workflow is currently set up to run best via AWS batch, but some testing may
 You will need to have appropriate AWS credentials set up to run the workflow on AWS and access the data files.
 In general, you must have `workload` access in an OpenScPCA AWS account to run the workflow.
 
-### Running the workflow from GitHub Actions
+### Running the workflow using GitHub Actions
 
 The most common way to run the workflow will be to run the GitHub Action (GHA) responsible for running the workflow.
 The GHA is run automatically when a new release tag is created or by manually triggering the workflow.
@@ -26,13 +26,25 @@ The GHA workflow will run automatically when a new release tag is created, which
 3. Run the main workflow using the real ScPCA data.
 4. Upload all Nextflow logs, traces, and html run reports to `s3://openscpca-nf-data/logs/full/`, organized by date.
 
-Alternatively, manual launches of the GHA workflow can be triggered by a [`workflow_dispatch` trigger](https://github.com/AlexsLemonade/OpenScPCA-nf/actions/workflows/run-batch.yml), which will allow you to specify a specific run mode.
+Alternatively, manual launches of the GHA workflow can be triggered by a [`workflow_dispatch` trigger](https://github.com/AlexsLemonade/OpenScPCA-nf/actions/workflows/run-batch.yml), which will allow you to specify specific run and output modes.
+
 The run modes available are:
 
 - `test`: runs only a simple test workflow to check configuration
 - `simulated`: runs the workflow using simulated data
 - `scpca`: runs the workflow using the current ScPCA data release
 - `full`: simulates data based on the current ScPCA data release, then runs the workflow using the simulated data and current ScPCA data release (this is same as the behavior of the automatic release workflow)
+
+By default, the output mode will be set to `staging`, so all outputs will be saved to S3 buckets that are not shared with users and can not overwrite current production data.
+With the `prod` output mode, results will be accessible visible to users.
+
+The following buckets are used for each output mode.
+
+| bucket description         | `staging`                                      | `prod`                                               |
+| -------------------------- | ---------------------------------------------- | ---------------------------------------------------- |
+| simulated test data        | `s3://openscpca-test-data-release-staging`     | `s3://openscpca-test-data-release-public-access`     |
+| simulated workflow results | `s3://openscpca-test-workflow-results-staging` | `s3://openscpca-test-workflow-results-public-access` |
+| scpca workflow results     | `s3://openscpca-nf-workflow-results-staging`   | `s3://openscpca-nf-workflow-results`                 |
 
 For each run, all Nextflow logs, traces, and html run reports will be uploaded to `s3://openscpca-nf-data/logs/{run_mode}/`, organized by date of the run.
 
