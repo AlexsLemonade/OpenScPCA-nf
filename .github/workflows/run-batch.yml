@@ -17,6 +17,13 @@ on:
           - simulated
           - scpca
           - full
+      output_mode:
+        description: Workflow output mode
+        type: choice
+        default: staging
+        options:
+          - staging
+          - prod
 
 permissions:
   id-token: write # This is required for requesting the JWT
@@ -45,10 +52,13 @@ jobs:
           revision: ${{ github.event_name == 'push' && github.ref_name || inputs.revision }}
           # default run mode is full for release events, otherwise use the specified mode
           run_mode: ${{ github.event_name == 'push' && 'full' || inputs.run_mode }}
+          # default output mode is prod for release events, otherwise use the specified mode
+          output_mode: ${{ github.event_name == 'push' && 'prod' || inputs.output_mode }}
         run: |
           echo '#!/bin/bash' > scripts/tmux_launch.sh
           echo "export GITHUB_TAG=$revision" >> scripts/tmux_launch.sh
           echo "export RUN_MODE=$run_mode" >> scripts/tmux_launch.sh
+          echo "export OUTPUT_MODE=$output_mode" >> scripts/tmux_launch.sh
           echo 'tmux new-session -d -s nextflow /opt/nextflow/scripts/run_nextflow.sh' >> scripts/tmux_launch.sh
           chmod +x scripts/tmux_launch.sh
 
