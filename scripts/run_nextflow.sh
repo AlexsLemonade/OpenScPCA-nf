@@ -19,6 +19,13 @@ OUTPUT_MODE=${OUTPUT_MODE:-staging}
 date=$(date "+%Y-%m-%d")
 datetime=$(date "+%Y-%m-%dT%H%M")
 
+# Get secrets from AWS Secrets Manager/1Password
+export OP_SERVICE_ACCOUNT_TOKEN=$(aws secretsmanager get-secret-value --secret-id openscpca_service_account_token | jq -r '.SecretString')
+
+export TOWER_ACCESS_TOKEN=$(op read "op://OpenScPCA/Seqera Platform/credential")
+export TOWER_WORKSPACE_ID="246948885575509" # Use the OpenScPCA workspace
+
+export SLACK_WEBHOOK=$(op read "op://OpenScPCA/odmmrterqcnbrsvwme5lzfklkq/credential")
 profile="batch"
 sim_profile="${profile},simulated"
 # Add prod profiles if output is set to prod
