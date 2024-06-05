@@ -26,6 +26,31 @@ export TOWER_ACCESS_TOKEN=$(op read "op://OpenScPCA/Seqera Platform/credential")
 export TOWER_WORKSPACE_ID="246948885575509" # Use the OpenScPCA workspace
 
 export SLACK_WEBHOOK=$(op read "op://OpenScPCA/odmmrterqcnbrsvwme5lzfklkq/credential")
+
+slack_error() {
+  # function to create a slack message from an error log
+  log_file=$1
+  # add header and bullet points to the log file
+  message=$(printf "⚠️ Errors running OpenScPCA-nf pipeline:\n\n"; sed -e 's/^/• /' < $log_file)
+  jq -n --arg message "$message" \
+    '{text: "Error running OpenScPCA-nf workflow.",
+      blocks: [{
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: $message
+        }
+      }]
+    }' \
+    | curl --json @- $SLACK_WEBHOOK
+}
+
+# move to nextflow app directory
+cd /opt/nextflow
+# create an empty log file to capture any errors
+cat /dev/null > run_errors.log
+
+# Define Nextflow profiles based on output mode
 profile="batch"
 sim_profile="${profile},simulated"
 # Add prod profiles if output is set to prod
@@ -34,9 +59,8 @@ if [ "$OUTPUT_MODE" == "prod" ]; then
   sim_profile="${profile},prod_simulated"
 fi
 
-
-cd /opt/nextflow
-nextflow pull AlexsLemonade/OpenScPCA-nf -revision $GITHUB_TAG
+nextflow pull AlexsLemonade/OpenScPCA-nf -revision $GITHUB_TAG \
+|| echo "Error pulling OpenScPCA-nf workflow" >> run_errors.log
 
 # test mode runs the test workflow only, then exits
 if [ "$RUN_MODE" == "test" ]; then
@@ -45,7 +69,8 @@ if [ "$RUN_MODE" == "test" ]; then
     -entry test \
     -profile $profile \
     -with-report ${datetime}_test_report.html \
-    -with-trace  ${datetime}_test_trace.txt
+    -with-trace  ${datetime}_test_trace.txt \
+  || echo "Error with test run" >> run_errors.log
 
   cp .nextflow.log ${datetime}_test.log
 
@@ -54,8 +79,16 @@ if [ "$RUN_MODE" == "test" ]; then
     --recursive \
     --exclude "*" \
     --include "${datetime}_*" \
-    && rm ${datetime}_*
-  exit 0
+    && rm ${datetime}_* \
+    || echo "Error copying logs to S3" >> run_errors.log
+
+  # post errors to slack if there are any
+  if [ -s run_nextflow_errors.log ]; then
+    slack_error run_errors.log
+    exit 1
+  else
+    exit 0
+  fi
 fi
 
 # for full mode, run the data simulation pipeline first
@@ -65,7 +98,9 @@ if [ "$RUN_MODE" == "full" ]; then
     -entry simulate \
     -profile $profile \
     -with-report ${datetime}_simulate_report.html \
-    -with-trace  ${datetime}_simulate_trace.txt
+    -with-trace  ${datetime}_simulate_trace.txt \
+    -with-tower \
+    || echo "Error with simulate run" >> run_errors.log
 
   cp .nextflow.log ${datetime}_simulate.log
 fi
@@ -76,7 +111,8 @@ if [ "$RUN_MODE" == "simulated" ] || [ "$RUN_MODE" == "full" ]; then
     -revision $GITHUB_TAG \
     -profile $sim_profile \
     -with-report ${datetime}_simulated_report.html \
-    -with-trace  ${datetime}_simulated_trace.txt
+    -with-trace  ${datetime}_simulated_trace.txt \
+    || echo "Error with simulated data run" >> run_errors.log
 
   cp .nextflow.log ${datetime}_simulated.log
 fi
@@ -89,7 +125,8 @@ if [ "$RUN_MODE" == "scpca" ] || [ "$RUN_MODE" == "full" ]; then
     -revision $GITHUB_TAG \
     -profile $profile \
     -with-report ${datetime}_scpca_report.html \
-    -with-trace  ${datetime}_scpca_trace.txt
+    -with-trace  ${datetime}_scpca_trace.txt \
+    || echo "Error with scpca data run" >> run_errors.log
 
   cp .nextflow.log ${datetime}_scpca.log
 fi
@@ -100,3 +137,12 @@ aws s3 cp . s3://openscpca-nf-data/logs/${RUN_MODE}/${date} \
   --exclude "*" \
   --include "${datetime}_*" \
   && rm ${datetime}_*
+  || echo "Error copying logs to S3" >> run_errors.log
+
+# Post any errors to slack
+if [ -s run_errors.log ]; then
+  slack_error run_errors.log
+  exit 1
+else
+  exit 0
+fi
