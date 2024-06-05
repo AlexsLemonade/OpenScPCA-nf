@@ -20,12 +20,14 @@ date=$(date "+%Y-%m-%d")
 datetime=$(date "+%Y-%m-%dT%H%M")
 
 # Get secrets from AWS Secrets Manager/1Password
-export OP_SERVICE_ACCOUNT_TOKEN=$(aws secretsmanager get-secret-value --secret-id openscpca_service_account_token | jq -r '.SecretString')
+AWS_SECRETS=$(aws secretsmanager get-secret-value --secret-id openscpca_service_account_token | jq -r '.SecretString')
+# secrets are a key-value store: retrieve individual values with jq
+export OP_SERVICE_ACCOUNT_TOKEN=$(jq -r '.op_token' <<< $AWS_SECRETS)
 
-export TOWER_ACCESS_TOKEN=$(op read "op://OpenScPCA/Seqera Platform/credential")
+export TOWER_ACCESS_TOKEN=$(op read $(jq -r '.op_seqera_token' <<< $AWS_SECRETS))
 export TOWER_WORKSPACE_ID="246948885575509" # Use the OpenScPCA workspace
 
-export SLACK_WEBHOOK=$(op read "op://OpenScPCA/odmmrterqcnbrsvwme5lzfklkq/credential")
+export SLACK_WEBHOOK=$(op read $(jq -r '.op_slack_webhook' <<< $AWS_SECRETS))
 
 slack_error() {
   # function to create a slack message from an error log
