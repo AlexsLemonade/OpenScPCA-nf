@@ -70,6 +70,7 @@ if [ "$RUN_MODE" == "test" ]; then
     -profile $profile \
     -with-report ${datetime}_test_report.html \
     -with-trace  ${datetime}_test_trace.txt \
+    -with-tower \
   || echo "Error with test run" >> run_errors.log
 
   cp .nextflow.log ${datetime}_test.log
@@ -112,6 +113,7 @@ if [ "$RUN_MODE" == "simulated" ] || [ "$RUN_MODE" == "full" ]; then
     -profile $sim_profile \
     -with-report ${datetime}_simulated_report.html \
     -with-trace  ${datetime}_simulated_trace.txt \
+    -with-tower \
     || echo "Error with simulated data run" >> run_errors.log
 
   cp .nextflow.log ${datetime}_simulated.log
@@ -126,6 +128,7 @@ if [ "$RUN_MODE" == "scpca" ] || [ "$RUN_MODE" == "full" ]; then
     -profile $profile \
     -with-report ${datetime}_scpca_report.html \
     -with-trace  ${datetime}_scpca_trace.txt \
+    -with-tower \
     || echo "Error with scpca data run" >> run_errors.log
 
   cp .nextflow.log ${datetime}_scpca.log
