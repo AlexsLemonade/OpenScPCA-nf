@@ -70,15 +70,18 @@ if [ "$DATA_RELEASE" != "default" ]; then
   if [ "$(aws s3 ls s3://openscpca-data-release/${DATA_RELEASE})" ]; then
     release_param="--release_prefix $DATA_RELEASE"
   else
-    echo "Data release $DATA_RELEASE not found in S3" >> run_errors.log
-    slack_error run_errors.log
-    exit 1
+    echo "Data release `$DATA_RELEASE` not found in S3" >> run_errors.log
   fi
 fi
 
-
 nextflow pull AlexsLemonade/OpenScPCA-nf -revision $GITHUB_TAG \
-|| echo "Error pulling OpenScPCA-nf workflow" >> run_errors.log
+|| echo "Error pulling OpenScPCA-nf workflow with revision `$GITHUB_TAG`" >> run_errors.log
+
+# post any errors from from data release and workflow pull and exit
+if [ -s run_errors.log ]; then
+  slack_error run_errors.log
+  exit 1
+fi
 
 # test mode runs the test workflow only, then exits
 if [ "$RUN_MODE" == "test" ]; then
