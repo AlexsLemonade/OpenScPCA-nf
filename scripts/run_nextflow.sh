@@ -11,8 +11,10 @@ set -u
 #              by the main pipeline with both simulated and real data,
 #
 # OUTPUT_MODE is either `staging` or `prod`, and determines which buckets are used for output
+# DATA_RELEASE is the date of the data release to use, in YYYY-MM-DD format, or `default`.
 
 GITHUB_TAG=${GITHUB_TAG:-main}
+DATA_RELEASE=${DATA_RELEASE:-default}
 RUN_MODE=${RUN_MODE:-test}
 OUTPUT_MODE=${OUTPUT_MODE:-staging}
 
@@ -61,8 +63,25 @@ if [ "$OUTPUT_MODE" == "prod" ]; then
   sim_profile="${profile},prod_simulated"
 fi
 
+# Set the release_prefix param if data release is not default
+$release_param=""
+if [ "$DATA_RELEASE" != "default" ]; then
+  # check release is valid
+  if [ "$(aws s3 ls s3://openscpca-data-release/${DATA_RELEASE})" ]; then
+    release_param="--release_prefix $DATA_RELEASE"
+  else
+    echo "Data release `$DATA_RELEASE` not found in S3" >> run_errors.log
+  fi
+fi
+
 nextflow pull AlexsLemonade/OpenScPCA-nf -revision $GITHUB_TAG \
-|| echo "Error pulling OpenScPCA-nf workflow" >> run_errors.log
+|| echo "Error pulling OpenScPCA-nf workflow with revision `$GITHUB_TAG`" >> run_errors.log
+
+# post any errors from from data release and workflow pull and exit
+if [ -s run_errors.log ]; then
+  slack_error run_errors.log
+  exit 1
+fi
 
 # test mode runs the test workflow only, then exits
 if [ "$RUN_MODE" == "test" ]; then
@@ -103,6 +122,7 @@ if [ "$RUN_MODE" == "full" ]; then
     -with-report ${datetime}_simulate_report.html \
     -with-trace  ${datetime}_simulate_trace.txt \
     -with-tower \
+    $release_param \
     || echo "Error with simulate run" >> run_errors.log
 
   cp .nextflow.log ${datetime}_simulate.log
@@ -131,6 +151,7 @@ if [ "$RUN_MODE" == "scpca" ] || [ "$RUN_MODE" == "full" ]; then
     -with-report ${datetime}_scpca_report.html \
     -with-trace  ${datetime}_scpca_trace.txt \
     -with-tower \
+    $release_param \
     || echo "Error with scpca data run" >> run_errors.log
 
   cp .nextflow.log ${datetime}_scpca.log
