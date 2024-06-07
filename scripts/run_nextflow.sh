@@ -14,9 +14,9 @@ set -u
 # DATA_RELEASE is the date of the data release to use, in YYYY-MM-DD format, or `default`.
 
 GITHUB_TAG=${GITHUB_TAG:-main}
+DATA_RELEASE=${DATA_RELEASE:-default}
 RUN_MODE=${RUN_MODE:-test}
 OUTPUT_MODE=${OUTPUT_MODE:-staging}
-DATA_RELEASE=${DATA_RELEASE:-default}
 
 date=$(date "+%Y-%m-%d")
 datetime=$(date "+%Y-%m-%dT%H%M")
@@ -66,7 +66,14 @@ fi
 # Set the release_prefix param if data release is not default
 $release_param=""
 if [ "$DATA_RELEASE" != "default" ]; then
-  release_param="--release_prefix $DATA_RELEASE"
+  # check release is valid
+  if [ "$(aws s3 ls s3://openscpca-data-release/${DATA_RELEASE})" ]; then
+    release_param="--release_prefix $DATA_RELEASE"
+  else
+    echo "Data release $DATA_RELEASE not found in S3" >> run_errors.log
+    slack_error run_errors.log
+    exit 1
+  fi
 fi
 
 
