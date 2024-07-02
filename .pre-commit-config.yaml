@@ -36,10 +36,6 @@ repos:
     hooks:
       - id: style-files
       - id: parsable-R
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v4.0.0-alpha.8
-    hooks:
-      - id: prettier
 ci:
   autofix_prs: true
   autoupdate_schedule: quarterly
