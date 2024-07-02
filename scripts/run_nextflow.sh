@@ -64,7 +64,7 @@ if [ "$OUTPUT_MODE" == "prod" ]; then
 fi
 
 # Set the release_prefix param if data release is not default
-$release_param=""
+release_param=""
 if [ "$DATA_RELEASE" != "default" ]; then
   # check release is valid
   if [ "$(aws s3 ls s3://openscpca-data-release/${DATA_RELEASE})" ]; then
