@@ -64,7 +64,7 @@ if [ "$OUTPUT_MODE" == "prod" ]; then
 fi
 
 # Set the release_prefix param if data release is not default
-$release_param=""
+release_param=""
 if [ "$DATA_RELEASE" != "default" ]; then
   # check release is valid
   if [ "$(aws s3 ls s3://openscpca-data-release/${DATA_RELEASE})" ]; then
@@ -162,7 +162,7 @@ aws s3 cp . s3://openscpca-nf-data/logs/${RUN_MODE}/${date} \
   --recursive \
   --exclude "*" \
   --include "${datetime}_*" \
-  && rm ${datetime}_*
+  && rm ${datetime}_* \
   || echo "Error copying logs to S3" >> run_errors.log
 
 # Post any errors to slack
