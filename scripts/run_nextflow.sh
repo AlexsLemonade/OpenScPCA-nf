@@ -162,7 +162,7 @@ aws s3 cp . s3://openscpca-nf-data/logs/${RUN_MODE}/${date} \
   --recursive \
   --exclude "*" \
   --include "${datetime}_*" \
-  && rm ${datetime}_*
+  && rm ${datetime}_* \
   || echo "Error copying logs to S3" >> run_errors.log
 
 # Post any errors to slack
