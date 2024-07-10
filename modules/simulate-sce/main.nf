@@ -10,7 +10,7 @@ params.simulate_sce_container = 'public.ecr.aws/openscpca/simulate-sce:latest'
 process permute_metadata {
   container params.simulate_sce_container
   tag "$project_id"
-  publishDir "${params.sim_bucket}/${params.release_prefix}/${project_id}", mode: 'copy'
+  publishDir "${params.sim_bucket}/test/${project_id}", mode: 'copy'
   input:
     tuple val(project_id),
           path(metadata_file, stageAs: 'input/*')
@@ -34,7 +34,7 @@ process simulate_sample {
   container params.simulate_sce_container
   label "mem_8"
   tag "$project_id-$sample_id"
-  publishDir "${params.sim_bucket}/${params.release_prefix}/${project_id}", mode: 'copy'
+  publishDir "${params.sim_bucket}/test/${project_id}", mode: 'copy'
   input:
     tuple val(project_id),
           val(sample_id),
@@ -66,7 +66,7 @@ process simulate_sample {
 process permute_bulk{
   container params.simulate_sce_container
   tag "$project_id"
-  publishDir "${params.sim_bucket}/${params.release_prefix}/${project_id}", mode: 'copy'
+  publishDir "${params.sim_bucket}/test/${project_id}", mode: 'copy'
   input:
     tuple val(project_id),
           path(bulk_quant, stageAs: 'input/*'),
