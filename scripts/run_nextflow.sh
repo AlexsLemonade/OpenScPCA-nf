@@ -24,18 +24,21 @@ datetime=$(date "+%Y-%m-%dT%H%M")
 # Get secrets from AWS Secrets Manager/1Password
 AWS_SECRETS=$(aws secretsmanager get-secret-value --secret-id openscpca_service_account_token | jq -r '.SecretString')
 # AWS secrets are a key-value store: retrieve individual values with jq
-export OP_SERVICE_ACCOUNT_TOKEN=$(jq -r '.op_token' <<< $AWS_SECRETS)
+OP_SERVICE_ACCOUNT_TOKEN=$(jq -r '.op_token' <<< $AWS_SECRETS)
+export OP_SERVICE_ACCOUNT_TOKEN
+TOWER_ACCESS_TOKEN=$(op read "$(jq -r '.op_seqera_token' <<< $AWS_SECRETS)")
+export TOWER_ACCESS_TOKEN
+TOWER_WORKSPACE_ID="246948885575509" # Use the OpenScPCA workspace
+export TOWER_WORKSPACE_ID
 
-export TOWER_ACCESS_TOKEN=$(op read "$(jq -r '.op_seqera_token' <<< $AWS_SECRETS)")
-export TOWER_WORKSPACE_ID="246948885575509" # Use the OpenScPCA workspace
-
-export SLACK_WEBHOOK=$(op read "$(jq -r '.op_slack_webhook' <<< $AWS_SECRETS)")
+SLACK_WEBHOOK=$(op read "$(jq -r '.op_slack_webhook' <<< $AWS_SECRETS)")
+export SLACK_WEBHOOK
 
 slack_error() {
   # function to create a slack message from an error log
   log_file=$1
   # add header and bullet points to the log file
-  message=$(printf "⚠️ Errors running OpenScPCA-nf pipeline:\n\n"; sed -e 's/^/• /' < $log_file)
+  message=$(printf "⚠️ Errors running OpenScPCA-nf pipeline:\n\n"; sed -e 's/^/• /' < "$log_file")
   jq -n --arg message "$message" \
     '{text: "Error running OpenScPCA-nf workflow.",
       blocks: [{
@@ -46,7 +49,7 @@ slack_error() {
         }
       }]
     }' \
-    | curl --json @- $SLACK_WEBHOOK
+    | curl --json @- "$SLACK_WEBHOOK"
 }
 
 # move to nextflow app directory
@@ -70,12 +73,12 @@ if [ "$DATA_RELEASE" != "default" ]; then
   if [ "$(aws s3 ls s3://openscpca-data-release/${DATA_RELEASE})" ]; then
     release_param="--release_prefix $DATA_RELEASE"
   else
-    echo "Data release `$DATA_RELEASE` not found in S3" >> run_errors.log
+    echo "Data release '$DATA_RELEASE' not found in S3" >> run_errors.log
   fi
 fi
 
 nextflow pull AlexsLemonade/OpenScPCA-nf -revision $GITHUB_TAG \
-|| echo "Error pulling OpenScPCA-nf workflow with revision `$GITHUB_TAG`" >> run_errors.log
+|| echo "Error pulling OpenScPCA-nf workflow with revision '$GITHUB_TAG'" >> run_errors.log
 
 # post any errors from from data release and workflow pull and exit
 if [ -s run_errors.log ]; then
@@ -89,19 +92,19 @@ if [ "$RUN_MODE" == "test" ]; then
     -revision $GITHUB_TAG \
     -entry test \
     -profile $profile \
-    -with-report ${datetime}_test_report.html \
-    -with-trace  ${datetime}_test_trace.txt \
+    -with-report "${datetime}_test_report.html" \
+    -with-trace  "${datetime}_test_trace.txt" \
     -with-tower \
   || echo "Error with test run" >> run_errors.log
 
-  cp .nextflow.log ${datetime}_test.log
+  cp .nextflow.log "${datetime}_test.log"
 
   # Copy logs to S3 and delete if successful
-  aws s3 cp . s3://openscpca-nf-data/logs/${RUN_MODE}/${date} \
+  aws s3 cp . "s3://openscpca-nf-data/logs/${RUN_MODE}/${date}" \
     --recursive \
     --exclude "*" \
     --include "${datetime}_*" \
-    && rm ${datetime}_* \
+    && rm "${datetime}_*" \
     || echo "Error copying logs to S3" >> run_errors.log
 
   # post errors to slack if there are any
@@ -119,13 +122,13 @@ if [ "$RUN_MODE" == "full" ]; then
     -revision $GITHUB_TAG \
     -entry simulate \
     -profile $profile \
-    -with-report ${datetime}_simulate_report.html \
-    -with-trace  ${datetime}_simulate_trace.txt \
+    -with-report "${datetime}_simulate_report.html" \
+    -with-trace  "${datetime}_simulate_trace.txt" \
     -with-tower \
     $release_param \
     || echo "Error with simulate run" >> run_errors.log
 
-  cp .nextflow.log ${datetime}_simulate.log
+  cp .nextflow.log "${datetime}_simulate.log"
 fi
 
 # if simulated or full, run the main pipeline with simulated data
@@ -133,12 +136,12 @@ if [ "$RUN_MODE" == "simulated" ] || [ "$RUN_MODE" == "full" ]; then
   nextflow run AlexsLemonade/OpenScPCA-nf \
     -revision $GITHUB_TAG \
     -profile $sim_profile \
-    -with-report ${datetime}_simulated_report.html \
-    -with-trace  ${datetime}_simulated_trace.txt \
+    -with-report "${datetime}_simulated_report.html" \
+    -with-trace  "${datetime}_simulated_trace.txt" \
     -with-tower \
     || echo "Error with simulated data run" >> run_errors.log
 
-  cp .nextflow.log ${datetime}_simulated.log
+  cp .nextflow.log "${datetime}_simulated.log"
 fi
 
 
@@ -148,21 +151,21 @@ if [ "$RUN_MODE" == "scpca" ] || [ "$RUN_MODE" == "full" ]; then
   nextflow run AlexsLemonade/OpenScPCA-nf \
     -revision $GITHUB_TAG \
     -profile $profile \
-    -with-report ${datetime}_scpca_report.html \
-    -with-trace  ${datetime}_scpca_trace.txt \
+    -with-report "${datetime}_scpca_report.html" \
+    -with-trace  "${datetime}_scpca_trace.txt" \
     -with-tower \
     $release_param \
     || echo "Error with scpca data run" >> run_errors.log
 
-  cp .nextflow.log ${datetime}_scpca.log
+  cp .nextflow.log "${datetime}_scpca.log"
 fi
 
 # Copy logs to S3 and delete if successful
-aws s3 cp . s3://openscpca-nf-data/logs/${RUN_MODE}/${date} \
+aws s3 cp . "s3://openscpca-nf-data/logs/${RUN_MODE}/${date}" \
   --recursive \
   --exclude "*" \
   --include "${datetime}_*" \
-  && rm ${datetime}_* \
+  && rm "${datetime}_*" \
   || echo "Error copying logs to S3" >> run_errors.log
 
 # Post any errors to slack
