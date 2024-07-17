@@ -18,7 +18,7 @@ The following base command will run the main workflow, assuming all AWS permissi
 nextflow run AlexsLemonade/OpenScPCA-nf -profile batch
 ```
 
-For most use cases you will want to use the `--results_bucket` argument to avoid writing to the default output bucket.
+For many use cases you may want to use the `--results_bucket` argument to avoid writing to the default output bucket (the default is a staging bucket, but may not be acecssible to all users).
 Note that despite the name, this can be a local directory as well as an S3 bucket.
 For an S3 bucket, the format should be `s3://bucket-name/path/to/results`.
 
@@ -71,3 +71,18 @@ To install the pre-commit hooks described in `.pre-commit-config.yaml`, run the 
 ```bash
 pre-commit install
 ```
+
+## Workflow releases
+
+This repository employs two different release strategies; one for tracking the workflow code itself, and one used to track the underlying data being used for workflow runs.
+
+### Code releases
+
+When the code of the workflow changes significantly, we use GitHub releases to create a tag using semantic versioning (e.g. `v1.0.0`).
+The creation of a release on GitHub will trigger a workflow run using the current data release, as specified in `nextflow.config` by the `release_prefix` parameter.
+This run will _replace_ the data in the results bucket for the current data release with the updated results from the workflow run.
+
+### Data releases
+
+When a new OpenScPCA data release is created, the `release_prefix` parameter will be updated, and a Git tag will be added with the format `YYYY-MM-DD` (e.g. `2024-07-08`), matching the value of `release_prefix`.
+This will trigger a workflow run for the purposes of populating the results bucket, but these tags should not be used as **releases** on GitHub.
