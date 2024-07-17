@@ -24,7 +24,7 @@ process run_scdblfinder {
 
     """
     for file in ${library_files}; do
-      ./run_scdblfinder.R \
+      run_scdblfinder.R \
         --input_sce_file \$file \
         --output_file \$(basename \${file%.rds}_scdblfinder.tsv) \
         --random_seed 2024 \
