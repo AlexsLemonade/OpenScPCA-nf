@@ -11,21 +11,35 @@ process run_scdblfinder {
   input:
     tuple val(sample_id),
           val(project_id),
-          path(processed_file),
-          val(output_file)
+          path(library_files)
   output:
-     tuple val(sample_id), path(output_file)
+    tuple val(sample_id),
+          val(project_id),
+          path(output_files)
   script:
+    output_files = library_files
+      .collect{
+        it.name.replaceAll(/(?i).rds$/, "_scdblfinder.tsv")
+      }
+
     """
-    ./run_scdblfinder.R \
-      --input_sce_file "${processed_file}" \
-      --output_file "${output_file}" \
-      --random_seed 2024 \
-      --cores ${task.cpus}
+    for i in "${!library_files[@]}"; do
+      ./run_scdblfinder.R \
+        --input_sce_file "${library_files[\$i]}" \
+        --output_file "${output_files[\$i]}" \
+        --random_seed 2024 \
+        --cores ${task.cpus}
+    done
     """
   stub:
+    output_files = library_files
+      .collect{
+        it.name.replaceAll(/(?i).rds$/, "_scdblfinder.tsv")
+      }
     """
-    touch ${output_file}
+    for output_file in ${output_files}; do
+      touch \${output_file}
+    done
     """
 }
 
@@ -36,18 +50,11 @@ workflow detect_doublets {
     sample_ch  // [sample_id, project_id, sample_path]
   main:
 
+    // create [sample_id, project_id, [list, of, processed, files]]
     libraries_ch = sample_ch
-      // create [sample_id, project_id, [list, of, processed, files]]
       .map{sample_id, project_id, sample_path ->
         def library_files = Utils.getLibraryFiles(sample_path, format: "sce", process_level: "processed")
         return [sample_id, project_id, library_files]
-      }
-      // create [sample_id, project_id, processed file], for all files
-      .transpose()
-      // create [sample_id, project_id, processed file, output file]
-      .map{sample_id, project_id, library_file ->
-        def output_file = library_file.name.replaceAll(/(?i).rds$/, "_scdblfinder.tsv")
-        return [sample_id, project_id, library_file, output_file]
       }
 
     // detect doublets
