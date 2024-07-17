@@ -37,9 +37,7 @@ process run_scdblfinder {
         it.name.replaceAll(/(?i).rds$/, "_scdblfinder.tsv")
       }
     """
-    for output_file in ${output_files}; do
-      touch \${output_file}
-    done
+    touch  ${output_files}
     """
 }
 
