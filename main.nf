@@ -48,7 +48,9 @@ workflow {
   sample_ch = Channel.fromList(Utils.getSampleTuples(release_dir))
     .filter{ run_all || it[1] in project_ids }
 
-  //merge_sce(sample_ch)
+  // Run the merge workflow
+  merge_sce(sample_ch)
 
+  // Run the doublet detection workflow
   detect_doublets(sample_ch)
 }
