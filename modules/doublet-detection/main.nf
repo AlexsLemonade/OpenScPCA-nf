@@ -11,25 +11,21 @@ process run_scdblfinder {
   input:
     tuple val(sample_id),
           val(project_id),
-          path(sample_path),
-          val(library_list)
+          path(processed_file),
+          val(output_file)
   output:
-    val(sample_id)
+     tuple val(sample_id), path(output_file)
   script:
-    output_dir=file("${sample_id}", type: 'dir')
     """
-    for library_id in ${library_list}; do
-      Rscript run_scdblfinder.R \
-        --input_sce_file "${sample_path}/${library_id}_processed.rds" \
-        --results_dir ${output_dir}
-    done
+    ./run_scdblfinder.R \
+      --input_sce_file "${processed_file}" \
+      --output_file "${output_file}" \
+      --random_seed 2024 \
+      --cores ${task.cpus}
     """
   stub:
-    output_dir=file("${sample_id}", type: 'dir')
     """
-    for library_id in ${library_list}; do
-      touch ${output_dir}/${library_id}_scdblfinder.tsv
-    done
+    touch ${output_file}
     """
 }
 
@@ -40,12 +36,18 @@ workflow detect_doublets {
     sample_ch  // [sample_id, project_id, sample_path]
   main:
 
-    // create [sample_id, project_id, sample_path, [list, of, library, ids, in, sample, path]]
     libraries_ch = sample_ch
-      .map{ sample_id, project_id, sample_path ->
-        def processed_files = Utils.getLibraryFiles(sample_path, format: "sce", process_level: "processed")
-        def library_ids = processed_files.collect{it.name.replace('_processed.rds', '')}
-        return [sample_id, project_id, sample_path, library_ids]
+      // create [sample_id, project_id, [list, of, processed, files]]
+      .map{sample_id, project_id, sample_path ->
+        def library_files = Utils.getLibraryFiles(sample_path, format: "sce", process_level: "processed")
+        return [sample_id, project_id, library_files]
+      }
+      // create [sample_id, project_id, processed file], for all files
+      .transpose()
+      // create [sample_id, project_id, processed file, output file]
+      .map{sample_id, project_id, library_file ->
+        def output_file = library_file.baseName.replaceAll(/(?i)$/, "_scdblfinder.tsv")
+        return [sample_id, project_id, library_file, output_file]
       }
 
     // detect doublets
