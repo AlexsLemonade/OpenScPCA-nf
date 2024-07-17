@@ -46,7 +46,7 @@ workflow detect_doublets {
       .transpose()
       // create [sample_id, project_id, processed file, output file]
       .map{sample_id, project_id, library_file ->
-        def output_file = library_file.baseName.replaceAll(/(?i)$/, "_scdblfinder.tsv")
+        def output_file = library_file.name.replaceAll(/(?i).rds$/, "_scdblfinder.tsv")
         return [sample_id, project_id, library_file, output_file]
       }
 
