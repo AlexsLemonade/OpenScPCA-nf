@@ -23,10 +23,10 @@ process run_scdblfinder {
       }
 
     """
-    for i in "${!library_files[@]}"; do
+    for file in ${library_files}; do
       ./run_scdblfinder.R \
-        --input_sce_file "${library_files[\$i]}" \
-        --output_file "${output_files[\$i]}" \
+        --input_sce_file \$file \
+        --output_file \$(basename \${file%.rds}_scdblfinder.tsv) \
         --random_seed 2024 \
         --cores ${task.cpus}
     done
