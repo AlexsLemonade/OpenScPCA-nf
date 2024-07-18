@@ -19,9 +19,8 @@ process run_scdblfinder {
   script:
     output_files = library_files
       .collect{
-        file(it.name.replaceAll(/(?i).rds$/, "_scdblfinder.tsv")).getName()
+        it.name.replaceAll(/(?i).rds$/, "_scdblfinder.tsv")
       }
-    //print(output_files)
 
     """
     for file in ${library_files}; do
