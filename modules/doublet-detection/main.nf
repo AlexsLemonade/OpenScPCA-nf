@@ -38,7 +38,9 @@ process run_scdblfinder {
         file(it.name.replaceAll(/(?i).rds$/, "_scdblfinder.tsv")).getName()
       }
     """
-    touch  ${output_files.join(' ')}
+    for file in ${library_files}; do
+      touch \$(basename \${file%.rds}_scdblfinder.tsv)
+    done
     """
 }
 
