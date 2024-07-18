@@ -18,7 +18,7 @@ The following base command will run the main workflow, assuming all AWS permissi
 nextflow run AlexsLemonade/OpenScPCA-nf -profile batch
 ```
 
-For many use cases you may want to use the `--results_bucket` argument to avoid writing to the default output bucket (the default is a staging bucket, but may not be acecssible to all users).
+For many use cases you may want to use the `--results_bucket` argument to avoid writing to the default output bucket (the default is a staging bucket, but may not be accessible to all users).
 Note that despite the name, this can be a local directory as well as an S3 bucket.
 For an S3 bucket, the format should be `s3://bucket-name/path/to/results`.
 
