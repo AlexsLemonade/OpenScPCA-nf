@@ -16,7 +16,7 @@ def merge_report_template = "${projectDir}/modules/merge-sce/resources/merge-rep
 
 // merge individual SCE objects into one SCE object
 process merge_group {
-  container "ghcr.io/alexslemonade/scpcatools-slim:edge"
+  container "ghcr.io/alexslemonade/scpcatools-slim:v0.4.0"
   tag "${merge_group_id}"
   label 'mem_max'
   label 'long_running'
@@ -47,7 +47,7 @@ process merge_group {
 
 // create merge report
 process generate_merge_report {
-  container "ghcr.io/alexslemonade/scpcatools-reports:edge"
+  container "ghcr.io/alexslemonade/scpcatools-reports:v0.4.0"
   tag "${merge_group_id}"
   publishDir "${publish_merge_base}/${merge_group_id}"
   label 'mem_max'
@@ -77,7 +77,7 @@ process generate_merge_report {
 }
 
 process export_anndata {
-    container "ghcr.io/alexslemonade/scpcatools-anndata:edge"
+    container "ghcr.io/alexslemonade/scpcatools-anndata:v0.4.0"
     label 'mem_max'
     label 'long_running'
     tag "${merge_group_id}"
