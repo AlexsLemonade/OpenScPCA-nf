@@ -21,7 +21,6 @@ process run_scdblfinder {
       .collect{
         it.name.replaceAll(/(?i).rds$/, "_scdblfinder.tsv")
       }
-
     """
     for file in ${library_files}; do
       run_scdblfinder.R \
@@ -31,6 +30,7 @@ process run_scdblfinder {
         --cores ${task.cpus}
     done
     """
+
   stub:
     output_files = library_files
       .collect{
@@ -49,7 +49,6 @@ workflow detect_doublets {
   take:
     sample_ch  // [sample_id, project_id, sample_path]
   main:
-
     // create [sample_id, project_id, [list, of, processed, files]]
     libraries_ch = sample_ch
       .map{sample_id, project_id, sample_path ->
