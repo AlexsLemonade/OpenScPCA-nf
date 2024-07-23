@@ -4,6 +4,7 @@
 include { example } from './modules/example'
 include { simulate_sce } from './modules/simulate-sce'
 include { merge_sce } from './modules/merge-sce'
+include { detect_doublets } from './modules/doublet-detection'
 
 // **** Parameter checks ****
 param_error = false
@@ -47,5 +48,9 @@ workflow {
   sample_ch = Channel.fromList(Utils.getSampleTuples(release_dir))
     .filter{ run_all || it[1] in project_ids }
 
+  // Run the merge workflow
   merge_sce(sample_ch)
+
+  // Run the doublet detection workflow
+  detect_doublets(sample_ch)
 }
