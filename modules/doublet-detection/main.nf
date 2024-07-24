@@ -2,7 +2,7 @@
 
 // Workflow to detect doublets in a SingleCellExperiment object using scDblFinder
 
-params.doublet_detection_container = 'public.ecr.aws/openscpca/doublet-detection:latest'
+params.doublet_detection_container = 'public.ecr.aws/openscpca/doublet-detection:v0.1.0'
 
 process run_scdblfinder {
   container params.doublet_detection_container
