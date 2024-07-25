@@ -26,5 +26,5 @@ If issues must be resolved before creating a release, mark them as blockers in Z
   - Which modules have been added or removed, if any?
   - Have there been any changes to the workflow configuration or launch instructions?
   - What has changed in the workflow documentation, if anything?
-- [Create a release on GitHub](https://github.com/AlexsLemonade/OpenScPCA-nf/releases/new)
-  - Populate the contents with the release notes added to the changelog. Note that you may find it helpful to use GitHub's automated release notes generation when updating the changelog.
+- [ ] [Create a release on GitHub](https://github.com/AlexsLemonade/OpenScPCA-nf/releases/new) with a new tag of the version number in vX.Y.Z format
+  - [ ] Populate the description with the release notes added to the changelog. Note that you may find it helpful to use GitHub's automated release notes generation when updating the changelog.
