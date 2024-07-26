@@ -7,6 +7,7 @@ params.doublet_detection_container = 'public.ecr.aws/openscpca/doublet-detection
 process run_scdblfinder {
   container params.doublet_detection_container
   tag "${sample_id}"
+  label 'mem_8'
   publishDir "${params.results_bucket}/${params.release_prefix}/doublet-detection/${project_id}/${sample_id}", mode: 'copy'
   input:
     tuple val(sample_id),
