@@ -8,6 +8,10 @@ Add new release notes in reverse numerical order (newest first) below this comme
 You may want to add temporary notes here for tracking as features are added, before a new release is ready.
 -->
 
+## v0.1.1
+
+- Increase default memory for scDblFinder processes
+
 ## v0.1.0
 
 - Initial versioned release of the `OpenScPCA-nf` Nextflow workflow
