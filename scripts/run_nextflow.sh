@@ -28,7 +28,7 @@ OP_SERVICE_ACCOUNT_TOKEN=$(jq -r '.op_token' <<< $AWS_SECRETS)
 export OP_SERVICE_ACCOUNT_TOKEN
 TOWER_ACCESS_TOKEN=$(op read "$(jq -r '.op_seqera_token' <<< $AWS_SECRETS)")
 export TOWER_ACCESS_TOKEN
-TOWER_WORKSPACE_ID="246948885575509" # Use the OpenScPCA workspace
+TOWER_WORKSPACE_ID=$(op read "$(jq -r '.op_seqera_workspace' <<< $AWS_SECRETS)") # Use the OpenScPCA workspace
 export TOWER_WORKSPACE_ID
 
 SLACK_WEBHOOK=$(op read "$(jq -r '.op_slack_webhook' <<< $AWS_SECRETS)")
@@ -99,6 +99,9 @@ if [ "$RUN_MODE" == "test" ]; then
 
   cp .nextflow.log "${datetime}_test.log"
 
+  # replace any instances of TOWER_ACCESS_TOKEN in logs with masked value
+  sed -i "s/${TOWER_ACCESS_TOKEN}/<TOWER_ACCESS_TOKEN>/g" ./*.log*
+
   # Copy logs to S3 and delete if successful
   aws s3 cp . "s3://openscpca-nf-data/logs/${RUN_MODE}/${date}" \
     --recursive \
@@ -159,6 +162,9 @@ if [ "$RUN_MODE" == "scpca" ] || [ "$RUN_MODE" == "full" ]; then
 
   cp .nextflow.log "${datetime}_scpca.log"
 fi
+
+# replace any instances of TOWER_ACCESS_TOKEN in logs with masked value
+sed -i "s/${TOWER_ACCESS_TOKEN}/<TOWER_ACCESS_TOKEN>/g" ./*.log*
 
 # Copy logs to S3 and delete if successful
 aws s3 cp . "s3://openscpca-nf-data/logs/${RUN_MODE}/${date}" \
