@@ -98,9 +98,9 @@ process export_anndata {
         --is_merged \
 
       # move normalized counts to X in AnnData
-      move_counts_anndata.py --anndata_file ${rna_h5ad_file}
+      reformat_anndata.py --anndata_file ${rna_h5ad_file} --hvg_name "merged_highly_variable_genes"
       if [ -f ${feature_h5ad_file} ]; then
-        move_counts_anndata.py --anndata_file ${feature_h5ad_file}
+        reformat_anndata.py --anndata_file ${feature_h5ad_file} --hvg_name "none"
       fi
       """
     stub:
