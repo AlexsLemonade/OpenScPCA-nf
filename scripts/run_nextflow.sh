@@ -135,8 +135,8 @@ if [ "$RUN_MODE" == "full" ]; then
     -with-report "${datetime}_simulate_report.html" \
     -with-trace  "${datetime}_simulate_trace.txt" \
     -with-tower \
-    $release_param \
     $resume_flag \
+    $release_param \
     || echo "Error with simulate run" >> run_errors.log
 
   cp .nextflow.log "${datetime}_simulate.log"
@@ -166,8 +166,8 @@ if [ "$RUN_MODE" == "scpca" ] || [ "$RUN_MODE" == "full" ]; then
     -with-report "${datetime}_scpca_report.html" \
     -with-trace  "${datetime}_scpca_trace.txt" \
     -with-tower \
-    $release_param \
     $resume_flag \
+    $release_param \
     || echo "Error with scpca data run" >> run_errors.log
 
   cp .nextflow.log "${datetime}_scpca.log"
