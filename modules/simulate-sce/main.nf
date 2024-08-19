@@ -122,11 +122,12 @@ workflow simulate_sce {
     // now [[project_id1, project_id2, ...], [sample_id1, sample_id2, ...], [rds_files1, rds_files2, ...], [metadata1, metadata2, ...]]
     // we can't pass the same file path multiple times, so lets reduce those for another arg
     .map{ project_ids, sample_ids, rds_files, metadata_files ->
-      def unique_metadata = metadata_files.unique(false) // false to not modify original
+      def unique_metadata = metadata_files.unique(false) // get unique file list; false to not modify original
       return [project_ids, sample_ids, rds_files, metadata_files, unique_metadata]
     }
 
     // simulate samples for each group of samples
     simulate_samples(grouped_samples)
 
+    // to undo grouping, use simulate_samples.out.transpose()
 }
