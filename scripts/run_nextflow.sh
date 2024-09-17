@@ -17,6 +17,7 @@ GITHUB_TAG=${GITHUB_TAG:-main}
 DATA_RELEASE=${DATA_RELEASE:-default}
 RUN_MODE=${RUN_MODE:-test}
 OUTPUT_MODE=${OUTPUT_MODE:-staging}
+RESUME=${RESUME:-false}
 
 date=$(date "+%Y-%m-%d")
 datetime=$(date "+%Y-%m-%dT%H%M")
@@ -77,6 +78,12 @@ if [ "$DATA_RELEASE" != "default" ]; then
   fi
 fi
 
+if [ "$RESUME" == "true" ]; then
+  resume_flag="-resume"
+else
+  resume_flag=""
+fi
+
 nextflow pull AlexsLemonade/OpenScPCA-nf -revision $GITHUB_TAG \
 || echo "Error pulling OpenScPCA-nf workflow with revision '$GITHUB_TAG'" >> run_errors.log
 
@@ -128,6 +135,7 @@ if [ "$RUN_MODE" == "full" ]; then
     -with-report "${datetime}_simulate_report.html" \
     -with-trace  "${datetime}_simulate_trace.txt" \
     -with-tower \
+    $resume_flag \
     $release_param \
     || echo "Error with simulate run" >> run_errors.log
 
@@ -142,6 +150,7 @@ if [ "$RUN_MODE" == "simulated" ] || [ "$RUN_MODE" == "full" ]; then
     -with-report "${datetime}_simulated_report.html" \
     -with-trace  "${datetime}_simulated_trace.txt" \
     -with-tower \
+    $resume_flag \
     || echo "Error with simulated data run" >> run_errors.log
 
   cp .nextflow.log "${datetime}_simulated.log"
@@ -157,6 +166,7 @@ if [ "$RUN_MODE" == "scpca" ] || [ "$RUN_MODE" == "full" ]; then
     -with-report "${datetime}_scpca_report.html" \
     -with-trace  "${datetime}_scpca_trace.txt" \
     -with-tower \
+    $resume_flag \
     $release_param \
     || echo "Error with scpca data run" >> run_errors.log
 
