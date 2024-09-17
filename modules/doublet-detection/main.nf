@@ -49,8 +49,10 @@ process run_scdblfinder {
 workflow detect_doublets {
   take:
     sample_ch  // [sample_id, project_id, sample_path]
+  emit:
+    run_scdblfinder.out // [sample_id, project_id, [list of scdblfinder_output files]]
   main:
-    // create [sample_id, project_id, [list, of, processed, files]]
+    // create [sample_id, project_id, [list of processed files]]
     libraries_ch = sample_ch
       .map{sample_id, project_id, sample_path ->
         def library_files = Utils.getLibraryFiles(sample_path, format: "sce", process_level: "processed")
