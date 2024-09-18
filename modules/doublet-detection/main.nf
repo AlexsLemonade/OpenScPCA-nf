@@ -49,8 +49,6 @@ process run_scdblfinder {
 workflow detect_doublets {
   take:
     sample_ch  // [sample_id, project_id, sample_path]
-  emit:
-    run_scdblfinder.out // [sample_id, project_id, [list of scdblfinder_output files]]
   main:
     // create [sample_id, project_id, [list of processed files]]
     libraries_ch = sample_ch
@@ -61,4 +59,7 @@ workflow detect_doublets {
 
     // detect doublets
     run_scdblfinder(libraries_ch)
+
+  emit:
+    run_scdblfinder.out // [sample_id, project_id, [list of scdblfinder_output files]]
 }

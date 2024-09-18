@@ -115,8 +115,6 @@ process export_anndata {
 workflow merge_sce {
   take:
     sample_ch  // Channel of [sample_id, project_id, file(sample_dir)]
-  emit:
-    tuple merged_ch // Channel of [project_id, file(merged_sce_file)]
   main:
     // create a channel of [project_id, file(project_dir)] with one per project
     project_ch = sample_ch
@@ -176,4 +174,7 @@ workflow merge_sce {
 
     // export merged objects to AnnData
     export_anndata(merged_ch)
+
+  emit:
+    merged_ch // Channel of [project_id, file(merged_sce_file)]
 }
