@@ -20,7 +20,8 @@
 
 When porting modules from `OpenScPCA-analysis` to `OpenScPCA-nf`, our goal is to require as few changes as possible to the original code, while ensuring that the module can be run as part of a Nextflow workflow.
 We also aim to make the module as modular as possible, with defined inputs and outputs that can be easily connected to other modules as needed.
-To that end, we will prioritize using the the same scripts and notebooks as are used in the original code when at all possible, with the primary exception being wrapper scripts such as `run_<module-name>.sh` that might be used at the top level of the module in `OpenScPCA-analysis`.
+
+To that end, we will prioritize using the same scripts and notebooks as are used in the original code when at all possible, with the primary exception being wrapper scripts such as `run_<module-name>.sh` that might be used at the top level of the module in `OpenScPCA-analysis`.
 
 ## Module structure
 
@@ -89,7 +90,7 @@ The final element is a file/path object, and could be passed directly to a Nextf
 However, this is not recommended, as most processes will only require a subset of files, such as only the processed `AnnData` files (and not raw files or `SingleCellExperiment` files).
 Instead, the files that will be required for each sample should be selected using the `Utils.getLibraryFiles()` function, which will return a list of file paths within a sample directory for a specific level of processing (similar to the `download.data.py` script in `OpenScPCA-analysis`).
 
-An example of the of the `Utils.getLibraryFiles()` function in use is shown below, selecting all processed `SingleCellExperiment` files for each sample:
+An example of the `Utils.getLibraryFiles()` function in use is shown below, selecting all processed `SingleCellExperiment` files for each sample:
 
 ```groovy
 sample_ch.map { sample_id, project_id, sample_dir ->
@@ -104,12 +105,12 @@ Any nextflow process that uses this as an input element should be able to handle
 
 ### Output
 
-If the module workflow creates files as output that might be used by other modules, these files should be "emitted" as a new channel with the following structure: `[sample_id, project_id, output_files]` where `output_files` is either a single file per sample or a list of files with one file per library.
+If the module workflow outputs files that other modules might use, these files should be "emitted" as a new channel with the following structure: `[sample_id, project_id, output_files]` where `output_files` is either a single file per sample or a list of files with one file per library.
 If the workflow emits results at the project level, `[project_id, output_files]` can be used.
 
 If multiple output files are created by a module (e.g., a table of results and an R object with more detailed output), the same general format should be followed, but with additional entries in each channel element: `[sample_id, project_id, output_files_1, output_files_2, ...]`.
 
-Where possible, individual output files should contain the `SCPCS` sample id, `SCPCL` library id, or `SCPCP` project id, as appropriate, to facilitate searching and filtering.
+Where possible, individual output files should contain the `SCPCS` sample id, `SCPCL` library id, or `SCPCP` project id as appropriate to facilitate searching and filtering.
 
 ## Module processes
 
@@ -122,7 +123,7 @@ The container should be defined with a version tag to ensure that the container 
 
 ### Process granularity
 
-There are no hard and fast rules about how grandular each process should be, as we want to balance the workflow complexity with flexibility and runtime efficiency.
+There are no hard and fast rules about how granular each process should be, as we want to balance the workflow complexity with flexibility and runtime efficiency.
 In general, if one step in the module's analysis is particularly long-running or resource-intensive, it may be better to break that step into a separate process, as we can then assign it higher resource requirements while leaving the other steps running in low-resource nodes.
 In addition, if the intermediate files from a process are going to be useful for other analyses, it is better to have a separate process that emits those files as output.
 If, however, the intermediate files are only useful within the context of the module, and each step is relatively fast, it may be better to have a single process that includes multiple steps where only the final output is emitted.
@@ -132,6 +133,7 @@ If, however, the intermediate files are only useful within the context of the mo
 The default resources for each process are 4 GB of memory and 1 CPU.
 Any additional requirements should be defined with `label` directives in the process definition.
 Available labels are defined in `config/process_base.config`, and separate labels are used for memory and CPU requirements.
+
 For example, to request 16 GB of memory and 4 CPUs, the process definition would include the following:
 
 ```groovy
@@ -142,7 +144,7 @@ process my_process {
 }
 ```
 
-If an instance of a process fails, the memory requirements are automatically increased on the second and third attempts, but the general goal should be to have each process run to completion for the majority of samples with the assigned resources.
+If an instance of a process fails, the memory requirements are automatically increased on the second and third attempts, but the general goal should be for each process successfully complete the majority of samples with the assigned resources.
 
 ### Stub processes
 
