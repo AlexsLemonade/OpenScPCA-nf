@@ -3,7 +3,7 @@
 // Workflow to detect doublets in a SingleCellExperiment object using scDblFinder
 
 process run_scdblfinder {
-  container 'public.ecr.aws/openscpca/doublet-detection:v0.1.0'
+  container params.doublet_detection_container
   tag "${sample_id}"
   label 'mem_8'
   publishDir "${params.results_bucket}/${params.release_prefix}/doublet-detection/${project_id}/${sample_id}", mode: 'copy'

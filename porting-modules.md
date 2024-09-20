@@ -129,9 +129,10 @@ Where possible, individual output files should contain the `SCPCS` sample id, `S
 ### Containers
 
 Each process should run in a container, usually the container defined in `OpenScPCA-analysis` for the module that the process is a part of, which will be available on the [AWS Public ECR](https://gallery.ecr.aws/openscpca/).
-The container should be defined with a version tag to ensure that the container used is consistent across all runs of the workflow (though `latest` is acceptable during development).
 
-**Question:** Do we want to have a single config file with all container definitions? Defining the container within a module is deprecated, but I am not sure that we really need variables for this since each module will only have a limited number of processes.
+All container sources should be defined as parameters in the `config/containers.config` file, and referenced in the process definition with the `container` directive.
+Each container should be defined with a version tag to ensure that the container used is consistent across runs of the workflow (though `latest` is acceptable during development).
+
 
 ### Process granularity
 
