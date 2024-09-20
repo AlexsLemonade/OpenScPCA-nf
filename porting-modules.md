@@ -136,15 +136,22 @@ Each container should be defined with a version tag to ensure that the container
 
 ### Process granularity
 
-There are no hard and fast rules about how granular each process should be, as we want to balance the workflow complexity with flexibility and runtime efficiency.
-In general, if one step in the module's analysis is particularly long-running or resource-intensive, it may be better to break that step into a separate process, as we can then assign it higher resource requirements while leaving the other steps running in low-resource nodes.
-In addition, if the intermediate files from a process are going to be useful for other analyses, it is better to have a separate process that emits those files as output.
-If, however, the intermediate files are only useful within the context of the module, and each step is relatively fast, it may be better to have a single process that includes multiple steps where only the final output is emitted.
+There are no hard and fast rules about how granular each process should be, as we want to balance workflow complexity with flexibility and runtime efficiency.
+
+Some things to consider when defining processes are:
+
+- How long will the process take to run?
+If a process is long running with multiple steps, it may be worth breaking into multiple processes to allow for saving on intermediate outputs and to allow for more efficient resource allocation.
+- How much processing power is required?
+If one step of a workflow requires more CPU or memory than other steps, it may be useful to break that step out so it can be given the resources it needs while other steps can run on lower-resource nodes.
+- How useful are intermediate files?
+If intermediate files are going to be useful for other analyses, it is better to have a separate process that emits those files as output.
+On the other hand, if intermediate files are only useful within the context of the module, it may be more efficient to have a single process with multiple steps where only the final output is emitted.
 
 ### Process resources
 
-The default resources for each process are 4 GB of memory and 1 CPU.
-Any additional requirements should be defined with `label` directives in the process definition.
+By default, each process is given 4 GB of memory and 1 CPU.
+Any additional resource requirements should be defined with `label` directives in the process definition.
 Available labels are defined in `config/process_base.config`, and separate labels are used for memory and CPU requirements.
 
 For example, to request 16 GB of memory and 4 CPUs, the process definition would include the following:
