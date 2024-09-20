@@ -1,13 +1,14 @@
 # Porting modules to `OpenScPCA-nf`
 
 - [Introduction](#introduction)
+- [The `OpenScPCA-nf` default workflow](#the-openscpca-nf-default-workflow)
 - [Module structure](#module-structure)
   - [Readme file](#readme-file)
-  - [Primary workflow file](#primary-workflow-file)
+  - [Module workflow file](#module-workflow-file)
   - [Processes](#processes)
   - [Executable scripts](#executable-scripts)
   - [Additional module files](#additional-module-files)
-- [Module inputs and outputs](#module-inputs-and-outputs)
+- [Module workflow inputs and outputs](#module-workflow-inputs-and-outputs)
   - [Input](#input)
   - [Output](#output)
 - [Module processes](#module-processes)
@@ -23,31 +24,41 @@ We also aim to make the module as modular as possible, with defined inputs and o
 
 To that end, we will prioritize using the same scripts and notebooks as are used in the original code when at all possible, with the primary exception being wrapper scripts such as `run_<module-name>.sh` that might be used at the top level of the module in `OpenScPCA-analysis`.
 
+## The `OpenScPCA-nf` default workflow
+
+The default workflow for `OpenScPCA-nf` is contained in the [`main.nf` file](https://github.com/AlexsLemonade/OpenScPCA-nf/blob/main/main.nf) in the root directory of the OpenScPCA-nf repository.
+
+The default workflow is designed to be relatively simple.
+It defines channels that modules can use as input (primarily the `sample_ch` channel), and then calls each module workflow, passing the appropriate channel(s) as input.
+If one module requires the output of another module as input, the default workflow will reflect this dependency via the input channels provided to that module containing outputs from a previous module.
+
 ## Module structure
 
 Each analysis module from `OpenScPCA-analysis` should be ported as separate Nextflow module that is contained within a subdirectory within the `modules/` directory.
-Module directories should have the same name as the `OpenScPCA-analysis` module from which they are derived, and the primary workflow for the module should be placed in a `main.nf` file within that directory (i.e. `modules/module-name/main.nf`).
-The primary workflow should also be named with the module name (replacing any hyphens with underscores), so that it can be included in the root workflow via an `include` directive such as the one below:
+
+- Module directories should have the same name as the `OpenScPCA-analysis` module from which they are derived
+- The primary workflow for the module should be placed in a `main.nf` file within that directory (i.e. `modules/module-name/main.nf`). See [Module workflow file](#module-workflow-file) for more information on the structure of the primary workflow file.
+- Each module workflow should be added to the the default workflow using an  `include` directive such as the one below:
 
 ```groovy
 include { module_name } from './modules/module-name'
 ```
 
-The module would then be invoked in the primary workflow with a statement such as the following:
+The module would then be invoked in the default workflow with a statement such as the following:
 
 ```groovy
 module_name(sample_ch)
 ```
 
-where `sample_ch` is the channel of samples that is passed to the module.
+where `sample_ch` is the channel of samples that is passed to the module (see [Module inputs and outputs](#module-inputs-and-outputs) for more information on the structure of the `sample_ch` channel).
 
 ### Readme file
 
-Each module should contain a `readme.md` file at the root level of the module directory that provides a brief description of the module and its purpose, as well as a link to the original module in `OpenScPCA-analysis`.
+Each module directory should contain a `readme.md` file with the following contents:
+ that provides a brief description of the module and its purpose, as well as a link to the original module in `OpenScPCA-analysis`.
 This file should also contain permalinks to the original scripts or notebooks from `OpenScPCA-analysis` that are used in the module, as well as descriptions of any additional resources that may be needed to run the module (e.g. reference files, data files, etc.).
 
-
-### Primary workflow file
+### Module workflow file
 
 The module's primary workflow should be contained in a `main.nf` file within the module directory, and named with the module name (replacing any hyphens with underscores).
 For example, for a simple module named `analyze-cells`, the primary workflow file would be `modules/analyze-cells/main.nf` and it might contain the following workflow definition:
@@ -75,11 +86,12 @@ Most processes should be defined within the primary workflow file, but if a proc
 Scripts that are called within Nextflow processes should be placed in `modules/<module-name>/resources/usr/bin/` and set to be executable (e.g. `chmod +x myscript.R`).
 These scripts will then be invoked directly within processes as executables, so they must contain a `#!` (shebang) line defining the execution environment, such as `#!usr/bin/env Rscript` or `#!usr/bin/env python3`.
 
+
 ### Additional module files
 
 Any other files that may be needed within a workflow, such as notebook templates, must be passed as inputs to processes to ensure that the files are properly staged within the execution environment.
 
-## Module inputs and outputs
+## Module workflow inputs and outputs
 
 ### Input
 

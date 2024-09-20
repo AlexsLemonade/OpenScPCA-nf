@@ -1,6 +1,6 @@
 #!/usr/bin/env nextflow
 
-// **** Included processes from modules ****
+// **** Included workflows and processes from modules ****
 include { example } from './modules/example'
 include { simulate_sce } from './modules/simulate-sce'
 include { merge_sce } from './modules/merge-sce'
@@ -39,7 +39,7 @@ workflow simulate {
   simulate_sce(project_ch)
 }
 
-// **** Main workflow ****
+// **** Default workflow ****
 workflow {
   project_ids = params.project?.tokenize(';, ') ?: []
   run_all = project_ids.isEmpty() || project_ids[0].toLowerCase() == 'all'
