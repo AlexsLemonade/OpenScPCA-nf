@@ -102,7 +102,7 @@ workflow analyze_cells {
 }
 ```
 
-This workflow takes the standard `sample_ch` channel as input, selects the processed `SingleCellExperiment` files for each sample, and then passes these files to two processes, `process_1` and `process_2`, emitting the output
+This workflow takes the standard `sample_ch` channel as input, selects the processed `SingleCellExperiment` files for each sample, and then passes these files to two processes, `process_1` and `process_2`, emitting the output.
 
 
 ### Module input (take)
