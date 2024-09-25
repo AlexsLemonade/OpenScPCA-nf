@@ -37,49 +37,54 @@ If one module requires the output of another module as input, the default workfl
 
 ## Module structure
 
-Each analysis module from `OpenScPCA-analysis` should be ported as separate [Nextflow module](https://www.nextflow.io/docs/stable/module.html) that is contained within a subdirectory within the `modules/` directory.
+Port each analysis module from `OpenScPCA-analysis` as separate [Nextflow module](https://www.nextflow.io/docs/stable/module.html) that is contained within a subdirectory within the `modules/` directory.
 
-- Module directories should have the same name as the `OpenScPCA-analysis` module from which they are derived
-- The primary workflow for the module should be placed in a `main.nf` file within the module directory (i.e. `modules/module-name/main.nf`).
+- Give module directories  the same name as the `OpenScPCA-analysis` module from which they are derived
+- Name the primary workflow file for the module `main.nf` file and place it within the module directory (i.e. `modules/module-name/main.nf`).
 See [Module components](#module-components) for more information on the structure of the primary workflow file.
-- Each module workflow should be added to the the default workflow using an  [`include` directive](https://www.nextflow.io/docs/stable/module.html#module-inclusion) such as the one below:
+- Name the primary workflow within the `main.nf` file with the same name as the module (replacing any hyphens with underscores).
+For example, for a module named `analyze-cells`, the primary workflow file would be called `modules/analyze-cells/main.nf` and would contain a workflow called `analyze_cells`.
+- Reference the module workflow in the the default workflow file (`OpenScPCA-nf/main.nf`) using an  [`include` directive](https://www.nextflow.io/docs/stable/module.html#module-inclusion) such as the one below:
 
 ```groovy
-include { module_name } from './modules/module-name'
+include { analyze_cells } from './modules/analyze-cells'
 ```
 
-The module would then be invoked in the default workflow with a statement such as the following:
+Then invoke module workflow from the default workflow with a statement such as the following:
 
 ```groovy
-module_name(sample_ch)
+analyze_cells(sample_ch)
 ```
 
 where `sample_ch` is the channel of samples that is passed to the module (see [Module input](#module-input-take) for more information on the structure of the `sample_ch` channel).
 
 ### Readme file
 
-Each module directory should contain a `readme.md` file with the following contents:
- that provides a brief description of the module and its purpose, as well as a link to the original module in `OpenScPCA-analysis`.
-This file should also contain permalinks to the original scripts or notebooks from `OpenScPCA-analysis` that are used in the module, as well as descriptions of any additional resources that may be needed to run the module (e.g. reference files, data files, etc.).
+Include a `readme.md` file in each module with the following contents:
+
+- A brief description of the module and its purpose
+- A link to the module it is derived from in `OpenScPCA-analysis`
+- A list of any scripts or notebooks that are used in the module, with permalinks to the original files that they are derived from in `OpenScPCA-analysis`
+- Descriptions of any additional resources that may be needed to run the module (e.g. reference files, data files, etc.)
 
 ### Primary module workflow
 
-The module's primary workflow should be contained in a `main.nf` file within the module directory, and named with the module name (replacing any hyphens with underscores).
+Name the primary workflow for each module with the module name, replacing any hyphens with underscores, and place it in the `main.nf` file within the module directory.
 For example, for a module named `analyze-cells`, the primary workflow file would be `modules/analyze-cells/main.nf` and would contain a workflow called `analyze_cells`.
 
 ### Processes
 
-Most processes should be defined within the module's `main.nf` file, but if a process is particularly complex or requires additional scripts or resources, it may be defined in a separate file within the module directory and added to the module's `main.nf` file with an `include` directive.
+Most processes can be defined within the module's `main.nf` file, but if a process is particularly complex or requires additional scripts or resources, you may want to split processes inteo separate files, which can then be added to the module's `main.nf` file with an `include` directive.
 
 ### Executable scripts
 
-Scripts that are called within Nextflow processes should be placed in `modules/<module-name>/resources/usr/bin/` and set to be executable (e.g. `chmod +x myscript.R`).
+Place scripts that are called within Nextflow processes in `modules/<module-name>/resources/usr/bin/` and set them to be executable (e.g. `chmod +x my_script.R`).
 These scripts will then be invoked directly within processes as executables, so they must contain a `#!` (shebang) line defining the execution environment, such as `#!usr/bin/env Rscript` or `#!usr/bin/env python3`.
 
 
 ### Additional module files
 
-Any other files that may be needed within a workflow, such as notebook templates, must be passed as inputs to processes to ensure that the files are properly staged within the execution environment.
+Other files that may be needed within a workflow, such as notebook templates, must be passed as inputs to processes to ensure that the files are properly staged within the execution environment.
 
 ## Module components
 
@@ -121,6 +126,7 @@ Instead, the files that will be required for each sample should be selected usin
 The `Utils.getLibraryFiles()` function is designed to create a list of files that are relevant to a particular sample that can be passed as input to a process for proper data staging.
 
 The function takes the following arguments:
+
 - `sample_dir` – The path to the sample directory
 - `format:` – The format of the files to be selected (`sce` or `anndata`)
 - `process_level:` – The processing level of the files to be selected (`raw`, `filtered` or `processed`)
@@ -143,16 +149,16 @@ Any Nextflow process that uses the output of this function as an input element s
 If the module workflow outputs files that other modules might use, these files should be "emitted" as a new channel with the following structure: `[sample_id, project_id, output_files]` where `output_files` is either a single file per sample or a list of files with one file per library.
 If the workflow emits results at the project level, `[project_id, output_files]` can be used.
 
-If multiple output files are created by a module (e.g., a table of results and an R object with more detailed output), the same general format should be followed, but with additional entries in each channel element: `[sample_id, project_id, output_files_1, output_files_2, ...]`.
+If a module creates multiple output files (e.g., a table of results and an R object with more detailed output), follow the same general format, but with additional entries in each channel element: `[sample_id, project_id, output_files_1, output_files_2, ...]`.
 
-Where possible, individual output files should contain the `SCPCS` sample id, `SCPCL` library id, or `SCPCP` project id as appropriate to facilitate searching and filtering.
+Where possible, include the `SCPCS` sample id, `SCPCL` library id, or `SCPCP` project id as appropriate in the file name to facilitate searching and filtering.
 
 ### Docker images
 
 Each process should run in a Docker container, usually the image defined in `OpenScPCA-analysis` for the module, which will be available on the [AWS Public ECR](https://gallery.ecr.aws/openscpca/).
 
-All Docker image names should be defined as parameters in the `config/containers.config` file, and referenced in the process definitions with the [`container` directive](https://www.nextflow.io/docs/stable/process.html#container).
-Each image should be defined with a version tag to ensure that the images used is consistent across runs of the workflow (though `latest` is acceptable during development).
+Define Docker image names as parameters in the `config/containers.config` file, and reference those in the process definitions with the [`container` directive](https://www.nextflow.io/docs/stable/process.html#container).
+Define each image with a version tag to ensure that the images used are consistent across runs of the workflow (though `latest` is acceptable during development).
 
 ### Module processes
 
@@ -173,7 +179,7 @@ On the other hand, if intermediate files are only useful within the context of t
 #### Process resources
 
 By default, each process is given 4 GB of memory and 1 CPU.
-Any additional resource requirements should be defined with [`label` directives](https://www.nextflow.io/docs/stable/process.html#label) in the process definition.
+Define any additional resource requirements with [`label` directives](https://www.nextflow.io/docs/stable/process.html#label) in the process definition.
 Available labels are defined in `config/process_base.config`, and separate labels are used for memory and CPU requirements.
 
 For example, to request 16 GB of memory and 4 CPUs, the process definition would include the following:
@@ -186,10 +192,10 @@ process my_process {
 }
 ```
 
-If an instance of a process fails, the memory requirements are automatically increased on the second and third attempts, but the general goal should be for each process successfully complete the majority of samples with the assigned resources.
+If an instance of a process fails, Nextflow will automatically increase the memory requirements on the second and third attempts, but the general goal should be for each process successfully complete the majority of samples with the assigned resources.
 
 #### Stub processes
 
-Every process should include a [`stub` section](https://www.nextflow.io/docs/stable/process.html#stub) that uses only basic `bash` commands to create (usually empty) output files that mirror the expected output of the process.
-This stub process will be used for initial testing to ensure the overall logic of the workflow is valid.
+Include a [`stub` section](https://www.nextflow.io/docs/stable/process.html#stub) for each process that uses only basic `bash` commands to create (usually empty) output files that mirror the expected output of the process.
+This stub process is used for initial testing to ensure the overall logic of the workflow is valid.
 Note that stub processes are not run in the process container, so they should only include commands that are common to `bash` environments, such as `touch`, `mkdir`, `echo`, etc.
