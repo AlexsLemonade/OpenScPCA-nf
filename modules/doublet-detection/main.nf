@@ -2,8 +2,6 @@
 
 // Workflow to detect doublets in a SingleCellExperiment object using scDblFinder
 
-params.doublet_detection_container = 'public.ecr.aws/openscpca/doublet-detection:v0.1.0'
-
 process run_scdblfinder {
   container params.doublet_detection_container
   tag "${sample_id}"
@@ -50,7 +48,7 @@ workflow detect_doublets {
   take:
     sample_ch  // [sample_id, project_id, sample_path]
   main:
-    // create [sample_id, project_id, [list, of, processed, files]]
+    // create [sample_id, project_id, [list of processed files]]
     libraries_ch = sample_ch
       .map{sample_id, project_id, sample_path ->
         def library_files = Utils.getLibraryFiles(sample_path, format: "sce", process_level: "processed")
@@ -59,4 +57,7 @@ workflow detect_doublets {
 
     // detect doublets
     run_scdblfinder(libraries_ch)
+
+  emit:
+    run_scdblfinder.out // [sample_id, project_id, [list of scdblfinder_output files]]
 }

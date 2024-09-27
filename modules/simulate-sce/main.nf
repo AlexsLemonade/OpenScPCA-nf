@@ -4,9 +4,6 @@
 // for testing OpenSCPCA workflows
 
 
-// module parameters
-params.simulate_sce_container = 'public.ecr.aws/openscpca/simulate-sce:v0.1.0'
-
 process permute_metadata {
   container params.simulate_sce_container
   tag "$project_id"
