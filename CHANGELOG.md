@@ -8,6 +8,15 @@ Add new release notes in reverse numerical order (newest first) below this comme
 You may want to add temporary notes here for tracking as features are added, before a new release is ready.
 -->
 
+## v0.1.2
+
+- Update scpcaTools images to v0.4.1 versions
+- update simulations to match current (v0.8.5) `scpca-nf`  output
+  - Change reduced dimension names in AnnData output (to `X_pca` and `X_umap`)
+  - Use new age columns
+- Centralized docker image definitions in `config/containers.config`
+- Added initial documentation about porting modules
+
 ## v0.1.1
 
 - Increase default memory for scDblFinder processes
