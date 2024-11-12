@@ -49,7 +49,7 @@ outfile_name <- function(sce_filename, feature) {
 format_merged_sce <- function(sce) {
   # this function updates merged object formatting for anndata export
   # paste X to any present reduced dim names
-  reducedDimNames(sce) <- glue::glue("X_{reducedDimNames(sce)}")
+  reducedDimNames(sce) <- glue::glue("X_{tolower(reducedDimNames(sce))}")
   return(sce)
 }
 
@@ -105,7 +105,7 @@ format_czi <- function(sce) {
   rowData(sce)$feature_is_filtered <- FALSE
 
   # paste X to any present reduced dim names
-  reducedDimNames(sce) <- glue::glue("X_{reducedDimNames(sce)}")
+  reducedDimNames(sce) <- glue::glue("X_{tolower(reducedDimNames(sce))}")
 
   return(sce)
 }
