@@ -31,7 +31,6 @@ process simulate_sample {
   container params.simulate_sce_container
   label "mem_8"
   tag "$project_id-$sample_id"
-  publishDir "${params.sim_bucket}/test/${project_id}", mode: 'copy'
   input:
     tuple val(project_id),
           val(sample_id),
@@ -46,14 +45,38 @@ process simulate_sample {
       --sample_dir input \
       --metadata_file ${metadata_file} \
       --output_dir ${sample_id}
-
-    sce-to-anndata.R --dir ${sample_id}
-    reformat_anndata.py --dir ${sample_id}
     """
   stub:
     """
     mkdir ${sample_id}
     for file in ${rds_files}; do
+      touch "${sample_id}/\$(basename \$file)"
+      touch "${sample_id}/\$(basename \${file%.rds}.h5ad)"
+    done
+    """
+}
+
+process export_anndata {
+  container params.scpcatools_anndata_container
+  tag "$project_id-$sample_id"
+  publishDir "${params.sim_bucket}/test/${project_id}", mode: 'copy'
+  input:
+    tuple val(project_id),
+          val(sample_id),
+          path(sample_dir, stageAs: 'input')
+  output:
+    tuple val(project_id), val(sample_id), path(sample_id)
+  script:
+    """
+    mv input ${sample_id}
+    sce-to-anndata.R --dir ${sample_id}
+    reformat_anndata.py --dir ${sample_id}
+    rm ${sample_id}/*.tsv
+    """
+  stub:
+    """
+    mkdir ${sample_id}
+    for file in input/*.rds; do
       touch "${sample_id}/\$(basename \$file)"
       touch "${sample_id}/\$(basename \${file%.rds}.h5ad)"
     done
@@ -105,7 +128,8 @@ workflow simulate_sce {
       .combine(permuted_metadata_ch, by: 0) // combine with permuted metadata
       // final output: [project_id, sample_id, [rds_file1, rds_file2, ...], permuted_metadata_file]
 
-    // simulate samples for each project
-    simulate_sample(sample_ch)
+    // simulate samples for each project and export
+    simulate_sample(sample_ch) | export_anndata
+
 
 }
