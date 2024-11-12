@@ -73,7 +73,7 @@ if __name__ == "__main__":
 
     # find all processed rna h5ad files in the directory, recursively
     anndata_files = list(pathlib.Path(args.dir).rglob("*_processed_rna.h5ad"))
-    pca_files = [f.replace("_processed_rna.h5ad", "_pca_metadata.tsv") for f in anndata]
+    pca_files = [str(f).replace("_rna.h5ad", "_pca.tsv") for f in anndata_files]
 
     for anndata_file, pca_file in zip(anndata_files, pca_files):
         reformat_anndata(anndata_file, pca_file)
