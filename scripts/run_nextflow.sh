@@ -126,8 +126,8 @@ if [ "$RUN_MODE" == "test" ]; then
   fi
 fi
 
-# for full mode, run the data simulation pipeline first
-if [ "$RUN_MODE" == "full" ]; then
+# for full mode or simulate only, run the data simulation pipeline
+if [ "$RUN_MODE" == "full" ] || [ "$RUN_MODE" == "simulate-only" ]; then
   nextflow run AlexsLemonade/OpenScPCA-nf \
     -revision $GITHUB_TAG \
     -entry simulate \
