@@ -14,6 +14,7 @@ You may want to add temporary notes here for tracking as features are added, bef
 - Update simulations to match current (v0.8.5) `scpca-nf` output
   - Change reduced dimension names in AnnData output (to `X_pca` and `X_umap`) and updated formatting to match scpca-nf v0.8.5
   - Use new age columns
+  - Metadata for simulated data now includes project-specific fields
 - Centralized docker image definitions in `config/containers.config`
 - Added initial documentation about porting modules
 
