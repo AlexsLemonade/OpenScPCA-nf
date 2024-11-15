@@ -116,7 +116,7 @@ workflow simulate_sce {
     permuted_metadata_ch = permute_metadata(metadata_ch)
 
     // get bulk files for each project, if present: [project_id, bulk_quant_file, bulk_metadata_file]
-    bulk_ch = project_ch.map{[it[0], it[1] / 'bulk_quant.tsv', it[1] / 'bulk_metadata.tsv']}
+    bulk_ch = project_ch.map{[it[0], it[1] / "${it[0]}_bulk_quant.tsv", it[1] / "${it[0]}_bulk_metadata.tsv"]}
       .filter{it[1].exists()}
     permute_bulk(bulk_ch)
 
