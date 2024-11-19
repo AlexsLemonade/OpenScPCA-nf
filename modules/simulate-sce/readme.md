@@ -4,4 +4,4 @@ This workflow is designed to simulate single cell data, primarily using the [spl
 
 Scripts are derived from the the `simulate-sce` module of the [OpenScPCA-analysis](https://github.com/AlexsLemonade/OpenScPCA-analysis) repository.
 
-Permalink to the version used: https://github.com/AlexsLemonade/OpenScPCA-analysis/tree/0a3d96089991dea692a8485e3126ed6d69958028/analyses/simulate-sce
+Permalink to the version used: https://github.com/AlexsLemonade/OpenScPCA-analysis/tree/0c105e1a482dc045478e88339633999ba9982f1c/analyses/simulate-sce
