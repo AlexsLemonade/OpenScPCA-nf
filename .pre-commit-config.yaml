@@ -13,7 +13,7 @@ repos:
       - id: trailing-whitespace
       - id: end-of-file-fixer
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.21.2
+    rev: v8.22.1
     hooks:
       - id: gitleaks
   - repo: local
@@ -24,11 +24,11 @@ repos:
         language: fail
         files: "(conda-meta|pyvenv.cfg|renv/library)"
   - repo: https://github.com/crate-ci/typos
-    rev: typos-dict-v0.11.34
+    rev: dictgen-v0.3.1
     hooks:
       - id: typos
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.7.2
+    rev: v0.8.6
     hooks:
       - id: ruff-format
   - repo: https://github.com/lorenzwalthert/precommit
