@@ -5,6 +5,7 @@ include { example } from './modules/example'
 include { simulate_sce } from './modules/simulate-sce'
 include { merge_sce } from './modules/merge-sce'
 include { detect_doublets } from './modules/doublet-detection'
+include { seurat_conversion } from './modules/seurat-conversion'
 
 // **** Parameter checks ****
 param_error = false
@@ -53,4 +54,7 @@ workflow {
 
   // Run the doublet detection workflow
   detect_doublets(sample_ch)
+
+  // Run the seurat conversion workflow
+  seurat_conversion(sample_ch)
 }
