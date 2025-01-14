@@ -60,7 +60,7 @@ process assign_consensus {
     combine-celltype-tables.R \
       --input_tsv_files ${input_files} \
       --panglao_ref_file ${params.panglao_ref_file} \
-      --consensus_ref_file ${consensus_ref_file} \
+      --consensus_ref_file ${params.consensus_ref_file} \
       --output_file ${consensus_output_file}
     """
 
