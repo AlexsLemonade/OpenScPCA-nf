@@ -3,8 +3,8 @@
 // Workflow to assign consensus cell type labels
 
 // module parameters
-params.panglao_ref_file = file('https://github.com/AlexsLemonade/OpenScPCA-analysis/blob/40d6db1bcd2e4bdca8d840e96ebae8fe19db5372/analyses/cell-type-consensus/references/panglao-cell-type-ontologies.tsv')
-params.consensus_ref_file = file('https://github.com/AlexsLemonade/OpenScPCA-analysis/blob/40d6db1bcd2e4bdca8d840e96ebae8fe19db5372/analyses/cell-type-consensus/references/consensus-cell-type-reference.tsv')
+params.panglao_ref_file = file('https://github.com/AlexsLemonade/OpenScPCA-analysis/blob/b870a082bc9acd3536c5f8d2d52550d8fe8a4239/analyses/cell-type-consensus/references/panglao-cell-type-ontologies.tsv')
+params.consensus_ref_file = file('https://github.com/AlexsLemonade/OpenScPCA-analysis/blob/b870a082bc9acd3536c5f8d2d52550d8fe8a4239/analyses/cell-type-consensus/references/consensus-cell-type-reference.tsv')
 
 process save_celltypes {
   container params.consensus_cell_type_container
@@ -23,7 +23,7 @@ process save_celltypes {
       }
     """
     for file in ${library_files}; do
-      save-celltypes.R \
+      save-coldata.R \
         --input_sce_file \$file \
         --output_file \$(basename \${file%.rds}__original-cell-types.tsv)
     done
@@ -55,7 +55,7 @@ process assign_consensus {
     input_files = cell_type_files.join(',')
     consensus_output_file = "${project_id}_consensus-cell-types.tsv.gz"
     """
-    assign-consensus-label.R \
+    combine-celltype-tables.R \
       --input_tsv_files ${input_files} \
       --panglao_ref_file ${params.panglao_ref_file} \
       --consensus_ref_file ${consensus_ref_file} \
