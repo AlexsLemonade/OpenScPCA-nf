@@ -25,7 +25,7 @@ opt <- parse_args(OptionParser(option_list = option_list))
 
 # make sure input files exist
 stopifnot(
-  "sce file does not exist" = file.exists(opt$sce_file)
+  "sce file does not exist" = file.exists(opt$input_sce_file)
 )
 
 # load SCE
