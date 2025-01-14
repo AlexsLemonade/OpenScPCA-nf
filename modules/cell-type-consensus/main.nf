@@ -20,13 +20,13 @@ process save_celltypes {
   script:
     output_files = library_files
       .collect{
-        it.name.replaceAll(/(?i).rds$/, "__original-cell-types.tsv")
+        it.name.replaceAll(/(?i).rds$/, "_original-cell-types.tsv")
       }
     """
     for file in ${library_files}; do
       save-coldata.R \
         --input_sce_file \$file \
-        --output_file \$(basename \${file%.rds}__original-cell-types.tsv)
+        --output_file \$(basename \${file%.rds}_original-cell-types.tsv)
     done
     """
 
@@ -90,6 +90,10 @@ workflow cell_type_consensus {
 
     cell_type_files_ch = save_celltypes.out
       .groupTuple(by: 0) // group by project id
+      .map{ project_id, celltype_files -> tuple(
+        project_id,
+        celltype_files.flatten() // get rid of nested tuple that occurs when more than one library maps to a sample
+      )}
 
     // assign consensus cell types by project
     assign_consensus(cell_type_files_ch)
