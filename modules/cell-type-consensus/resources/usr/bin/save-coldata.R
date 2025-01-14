@@ -36,7 +36,7 @@ suppressPackageStartupMessages({
 # Extract colData --------------------------------------------------------------
 
 # read in sce
-sce <- readr::read_rds(opt$sce_file)
+sce <- readr::read_rds(opt$input_sce_file)
 
 # extract ids
 library_id <- metadata(sce)$library_id
