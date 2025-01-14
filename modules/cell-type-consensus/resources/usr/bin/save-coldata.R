@@ -52,7 +52,10 @@ project_id <- metadata(sce)$project_id
 is_cell_line <- all(metadata(sce)$sample_type == "cell line")
 
 # only create and write table for non-cell line samples
-if (!is_cell_line) {
+if (is_cell_line) {
+  # make an empty filtered file
+  file.create(opt$output_file)
+} else {
   # get df with ids, barcodes, and cell type assignments
   celltype_df <- colData(sce) |>
     as.data.frame() |>

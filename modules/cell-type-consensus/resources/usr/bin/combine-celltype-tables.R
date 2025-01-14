@@ -49,7 +49,10 @@ stopifnot(
 )
 
 # list of paths to tsv files
-all_files <- unlist(stringr::str_split(opt$input_tsv_files, ","))
+input_sce_files <- unlist(stringr::str_split(opt$input_tsv_files, ","))
+# check if any are empty, if so remove them
+missing_files <- file.size(input_sce_files) > 0
+all_files <- all_files[!missing_files]
 
 # read in ref files
 # change names for panglao ref to match what's in the consensus file
