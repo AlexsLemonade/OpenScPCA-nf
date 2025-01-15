@@ -15,7 +15,8 @@ process save_celltypes {
           val(project_id),
           path(library_files)
   output:
-    tuple val(project_id),
+    tuple val(sample_id),
+          val(project_id),
           path(output_files)
   script:
     output_files = library_files
@@ -91,8 +92,8 @@ workflow cell_type_consensus {
     save_celltypes(libraries_ch)
 
     cell_type_files_ch = save_celltypes.out
-      .groupTuple(by: 0) // group by project id
-      .map{ project_id, celltype_files -> tuple(
+      .groupTuple(by: 1) // group by project id
+      .map{sample_ids, project_id, celltype_files -> tuple(
         project_id,
         celltype_files.flatten() // get rid of nested tuple that occurs when more than one library maps to a sample
       )}
