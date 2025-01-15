@@ -3,8 +3,8 @@
 // Workflow to assign consensus cell type labels
 
 // module parameters
-params.panglao_ref_file = file('https://github.com/AlexsLemonade/OpenScPCA-analysis/blob/b870a082bc9acd3536c5f8d2d52550d8fe8a4239/analyses/cell-type-consensus/references/panglao-cell-type-ontologies.tsv')
-params.consensus_ref_file = file('https://github.com/AlexsLemonade/OpenScPCA-analysis/blob/b870a082bc9acd3536c5f8d2d52550d8fe8a4239/analyses/cell-type-consensus/references/consensus-cell-type-reference.tsv')
+params.panglao_ref_file = file('https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/blob/b870a082bc9acd3536c5f8d2d52550d8fe8a4239/analyses/cell-type-consensus/references/panglao-cell-type-ontologies.tsv')
+params.consensus_ref_file = file('https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/b870a082bc9acd3536c5f8d2d52550d8fe8a4239/analyses/cell-type-consensus/references/consensus-cell-type-reference.tsv')
 
 process save_celltypes {
   container params.consensus_cell_type_container
