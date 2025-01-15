@@ -51,6 +51,8 @@ process assign_consensus {
   input:
     tuple val(project_id),
           path(cell_type_files)
+    path panglao_ref
+    path consensus_ref
   output:
     path consensus_output_file
   script:
@@ -59,8 +61,8 @@ process assign_consensus {
     """
     combine-celltype-tables.R \
       --input_tsv_files ${input_files} \
-      --panglao_ref_file ${params.panglao_ref_file} \
-      --consensus_ref_file ${params.consensus_ref_file} \
+      --panglao_ref_file ${panglao_ref} \
+      --consensus_ref_file ${consensus_ref} \
       --output_file ${consensus_output_file}
     """
 
@@ -96,7 +98,7 @@ workflow cell_type_consensus {
       )}
 
     // assign consensus cell types by project
-    assign_consensus(cell_type_files_ch)
+    assign_consensus(cell_type_files_ch, file(params.panglao_ref_file), file(params.consensus_ref_file))
 
   emit:
     assign_consensus.out // [project_id, consensus_output_file]
