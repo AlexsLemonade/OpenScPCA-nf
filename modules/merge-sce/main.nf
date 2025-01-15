@@ -3,11 +3,6 @@
 // Workflow to merge SCE objects into a single object.
 // This workflow does NOT perform integration, i.e. batch correction.
 
-// module parameters
-params.reuse_merge = false
-params.max_merge_libraries = 75 // maximum number of libraries to merge (current number is a guess, based on 59 working, but 104 not)
-params.num_hvg = 2000 // number of HVGs to select
-
 // merge workflow variables
 def module_name = "merge-sce"
 def publish_merge_base = "${params.results_bucket}/${params.release_prefix}/${module_name}"
