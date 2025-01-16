@@ -5,6 +5,7 @@
 process save_celltypes {
   container params.consensus_cell_type_container
   tag "${sample_id}"
+  errorStrategy 'terminate'
   input:
     tuple val(sample_id),
           val(project_id),
@@ -40,6 +41,7 @@ process save_celltypes {
 
 process assign_consensus {
   container params.consensus_cell_type_container
+  errorStrategy 'terminate'
   tag "${project_id}"
   label 'mem_8'
   publishDir "${params.results_bucket}/${params.release_prefix}/cell-type-consensus", mode: 'copy'
