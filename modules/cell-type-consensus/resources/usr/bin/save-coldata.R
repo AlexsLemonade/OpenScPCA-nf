@@ -49,7 +49,8 @@ project_id <- metadata(sce)$project_id
 # check if cell line since cell lines don't have any cell type assignments
 # account for having more than one sample and a list of sample types
 # all sample types should be the same theoretically
-is_cell_line <- all(metadata(sce)$sample_type == "cell line")
+sample_type <- unique(metadata(sce)$sample_type)
+is_cell_line <- sample_type == "cell line"
 
 # grab coldata
 coldata_df <- colData(sce) |>
@@ -60,8 +61,7 @@ coldata_df <- colData(sce) |>
     sample_id = sample_id,
     library_id = library_id,
     # add in sample type to make sure we don't assign consensus cell types to cell lines
-    # all samples in a library should be the same sample type so use unique
-    sample_type = unique(sample_type)
+    sample_type = sample_type
   )
 
 # only select sample info and cell type info, we don't need the rest of the coldata
