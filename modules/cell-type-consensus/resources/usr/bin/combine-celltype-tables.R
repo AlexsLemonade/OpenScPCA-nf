@@ -110,7 +110,7 @@ all_cells_df <- all_files |>
   ) |>
   # use unknown for NA annotation but keep ontology ID as NA
   # if the sample type is cell line, keep as NA
-  dplyr::mutate(consensus_annotation = dplyr::if_else(is.na(consensus_annotation & sample_type != "cell line"), "Unknown", consensus_annotation))
+  dplyr::mutate(consensus_annotation = dplyr::if_else(is.na(consensus_annotation) & (sample_type != "cell line"), "Unknown", consensus_annotation))
 
 # export file
 readr::write_tsv(all_cells_df, opt$output_file)
