@@ -49,7 +49,8 @@ process assign_consensus {
     path panglao_ref
     path consensus_ref
   output:
-    path consensus_output_file
+    tuple val(project_id),
+          path(consensus_output_file)
   script:
     input_files = cell_type_files.join(',')
     consensus_output_file = "${project_id}_consensus-cell-types.tsv.gz"
