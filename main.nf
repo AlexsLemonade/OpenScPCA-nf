@@ -6,6 +6,7 @@ include { simulate_sce } from './modules/simulate-sce'
 include { merge_sce } from './modules/merge-sce'
 include { detect_doublets } from './modules/doublet-detection'
 include { seurat_conversion } from './modules/seurat-conversion'
+include { cell_type_consensus } from './modules/cell-type-consensus'
 
 // **** Parameter checks ****
 param_error = false
@@ -57,4 +58,7 @@ workflow {
 
   // Run the seurat conversion workflow
   seurat_conversion(sample_ch)
+
+  // Run the consensus cell type workflow
+  cell_type_consensus(sample_ch)
 }

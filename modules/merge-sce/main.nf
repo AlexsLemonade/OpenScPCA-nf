@@ -3,11 +3,6 @@
 // Workflow to merge SCE objects into a single object.
 // This workflow does NOT perform integration, i.e. batch correction.
 
-// module parameters
-params.reuse_merge = false
-params.max_merge_libraries = 75 // maximum number of libraries to merge (current number is a guess, based on 59 working, but 104 not)
-params.num_hvg = 2000 // number of HVGs to select
-
 // merge workflow variables
 def module_name = "merge-sce"
 def publish_merge_base = "${params.results_bucket}/${params.release_prefix}/${module_name}"
@@ -34,7 +29,7 @@ process merge_group {
       --input_library_ids '${input_library_ids}' \
       --input_sce_files '${input_sces}' \
       --output_sce_file '${merged_sce_file}' \
-      --n_hvg ${params.num_hvg} \
+      --n_hvg ${params.merge_hvg} \
       --threads ${task.cpus}
     """
 
@@ -138,7 +133,7 @@ workflow merge_sce {
       }
       .branch{
         // check the number of libraries
-        mergeable: it[1].size() < params.max_merge_libraries
+        mergeable: it[1].size() < params.merge_max_libraries
         oversized: true
       }
 
@@ -154,7 +149,7 @@ workflow merge_sce {
 
     libraries_branch = libraries_ch.mergeable
       .branch{
-        has_merge: params.reuse_merge && file("${publish_merge_base}/${it[0]}/${it[0]}_merged.rds").exists()
+        has_merge: params.merge_reuse && file("${publish_merge_base}/${it[0]}/${it[0]}_merged.rds").exists()
         make_merge: true
       }
 
