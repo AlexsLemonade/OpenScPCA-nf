@@ -54,6 +54,7 @@ is_cell_line <- all(metadata(sce)$sample_type == "cell line")
 # grab coldata
 coldata_df <- colData(sce) |>
   as.data.frame() |>
+  # add unique sample/library information
   dplyr::mutate(
     project_id = project_id,
     sample_id = sample_id,
@@ -63,6 +64,7 @@ coldata_df <- colData(sce) |>
     sample_type = unique(sample_type)
   )
 
+# only select sample info and cell type info, we don't need the rest of the coldata
 # if sample is cell line, fill in celltype columns with NA
 if (is_cell_line) {
   celltype_df <- coldata_df |>
@@ -70,7 +72,8 @@ if (is_cell_line) {
       project_id,
       sample_id,
       library_id,
-      barcodes
+      barcodes,
+      sample_type
     ) |>
     dplyr::mutate(
       singler_celltype_ontology = NA,
@@ -85,6 +88,7 @@ if (is_cell_line) {
       sample_id,
       library_id,
       barcodes,
+      sample_type,
       contains("celltype") # get both singler and cellassign with ontology
     )
 }
