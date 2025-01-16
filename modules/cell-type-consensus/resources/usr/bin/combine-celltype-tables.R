@@ -91,31 +91,26 @@ blueprint_df <- data.frame(
 
 # Create combined TSV ----------------------------------------------------------
 
-# account for all samples being cell lines and no cell type annotations being present
-if (length(all_files) == 0) {
-  # make an empty filtered file
-  file.create(opt$output_file)
-} else {
-  # read in TSV files and combine into a single df
-  all_cells_df <- all_files |>
-    purrr::map(readr::read_tsv) |>
-    dplyr::bind_rows() |>
-    # add columns for panglao ontology and consensus
-    # first add panglao ontology
-    dplyr::left_join(panglao_ref_df, by = c("cellassign_celltype_annotation" = "original_panglao_name")) |>
-    # now add in all the blueprint columns
-    dplyr::left_join(blueprint_df, by = c("singler_celltype_ontology" = "blueprint_ontology")) |>
-    # then add consensus labels
-    dplyr::left_join(consensus_ref_df,
-      by = c(
-        "singler_celltype_ontology" = "blueprint_ontology",
-        "cellassign_celltype_annotation" = "original_panglao_name",
-        "panglao_ontology"
-      )
-    ) |>
-    # use unknown for NA annotation but keep ontology ID as NA
-    dplyr::mutate(consensus_annotation = dplyr::if_else(is.na(consensus_annotation), "Unknown", consensus_annotation))
+# read in TSV files and combine into a single df
+all_cells_df <- all_files |>
+  purrr::map(readr::read_tsv) |>
+  dplyr::bind_rows() |>
+  # add columns for panglao ontology and consensus
+  # first add panglao ontology
+  dplyr::left_join(panglao_ref_df, by = c("cellassign_celltype_annotation" = "original_panglao_name")) |>
+  # now add in all the blueprint columns
+  dplyr::left_join(blueprint_df, by = c("singler_celltype_ontology" = "blueprint_ontology")) |>
+  # then add consensus labels
+  dplyr::left_join(consensus_ref_df,
+    by = c(
+      "singler_celltype_ontology" = "blueprint_ontology",
+      "cellassign_celltype_annotation" = "original_panglao_name",
+      "panglao_ontology"
+    )
+  ) |>
+  # use unknown for NA annotation but keep ontology ID as NA
+  # if the sample type is cell line, keep as NA
+  dplyr::mutate(consensus_annotation = dplyr::if_else(is.na(consensus_annotation & sample_type != "cell line"), "Unknown", consensus_annotation))
 
-  # export file
-  readr::write_tsv(all_cells_df, opt$output_file)
-}
+# export file
+readr::write_tsv(all_cells_df, opt$output_file)

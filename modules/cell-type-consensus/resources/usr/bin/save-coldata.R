@@ -51,19 +51,35 @@ project_id <- metadata(sce)$project_id
 # all sample types should be the same theoretically
 is_cell_line <- all(metadata(sce)$sample_type == "cell line")
 
-# only create and write table for non-cell line samples
+# grab coldata
+coldata_df <- colData(sce) |>
+  as.data.frame() |>
+  dplyr::mutate(
+    project_id = project_id,
+    sample_id = sample_id,
+    library_id = library_id,
+    # add in sample type to make sure we don't assign consensus cell types to cell lines
+    # all samples in a library should be the same sample type so use unique
+    sample_type = unique(sample_type)
+  )
+
+# if sample is cell line, fill in celltype columns with NA
 if (is_cell_line) {
-  # make an empty filtered file
-  file.create(opt$output_file)
-} else {
-  # get df with ids, barcodes, and cell type assignments
-  celltype_df <- colData(sce) |>
-    as.data.frame() |>
-    dplyr::mutate(
-      project_id = project_id,
-      sample_id = sample_id,
-      library_id = library_id
+  celltype_df <- coldata_df |>
+    dplyr::select(
+      project_id,
+      sample_id,
+      library_id,
+      barcodes
     ) |>
+    dplyr::mutate(
+      singler_celltype_ontology = NA,
+      singler_celltype_annotation = NA,
+      cellassign_celltype_annotation = NA
+    )
+} else {
+  # otherwise select the cell type columns
+  celltype_df <- coldata_df |>
     dplyr::select(
       project_id,
       sample_id,
@@ -71,7 +87,7 @@ if (is_cell_line) {
       barcodes,
       contains("celltype") # get both singler and cellassign with ontology
     )
-
-  # save tsv
-  readr::write_tsv(celltype_df, opt$output_file)
 }
+
+# save tsv
+readr::write_tsv(celltype_df, opt$output_file)
