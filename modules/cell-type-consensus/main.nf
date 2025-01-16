@@ -94,7 +94,7 @@ workflow cell_type_consensus {
       )}
 
     // assign consensus cell types by project
-    assign_consensus(cell_type_files_ch, file(params.panglao_ref_file), file(params.consensus_ref_file))
+    assign_consensus(cell_type_files_ch, file(params.cell_type_panglao_ref_file), file(params.cell_type_consensus_ref_file))
 
   emit:
     assign_consensus.out // [project_id, consensus_output_file]
