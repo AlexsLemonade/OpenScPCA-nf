@@ -6,7 +6,7 @@ process seurat_convert {
   container params.seurat_conversion_container
   tag "${sample_id}"
   label 'mem_8'
-  publishDir "${params.results_bucket}/${params.release_prefix}/seurat/${project_id}/${sample_id}", mode: 'copy'
+  publishDir "${params.results_bucket}/${params.release_prefix}/seurat-conversion/${project_id}/${sample_id}", mode: 'copy'
   input:
     tuple val(sample_id),
           val(project_id),
