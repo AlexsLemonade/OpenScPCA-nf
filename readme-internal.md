@@ -62,7 +62,7 @@ You must have access to the CCDL workspace to view the runs.
 
 All runs are launched on the `Nextflow-workload` instance in the OpenScPCA AWS workloads account.
 You can log in to this instance to monitor _and cancel_ the workflow runs using the AWS console.
-You will first need to have access to the "workload" account, then you can log into the instance using the "Connect" button on the EC2 console.
+You will first need to have access to the "workloads" account, then use the AWS console to navigate to the EC2 console and log into the instance via the "Connect" button. 
 Choose "Session Manager" to connect to the instance in the browser without needing to use a key pair.
 The following link should take you to the correct page: [Connect to Nextflow-workload instance](https://us-east-2.console.aws.amazon.com/ec2/home?region=us-east-2#ConnectToInstance:instanceId=i-04337969c2475d6f0).
 

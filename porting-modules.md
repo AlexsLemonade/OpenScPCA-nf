@@ -157,7 +157,7 @@ Where possible, include the `SCPCS` sample id, `SCPCL` library id, or `SCPCP` pr
 ### Module parameters
 
 If a module requires additional parameters, these should be defined as entries in the `config/module_parameters.config` file.
-You will also need to add them to the `nextflow_schema.json` file, which can be updating using the following command from the root of the repository:
+You will also need to add them to the `nextflow_schema.json` file, which can be updated using the following command from the root of the repository:
 
 ```bash
 nf-core pipelines schema build
@@ -165,7 +165,7 @@ nf-core pipelines schema build
 
 This will launch a web editor to add descriptions, help, and validation rules for the new parameters.
 
-If you do not already have `nf-core` installed, you can use the `environment.yml` file in this repository to create a conda environment with the necessary tools:
+If you do not already have `nf-core` installed, you can use the `environment.yml` file in this repository to create a conda environment with the necessary tools prior to updating the `nextflow_schema.json` file:
 
 ```bash
 conda env create -n openscpca-nf -f environment.yml
