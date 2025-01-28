@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/openscpca-nf/main/nextflow_schema.json",
-  "title": "OpenScPCA-nf pipeline parameters",
+  "title": "openscpca-nf pipeline parameters",
   "description": "A workflow to run modules from the OpenScPCA project.",
   "type": "object",
   "$defs": {
@@ -45,6 +45,44 @@
         }
       }
     },
+    "module_specific_parameters": {
+      "title": "Module-specific parameters",
+      "type": "object",
+      "description": "Parameters used by individual modules",
+      "default": "",
+      "properties": {
+        "merge_reuse": {
+          "type": "boolean",
+          "description": "Whether to reuse previous merge data output"
+        },
+        "merge_max_libraries": {
+          "type": "integer",
+          "default": 75,
+          "description": "Maximum number of libraries to merge into a single object"
+        },
+        "merge_hvg": {
+          "type": "integer",
+          "default": 2000,
+          "description": "Number of highly variable genes to use when performing dimensionality reduction on merged objects"
+        },
+        "cell_type_panglao_ref_file": {
+          "type": "string",
+          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/b870a082bc9acd3536c5f8d2d52550d8fe8a4239/analyses/cell-type-consensus/references/panglao-cell-type-ontologies.tsv",
+          "pattern": "\\.tsv$",
+          "format": "file-path",
+          "mimetype": "text/tab-separated-values",
+          "description": "PanglaoDB cell type reference file"
+        },
+        "cell_type_consensus_ref_file": {
+          "type": "string",
+          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/b870a082bc9acd3536c5f8d2d52550d8fe8a4239/analyses/cell-type-consensus/references/consensus-cell-type-reference.tsv",
+          "pattern": "\\.tsv$",
+          "format": "file-path",
+          "mimetype": "text/tab-separated-values",
+          "description": "Consensus cell types reference file"
+        }
+      }
+    },
     "containers": {
       "title": "Containers",
       "type": "object",
@@ -84,44 +122,6 @@
           "default": "public.ecr.aws/openscpca/cell-type-consensus:latest"
         }
       }
-    },
-    "module_specific_parameters": {
-      "title": "Module-specific parameters",
-      "type": "object",
-      "description": "Parameters used by individual modules",
-      "default": "",
-      "properties": {
-        "merge_reuse": {
-          "type": "boolean",
-          "description": "Whether to reuse previous merge data output"
-        },
-        "merge_max_libraries": {
-          "type": "integer",
-          "default": 75,
-          "description": "Maximum number of libraries to merge into a single object"
-        },
-        "merge_hvg": {
-          "type": "integer",
-          "default": 2000,
-          "description": "Number of highly variable genes to use when performing dimensionality reduction on merged objects"
-        },
-        "cell_type_panglao_ref_file": {
-          "type": "string",
-          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/b870a082bc9acd3536c5f8d2d52550d8fe8a4239/analyses/cell-type-consensus/references/panglao-cell-type-ontologies.tsv",
-          "pattern": "\\.tsv$",
-          "format": "file-path",
-          "mimetype": "text/tab-separated-values",
-          "description": "PanglaoDB cell type reference file"
-        },
-        "cell_type_consensus_ref_file": {
-          "type": "string",
-          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/b870a082bc9acd3536c5f8d2d52550d8fe8a4239/analyses/cell-type-consensus/references/consensus-cell-type-reference.tsv",
-          "pattern": "\\.tsv$",
-          "format": "file-path",
-          "mimetype": "text/tab-separated-values",
-          "description": "Consensus cell types reference file"
-        }
-      }
     }
   },
   "allOf": [
@@ -129,10 +129,10 @@
       "$ref": "#/$defs/input_and_output_locations"
     },
     {
-      "$ref": "#/$defs/containers"
+      "$ref": "#/$defs/module_specific_parameters"
     },
     {
-      "$ref": "#/$defs/module_specific_parameters"
+      "$ref": "#/$defs/containers"
     }
   ]
 }
