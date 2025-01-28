@@ -1,0 +1,49 @@
+name: Check Nextflow Workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  nf-config-check:
+    runs-on: ubuntu-latest
+    container: nfcore/tools:3.2.0
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Check Nextflow params
+        run: nextflow config
+
+      - name: Check nextflow_schema.json file
+        if: ${{ !cancelled() }}
+        run: nf-core pipelines schema lint
+
+  nf-stub-check:
+    name: Check Stub Run
+    runs-on: ubuntu-latest
+    needs: nf-config-check
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Nextflow
+        uses: nf-core/setup-nextflow@v2.0.0
+
+      - name: Check main workflow
+        run: nextflow -log stub-run.log run main.nf -stub -profile stub -ansi-log false
+
+      - name: Check simulate workflow
+        run: nextflow -log simulate-run.log run main.nf -stub -profile stub -ansi-log false -entry simulate
+
+      - name: Join log files
+        if: ${{ !cancelled() }}
+        run: cat stub-run.log simulate-run.log > nextflow-runs.log
+
+      - name: Upload nextflow log
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: nextflow-log
+          path: nextflow-runs.log
