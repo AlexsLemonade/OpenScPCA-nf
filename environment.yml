@@ -1,0 +1,7 @@
+name: "openscpca-nf"
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - nextflow=24.10.4
+  - nf-core=3.2.0

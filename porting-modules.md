@@ -12,6 +12,7 @@
   - [Module input (take)](#module-input-take)
     - [The `Utils.getLibraryFiles()` function](#the-utilsgetlibraryfiles-function)
   - [Module output (emit)](#module-output-emit)
+  - [Module parameters](#module-parameters)
   - [Docker images](#docker-images)
   - [Module processes](#module-processes)
     - [Process granularity](#process-granularity)
@@ -152,6 +153,24 @@ If the workflow emits results at the project level, `[project_id, output_files]`
 If a module creates multiple output files (e.g., a table of results and an R object with more detailed output), follow the same general format, but with additional entries in each channel element: `[sample_id, project_id, output_files_1, output_files_2, ...]`.
 
 Where possible, include the `SCPCS` sample id, `SCPCL` library id, or `SCPCP` project id as appropriate in the file name to facilitate searching and filtering.
+
+### Module parameters
+
+If a module requires additional parameters, these should be defined as entries in the `config/module_parameters.config` file.
+You will also need to add them to the `nextflow_schema.json` file, which can be updated using the following command from the root of the repository:
+
+```bash
+nf-core pipelines schema build
+```
+
+This will launch a web editor to add descriptions, help, and validation rules for the new parameters.
+
+If you do not already have `nf-core` installed, you can use the `environment.yml` file in this repository to create a conda environment with the necessary tools prior to updating the `nextflow_schema.json` file:
+
+```bash
+conda env create -n openscpca-nf -f environment.yml
+```
+
 
 ### Docker images
 

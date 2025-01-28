@@ -9,13 +9,14 @@ include { seurat_conversion } from './modules/seurat-conversion'
 include { cell_type_consensus } from './modules/cell-type-consensus'
 
 // **** Parameter checks ****
+include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
 param_error = false
 
-// Set data release path
-if (!params.release_bucket) {
-  log.error("Release bucket not specified")
-  param_error = true
-}
+// Validate input parameters
+validateParameters()
+
+// Print summary of supplied parameters
+log.info paramsSummaryLog(workflow)
 
 def release_dir = Utils.getReleasePath(params.release_bucket, params.release_prefix)
 
