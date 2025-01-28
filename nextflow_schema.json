@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/openscpca-nf//nextflow_schema.json",
-  "title": "openscpca-nf pipeline parameters",
+  "$id": "https://raw.githubusercontent.com/openscpca-nf/main/nextflow_schema.json",
+  "title": "OpenScPCA-nf pipeline parameters",
   "description": "A workflow to run modules from the OpenScPCA project.",
   "type": "object",
   "$defs": {
@@ -15,7 +15,8 @@
           "type": "string",
           "default": "s3://openscpca-data-release",
           "format": "directory-path",
-          "description": "Base URI for input data from OpenScPCA"
+          "description": "Base URI for input data from OpenScPCA",
+          "help_text": "Standard configurations will use an S3 bucket, but local paths can also be used."
         },
         "release_prefix": {
           "type": "string",
@@ -26,24 +27,28 @@
         "results_bucket": {
           "type": "string",
           "default": "s3://openscpca-nf-workflow-results-staging",
-          "description": "Base URI for results output"
+          "description": "Base URI for results output",
+          "help_text": "Standard configurations will use an S3 bucket, but local paths can also be used."
         },
         "sim_bucket": {
           "type": "string",
           "default": "s3://openscpca-test-data-release-staging",
-          "description": "Base URI for simulated data (both input and output)"
+          "description": "Base URI for simulated data output",
+          "help_text": "Standard configurations will use an S3 bucket, but local paths can also be used."
         },
         "project": {
           "type": "string",
           "default": "all",
-          "description": "Projects that will be used in the workflow run"
+          "description": "Projects that will be used in the workflow run",
+          "help_text": "Default is to run all projects. To run a single project or specified projects, include them as a list of SCPCP ids, separated by commas, semicolons, or spaces.",
+          "pattern": "^[aA][lL][lL]$|^(SCPCP\\d{6}([,; ]+|$))+$"
         }
       }
     },
     "containers": {
       "title": "Containers",
       "type": "object",
-      "description": "Locations for Docker images used by processes",
+      "description": "Locations for Docker images used by workflow processes",
       "default": "",
       "properties": {
         "python_container": {
@@ -98,7 +103,7 @@
         "merge_hvg": {
           "type": "integer",
           "default": 2000,
-          "description": "Number of Highly Variable Genes to use when performing dimensionality reduction on merged objects"
+          "description": "Number of highly variable genes to use when performing dimensionality reduction on merged objects"
         },
         "cell_type_panglao_ref_file": {
           "type": "string",
