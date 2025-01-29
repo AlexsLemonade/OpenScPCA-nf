@@ -2,13 +2,18 @@
 
 // Workflow to assign consensus cell type labels
 
-process save_celltypes {
+process assign_consensus {
   container params.consensus_cell_type_container
-  tag "${sample_id}"
+  tag "${project_id}"
+  label 'mem_8'
+  publishDir "${params.results_bucket}/${params.release_prefix}/cell-type-consensus", mode: 'copy'
   input:
     tuple val(sample_id),
           val(project_id),
           path(library_files)
+    path blueprint_ref
+    path panglao_ref
+    path consensus_ref
   output:
     tuple val(sample_id),
           val(project_id),
@@ -16,57 +21,28 @@ process save_celltypes {
   script:
     output_files = library_files
       .collect{
-        it.name.replaceAll(/(?i).rds$/, "_original-cell-types.tsv")
+        it.name.replaceAll(/(?i).rds$/, "_consensus-cell-types.tsv.gz")
       }
     """
     for file in ${library_files}; do
-      save-coldata.R \
-        --input_sce_file \$file \
-        --output_file \$(basename \${file%.rds}_original-cell-types.tsv)
+      assign-consensus-celltypes.R \
+        --sce_file \$file \
+        --blueprint_ref_file ${blueprint_ref} \
+        --panglao_ref_file ${panglao_ref} \
+        --consensus_ref_file ${consensus_ref} \
+        --output_file \$(basename \${file%.rds}_consensus-cell-types.tsv.gz)
     done
     """
 
   stub:
     output_files = library_files
       .collect{
-        it.name.replaceAll(/(?i).rds$/, "_original-cell-types.tsv")
+        it.name.replaceAll(/(?i).rds$/, "_consensus-cell-types.tsv.gz")
       }
     """
     for file in ${library_files}; do
-      touch \$(basename \${file%.rds}_original-cell-types.tsv)
+      touch \$(basename \${file%.rds}_consensus-cell-types.tsv.gz)
     done
-    """
-}
-
-process assign_consensus {
-  container params.consensus_cell_type_container
-  tag "${project_id}"
-  label 'mem_8'
-  publishDir "${params.results_bucket}/${params.release_prefix}/cell-type-consensus", mode: 'copy'
-  input:
-    tuple val(project_id),
-          path(cell_type_files)
-    path panglao_ref
-    path consensus_ref
-  output:
-    tuple val(project_id),
-          path(consensus_output_file)
-  script:
-    input_files = cell_type_files.join(',')
-    consensus_output_file = "${project_id}_consensus-cell-types.tsv.gz"
-    """
-    combine-celltype-tables.R \
-      --input_tsv_files ${input_files} \
-      --panglao_ref_file ${panglao_ref} \
-      --consensus_ref_file ${consensus_ref} \
-      --output_file ${consensus_output_file}
-    """
-
-  stub:
-    input_files = cell_type_files.join(',')
-    consensus_output_file = "${project_id}_consensus-cell-types.tsv.gz"
-    """
-    touch ${consensus_output_file}
     """
 }
 
@@ -83,19 +59,9 @@ workflow cell_type_consensus {
         return [sample_id, project_id, library_files]
       }
 
-    // save cell type information for each library
-    save_celltypes(libraries_ch)
-
-    cell_type_files_ch = save_celltypes.out
-      .groupTuple(by: 1) // group by project id
-      .map{sample_ids, project_id, celltype_files -> tuple(
-        project_id,
-        celltype_files.flatten() // get rid of nested tuple that occurs when more than one library maps to a sample
-      )}
-
-    // assign consensus cell types by project
-    assign_consensus(cell_type_files_ch, file(params.cell_type_panglao_ref_file), file(params.cell_type_consensus_ref_file))
+    // assign consensus cell types
+    assign_consensus(libraries_ch, file(params.cell_type_blueprint_ref_file), file(params.cell_type_panglao_ref_file), file(params.cell_type_consensus_ref_file))
 
   emit:
-    assign_consensus.out // [project_id, consensus_output_file]
+    assign_consensus.out // [sample_id, project_id, [list of consensus_output_files]]
 }
