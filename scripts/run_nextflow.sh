@@ -22,6 +22,13 @@ RESUME=${RESUME:-false}
 date=$(date "+%Y-%m-%d")
 datetime=$(date "+%Y-%m-%dT%H%M")
 
+# Make sure environment includes local bin (where Nextflow is installed)
+if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]
+then
+    PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+fi
+export PATH
+
 # Get secrets from AWS Secrets Manager/1Password
 AWS_SECRETS=$(aws secretsmanager get-secret-value --secret-id openscpca_service_account_token | jq -r '.SecretString')
 # AWS secrets are a key-value store: retrieve individual values with jq
