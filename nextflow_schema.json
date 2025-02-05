@@ -65,9 +65,17 @@
           "default": 2000,
           "description": "Number of highly variable genes to use when performing dimensionality reduction on merged objects"
         },
+        "cell_type_blueprint_ref_file": {
+          "type": "string",
+          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.1/analyses/cell-type-consensus/references/blueprint-mapped-ontologies.tsv",
+          "pattern": "\\.tsv$",
+          "format": "file-path",
+          "mimetype": "text/tab-separated-values",
+          "description": "BlueprintEncodeData cell type reference file"
+        },
         "cell_type_panglao_ref_file": {
           "type": "string",
-          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/b870a082bc9acd3536c5f8d2d52550d8fe8a4239/analyses/cell-type-consensus/references/panglao-cell-type-ontologies.tsv",
+          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.1/analyses/cell-type-consensus/references/panglao-cell-type-ontologies.tsv",
           "pattern": "\\.tsv$",
           "format": "file-path",
           "mimetype": "text/tab-separated-values",
@@ -75,7 +83,7 @@
         },
         "cell_type_consensus_ref_file": {
           "type": "string",
-          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/b870a082bc9acd3536c5f8d2d52550d8fe8a4239/analyses/cell-type-consensus/references/consensus-cell-type-reference.tsv",
+          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.1/analyses/cell-type-consensus/references/consensus-cell-type-reference.tsv",
           "pattern": "\\.tsv$",
           "format": "file-path",
           "mimetype": "text/tab-separated-values",
