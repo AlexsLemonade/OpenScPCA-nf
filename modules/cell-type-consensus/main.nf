@@ -60,7 +60,12 @@ workflow cell_type_consensus {
       }
 
     // assign consensus cell types
-    assign_consensus(libraries_ch, file(params.cell_type_blueprint_ref_file), file(params.cell_type_panglao_ref_file), file(params.cell_type_consensus_ref_file))
+    assign_consensus(
+      libraries_ch,
+      file(params.cell_type_blueprint_ref_file),
+      file(params.cell_type_panglao_ref_file),
+      file(params.cell_type_consensus_ref_file)
+    )
 
   emit:
     assign_consensus.out // [sample_id, project_id, [list of consensus_output_files]]
