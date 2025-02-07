@@ -115,19 +115,19 @@
         },
         "simulate_sce_container": {
           "type": "string",
-          "default": "public.ecr.aws/openscpca/simulate-sce:v0.2.0"
+          "default": "public.ecr.aws/openscpca/simulate-sce:v0.2.1"
         },
         "doublet_detection_container": {
           "type": "string",
-          "default": "public.ecr.aws/openscpca/doublet-detection:v0.2.0"
+          "default": "public.ecr.aws/openscpca/doublet-detection:v0.2.1"
         },
         "seurat_conversion_container": {
           "type": "string",
-          "default": "public.ecr.aws/openscpca/seurat-conversion:v0.2.0"
+          "default": "public.ecr.aws/openscpca/seurat-conversion:v0.2.1"
         },
         "consensus_cell_type_container": {
           "type": "string",
-          "default": "public.ecr.aws/openscpca/cell-type-consensus:latest"
+          "default": "public.ecr.aws/openscpca/cell-type-consensus:v0.2.1"
         }
       }
     }

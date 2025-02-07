@@ -8,6 +8,17 @@ Add new release notes in reverse numerical order (newest first) below this comme
 You may want to add temporary notes here for tracking as features are added, before a new release is ready.
 -->
 
+## v0.1.3
+
+- Two new modules:
+  - `seurat-conversion`: converts processed `SingleCellExperiment` objects to `Seurat` objects
+  - `cell-type-consensus`: assigns consensus cell type labels
+- Default release date for ScPCA data is set to `2024-11-25`
+- A `nextflow_schema.json` file defining all workflow parameters is now available
+  - Parameters are also validated as part of the main workflow
+- The `testing` profile can now be used for local testing of the workflow
+
+
 ## v0.1.2
 
 - Update scpcaTools images to v0.4.1 versions
