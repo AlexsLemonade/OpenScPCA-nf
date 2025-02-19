@@ -83,7 +83,7 @@
         },
         "cell_type_consensus_ref_file": {
           "type": "string",
-          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.1/analyses/cell-type-consensus/references/consensus-cell-type-reference.tsv",
+          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/e4dc422dd8ddcdc89d031c289fbd123748db500c/analyses/cell-type-consensus/references/consensus-cell-type-reference.tsv",
           "pattern": "\\.tsv$",
           "format": "file-path",
           "mimetype": "text/tab-separated-values",
