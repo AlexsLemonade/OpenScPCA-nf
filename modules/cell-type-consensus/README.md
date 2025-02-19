@@ -8,6 +8,6 @@ Links to specific original scripts used in this module:
 
 This module also uses the following reference files found in the `OpenScPCA-analysis` repository:
 
-- `blueprint-mapped-ontologies.tsv` : <https://github.com/AlexsLemonade/OpenScPCA-analysis/blob/e4ffb305a87a54133f398c4445ff92348fcb9d8a/analyses/cell-type-consensus/references/blueprint-mapped-ontologies.tsv>
-- `panglao-cell-type-ontologies.tsv`: <https://github.com/AlexsLemonade/OpenScPCA-analysis/blob/b870a082bc9acd3536c5f8d2d52550d8fe8a4239/analyses/cell-type-consensus/references/panglao-cell-type-ontologies.tsv>
-- `consensus-cell-type-reference.tsv`: <https://github.com/AlexsLemonade/OpenScPCA-analysis/blob/e4ffb305a87a54133f398c4445ff92348fcb9d8a/analyses/cell-type-consensus/references/consensus-cell-type-reference.tsv>
+- `blueprint-mapped-ontologies.tsv` : <https://github.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.1/analyses/cell-type-consensus/references/blueprint-mapped-ontologies.tsv>
+- `panglao-cell-type-ontologies.tsv`: <https://github.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.1/analyses/cell-type-consensus/references/panglao-cell-type-ontologies.tsv>
+- `consensus-cell-type-reference.tsv`: <https://github.com/AlexsLemonade/OpenScPCA-analysis/blob/e4dc422dd8ddcdc89d031c289fbd123748db500c/analyses/cell-type-consensus/references/consensus-cell-type-reference.tsv>
