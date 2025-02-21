@@ -91,7 +91,7 @@
         },
         "cell_type_consensus_marker_gene_ref_file": {
           "type": "string",
-          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.2/analyses/cell-type-consensus/references/validation-markers.tsv'",
+          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.2/analyses/cell-type-consensus/references/validation-markers.tsv",
           "pattern": "\\.tsv$",
           "format": "file-path",
           "mimetype": "text/tab-separated-values",
