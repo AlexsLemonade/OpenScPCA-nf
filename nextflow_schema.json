@@ -67,7 +67,7 @@
         },
         "cell_type_blueprint_ref_file": {
           "type": "string",
-          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.1/analyses/cell-type-consensus/references/blueprint-mapped-ontologies.tsv",
+          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.2/analyses/cell-type-consensus/references/blueprint-mapped-ontologies.tsv",
           "pattern": "\\.tsv$",
           "format": "file-path",
           "mimetype": "text/tab-separated-values",
@@ -75,7 +75,7 @@
         },
         "cell_type_panglao_ref_file": {
           "type": "string",
-          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.1/analyses/cell-type-consensus/references/panglao-cell-type-ontologies.tsv",
+          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.2/analyses/cell-type-consensus/references/panglao-cell-type-ontologies.tsv",
           "pattern": "\\.tsv$",
           "format": "file-path",
           "mimetype": "text/tab-separated-values",
@@ -83,7 +83,7 @@
         },
         "cell_type_consensus_ref_file": {
           "type": "string",
-          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/e4dc422dd8ddcdc89d031c289fbd123748db500c/analyses/cell-type-consensus/references/consensus-cell-type-reference.tsv",
+          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.2/analyses/cell-type-consensus/references/consensus-cell-type-reference.tsv",
           "pattern": "\\.tsv$",
           "format": "file-path",
           "mimetype": "text/tab-separated-values",
@@ -91,7 +91,7 @@
         },
         "cell_type_consensus_marker_gene_ref_file": {
           "type": "string",
-          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/872fd2b8256434221512b04fac7c98140704ede3/analyses/cell-type-consensus/references/validation-markers.tsv'",
+          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.2/analyses/cell-type-consensus/references/validation-markers.tsv'",
           "pattern": "\\.tsv$",
           "format": "file-path",
           "mimetype": "text/tab-separated-values",
@@ -123,19 +123,19 @@
         },
         "simulate_sce_container": {
           "type": "string",
-          "default": "public.ecr.aws/openscpca/simulate-sce:v0.2.1"
+          "default": "public.ecr.aws/openscpca/simulate-sce:v0.2.2"
         },
         "doublet_detection_container": {
           "type": "string",
-          "default": "public.ecr.aws/openscpca/doublet-detection:v0.2.1"
+          "default": "public.ecr.aws/openscpca/doublet-detection:v0.2.2"
         },
         "seurat_conversion_container": {
           "type": "string",
-          "default": "public.ecr.aws/openscpca/seurat-conversion:v0.2.1"
+          "default": "public.ecr.aws/openscpca/seurat-conversion:v0.2.2"
         },
         "consensus_cell_type_container": {
           "type": "string",
-          "default": "public.ecr.aws/openscpca/cell-type-consensus:latest"
+          "default": "public.ecr.aws/openscpca/cell-type-consensus:v0.2.2"
         }
       }
     }
