@@ -11,3 +11,4 @@ This module also uses the following reference files found in the `OpenScPCA-anal
 - `blueprint-mapped-ontologies.tsv` : <https://github.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.1/analyses/cell-type-consensus/references/blueprint-mapped-ontologies.tsv>
 - `panglao-cell-type-ontologies.tsv`: <https://github.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.1/analyses/cell-type-consensus/references/panglao-cell-type-ontologies.tsv>
 - `consensus-cell-type-reference.tsv`: <https://github.com/AlexsLemonade/OpenScPCA-analysis/blob/e4dc422dd8ddcdc89d031c289fbd123748db500c/analyses/cell-type-consensus/references/consensus-cell-type-reference.tsv>
+- `validation-markers.tsv`: <https://github.com/AlexsLemonade/OpenScPCA-analysis/blob/main/analyses/cell-type-consensus/references/validation-markers.tsv>

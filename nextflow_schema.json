@@ -88,6 +88,14 @@
           "format": "file-path",
           "mimetype": "text/tab-separated-values",
           "description": "Consensus cell types reference file"
+        },
+        "cell_type_consensus_marker_gene_ref_file": {
+          "type": "string",
+          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/872fd2b8256434221512b04fac7c98140704ede3/analyses/cell-type-consensus/references/validation-markers.tsv'",
+          "pattern": "\\.tsv$",
+          "format": "file-path",
+          "mimetype": "text/tab-separated-values",
+          "description": "Table of marker genes used to validate consensus cell types"
         }
       }
     },
@@ -127,7 +135,7 @@
         },
         "consensus_cell_type_container": {
           "type": "string",
-          "default": "public.ecr.aws/openscpca/cell-type-consensus:v0.2.1"
+          "default": "public.ecr.aws/openscpca/cell-type-consensus:latest"
         }
       }
     }
