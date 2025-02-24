@@ -14,14 +14,20 @@ process assign_consensus {
     path blueprint_ref
     path panglao_ref
     path consensus_ref
+    path marker_gene_ref
   output:
     tuple val(sample_id),
           val(project_id),
-          path(output_files)
+          path(consensus_output_files),
+          path(gene_exp_output_files)
   script:
-    output_files = library_files
+    consensus_output_files = library_files
       .collect{
         it.name.replaceAll(/(?i).rds$/, "_consensus-cell-types.tsv.gz")
+      }
+    gene_exp_output_files = library_files
+      .collect{
+        it.name.replaceAll(/(?i).rds$/, "_marker-gene-expression.tsv.gz")
       }
     """
     for file in ${library_files}; do
@@ -30,18 +36,25 @@ process assign_consensus {
         --blueprint_ref_file ${blueprint_ref} \
         --panglao_ref_file ${panglao_ref} \
         --consensus_ref_file ${consensus_ref} \
-        --output_file \$(basename \${file%.rds}_consensus-cell-types.tsv.gz)
+        --marker_gene_file ${marker_gene_ref} \
+        --consensus_output_file \$(basename \${file%.rds}_consensus-cell-types.tsv.gz) \
+        --gene_exp_output_file \$(basename \${file%.rds}_marker-gene-expression.tsv.gz)
     done
     """
 
   stub:
-    output_files = library_files
+    consensus_output_files = library_files
       .collect{
         it.name.replaceAll(/(?i).rds$/, "_consensus-cell-types.tsv.gz")
+      }
+    gene_exp_output_files = library_files
+      .collect{
+        it.name.replaceAll(/(?i).rds$/, "_marker-gene-expression.tsv.gz")
       }
     """
     for file in ${library_files}; do
       touch \$(basename \${file%.rds}_consensus-cell-types.tsv.gz)
+      touch \$(basename \${file%.rds}_marker-gene-expression.tsv.gz)
     done
     """
 }
@@ -64,9 +77,10 @@ workflow cell_type_consensus {
       libraries_ch,
       file(params.cell_type_blueprint_ref_file),
       file(params.cell_type_panglao_ref_file),
-      file(params.cell_type_consensus_ref_file)
+      file(params.cell_type_consensus_ref_file),
+      file(params.cell_type_consensus_marker_gene_ref_file)
     )
 
   emit:
-    assign_consensus.out // [sample_id, project_id, [list of consensus_output_files]]
+    assign_consensus.out // [sample_id, project_id, [list of consensus_output_files], [list of gene_exp_output_files]]
 }
