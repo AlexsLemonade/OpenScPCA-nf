@@ -96,6 +96,22 @@
           "format": "file-path",
           "mimetype": "text/tab-separated-values",
           "description": "Table of marker genes used to validate consensus cell types"
+        },
+        "cell_type_ewings_auc_max_rank": {
+          "type": "integer",
+          "default": 425
+        },
+        "cell_type_ewings_msigdb_list": {
+          "type": "string",
+          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.2/analyses/cell-type-ewings/references/msigdb-gene-sets.tsv"
+        },
+        "cell_type_ewings_ews_high_list": {
+          "type": "string",
+          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.2/analyses/cell-type-ewings/references/gene_signatures/aynaud-ews-targets.tsv"
+        },
+        "cell_type_ewings_ews_low_list": {
+          "type": "string",
+          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.2/analyses/cell-type-ewings/references/gene_signatures/wrenn-nt5e-genes.tsv"
         }
       }
     },
@@ -136,6 +152,10 @@
         "consensus_cell_type_container": {
           "type": "string",
           "default": "public.ecr.aws/openscpca/cell-type-consensus:v0.2.2"
+        },
+        "cell_type_ewing_container": {
+          "type": "string",
+          "default": "public.ecr.aws/openscpca/cell-type-ewings:v0.2.2"
         }
       }
     }
