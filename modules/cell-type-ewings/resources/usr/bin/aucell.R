@@ -198,7 +198,7 @@ if (any(overlap_pct <= 0.20)) {
     auc = NA,
     auc_thresholds = NA
   ) |>
-    readr::read_tsv(opt$output_file)
+    readr::write_tsv(opt$output_file)
 
   # don't run the rest
   quit(save = "no")
