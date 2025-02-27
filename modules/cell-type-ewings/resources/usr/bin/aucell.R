@@ -191,6 +191,16 @@ overlap_pct <- genes_list |>
 if (any(overlap_pct <= 0.20)) {
   message("Gene sets do not have at least 20% of genes present in SCE.
           AUCell will not be run.")
+  # make empty data frame and save to output file
+  data.frame(
+    barcodes = colnames(sce),
+    gene_set = NA,
+    auc = NA,
+    auc_thresholds = NA
+  ) |>
+    readr::read_tsv(opt$output_file)
+
+  # don't run the rest
   quit(save = "no")
 }
 
