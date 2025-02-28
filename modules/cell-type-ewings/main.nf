@@ -76,5 +76,5 @@ workflow cell_type_ewings {
     )
 
   emit:
-    ewing_aucell.out // [sample_id, project_id, [list of aucell_output_files]]
+    aucell = ewing_aucell.out // [sample_id, project_id, [list of aucell_output_files]]
 }
