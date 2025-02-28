@@ -37,5 +37,5 @@ repos:
       - id: style-files
       - id: parsable-R
 ci:
-  autofix_prs: false
+  autofix_prs: true
   autoupdate_schedule: quarterly
