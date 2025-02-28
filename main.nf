@@ -7,6 +7,7 @@ include { merge_sce } from './modules/merge-sce'
 include { detect_doublets } from './modules/doublet-detection'
 include { seurat_conversion } from './modules/seurat-conversion'
 include { cell_type_consensus } from './modules/cell-type-consensus'
+include { cell_type_ewings } from './modules/cell-type-ewings'
 
 // **** Parameter checks ****
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
@@ -62,4 +63,7 @@ workflow {
 
   // Run the consensus cell type workflow
   cell_type_consensus(sample_ch)
+
+  // Run the cell type ewings workflow
+  cell_type_ewings(sample_ch)
 }
