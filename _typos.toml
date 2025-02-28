@@ -3,3 +3,9 @@ extend-glob = ["*.tf"]
 
 [type.tf.extend-words]
 kms = "kms"
+
+[type.R]
+extend-glob = ["*.[rR]"]
+
+[type.R.extend-words]
+aucThr = "aucThr"
