@@ -99,19 +99,32 @@
         },
         "cell_type_ewings_auc_max_rank": {
           "type": "integer",
-          "default": 425
+          "default": 425,
+          "description": "Number of detected genes to use as the threshold for the max AUC rank when running AUCell"
         },
         "cell_type_ewings_msigdb_list": {
           "type": "string",
-          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.2/analyses/cell-type-ewings/references/msigdb-gene-sets.tsv"
+          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.2/analyses/cell-type-ewings/references/msigdb-gene-sets.tsv",
+          "pattern": "\\.tsv$",
+          "format": "file-path",
+          "mimetype": "text/tab-separated-values",
+          "description": "Table of MSigDB gene sets"
         },
         "cell_type_ewings_ews_high_list": {
           "type": "string",
-          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.2/analyses/cell-type-ewings/references/gene_signatures/aynaud-ews-targets.tsv"
+          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.2/analyses/cell-type-ewings/references/gene_signatures/aynaud-ews-targets.tsv",
+          "pattern": "\\.tsv$",
+          "format": "file-path",
+          "mimetype": "text/tab-separated-values",
+          "description": "Table with custom gene set expressed in EWS-FLI1 high tumor cells"
         },
         "cell_type_ewings_ews_low_list": {
           "type": "string",
-          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.2/analyses/cell-type-ewings/references/gene_signatures/wrenn-nt5e-genes.tsv"
+          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.2/analyses/cell-type-ewings/references/gene_signatures/wrenn-nt5e-genes.tsv",
+          "pattern": "\\.tsv$",
+          "format": "file-path",
+          "mimetype": "text/tab-separated-values",
+          "description": "Table with custom gene set expressed in EWS-FLI1 low tumor cells"
         }
       }
     },
