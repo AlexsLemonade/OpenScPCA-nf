@@ -7,5 +7,5 @@ kms = "kms"
 [type.R]
 extend-glob = ["*.[rR]"]
 
-[type.R.extend-words]
+[type.R.extend-identifiers]
 aucThr = "aucThr"

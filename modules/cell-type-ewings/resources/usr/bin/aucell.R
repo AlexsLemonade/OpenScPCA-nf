@@ -222,7 +222,7 @@ auc_thresholds <- AUCell::AUCell_exploreThresholds(
 ) |>
   # extract select auc threshold
   purrr::map_dbl(\(results){
-    results$aucThe$selected
+    results$aucThr$selected
   })
 
 # put into a data frame for easy joining with all auc values
