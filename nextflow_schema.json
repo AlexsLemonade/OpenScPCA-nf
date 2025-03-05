@@ -125,6 +125,14 @@
           "format": "file-path",
           "mimetype": "text/tab-separated-values",
           "description": "Table with custom gene set expressed in EWS-FLI1 low tumor cells"
+        },
+        "cell_type_ewings_marker_gene_file": {
+          "type": "string",
+          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.2/analyses/cell-type-ewings/references/gene_signatures/tumor-cell-state-markers.tsv",
+          "pattern": "\\.tsv$",
+          "format": "file-path",
+          "mimetype": "text/tab-separated-values",
+          "description": "Table with custom gene sets specific to Ewing sarcoma tumor cells"
         }
       }
     },
