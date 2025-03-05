@@ -19,7 +19,7 @@ process ewing_aucell {
   output:
     tuple val(sample_id),
           val(project_id),
-          path(aucell_output_files)
+          path(aucell_output_files),
           path(marker_gene_output_files)
   script:
     aucell_output_files = library_files
@@ -94,5 +94,5 @@ workflow cell_type_ewings {
     )
 
   emit:
-    aucell = ewing_aucell.out // [sample_id, project_id, [list of aucell_output_files]]
+    aucell = ewing_aucell.out // [sample_id, project_id, [list of aucell_output_files], [list of marker gene expression output files]]
 }
