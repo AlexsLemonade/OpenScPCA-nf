@@ -25,7 +25,7 @@ option_list <- list(
     help = "Path to TSV file containing the AUC values for a set of gene sets output by aucell.R"
   ),
   make_option(
-    opt_str = c("--auc_table"),
+    opt_str = c("--auc_thresholds_file"),
     type = "character",
     default = NULL,
     help = "Path to TSV file containing the AUC values to use as thresholds for assigning tumor cell states."
@@ -41,7 +41,7 @@ option_list <- list(
   make_option(
     opt_str = c("--output_file"),
     type = "character",
-    help = "Path to file where results will be saved"
+    help = "Path to file where results will be saved as a tsv"
   )
 )
 
@@ -92,16 +92,15 @@ tumor_cell_states <- unique(auc_threshold_df$cell_type)
 tumor_cell_states |>
   purrr::walk(\(state){
     # get a list of all gene sets that should be used to classify that cell state
-    geneset_auc_list <- auc_threshold_df |>
+    geneset_auc_df <- auc_threshold_df |>
       dplyr::filter(cell_type == state) |>
-      dplyr::select(gene_set, auc_threshold) |>
-      tibble::deframe()
+      dplyr::select(gs_name = gene_set, auc_threshold)
 
     # get cells that meet all criteria, e.g., have auc > threshold for all gene sets
-    cells <- geneset_auc_list |>
-      purrr::imap(\(auc_threshold, name){
+    cells <- geneset_auc_df |>
+      purrr::pmap(\(gs_name, auc_threshold){
         aucell_results_df |>
-          dplyr::filter(gene_set == name & auc > auc_threshold) |>
+          dplyr::filter(gene_set == gs_name & auc > auc_threshold) |>
           dplyr::pull(barcodes)
       }) |>
       purrr::reduce(intersect)
