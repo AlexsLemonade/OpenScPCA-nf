@@ -95,8 +95,8 @@ process ewing_assign_celltypes {
       library_id=\$(basename \${file%_ewing-aucell-results.tsv})
 
       # find files that have the appropriate library id in file name
-      consensus_celltype_file=\$(ls ${consensus_celltype_files} | grep \$(library_id))
-      mean_exp_file=\$(ls ${mean_exp_files} | grep \${library_id})
+      consensus_celltype_file=\$(ls ${consensus_celltype_files} | grep "\$(library_id"))
+      mean_exp_file=\$(ls ${mean_exp_files} | grep "\${library_id}")
       echo \$consensus_celltype_file
       echo \$mean_exp_file
 
