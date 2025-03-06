@@ -28,7 +28,7 @@ process ewing_aucell {
       }
     marker_gene_output_files = library_files
       .collect{
-        it.name.replaceAll(/(?i).rds$/, "_ewing-marker-gene-expression.tsv.gz")
+        it.name.replaceAll(/(?i).rds$/, "_ewing-geneset-means.tsv.gz")
       }
     // combine the custom gene sets into a single input
     custom_geneset_files = [ews_high_list, ews_low_list].join(",")

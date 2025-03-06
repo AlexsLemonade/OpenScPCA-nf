@@ -104,11 +104,8 @@ assignment_df <- consensus_df |>
 
 assignment_df <- assignment_df |>
   dplyr::mutate(
-    custom_annotation = dplyr::if_else(
-      is.na(custom_annotation),
-      consensus_annotation, # use consensus labels if not a tumor cell
-      custom_annotation # otherwise keep tumor cell label
-    )
+    # use consensus annotation if custom is missing
+    custom_annotation = dplyr::coalesce(custom_annotation, consensus_annotation)
   )
 
 # Label proliferative tumor cells ----------------------------------------------

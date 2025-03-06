@@ -55,6 +55,7 @@ cell_states <- unique(cell_state_markers_df$cell_state)
 
 # construct a data frame with mean expression of all marker genes in each cell state
 mean_exp_df <- cell_states |>
+  purrr::set_names(paste0(x, "_mean_expression")) |>
   purrr::map(\(state){
     # marker genes for a given state
     marker_gene_list <- cell_state_markers_df |>
@@ -72,8 +73,6 @@ mean_exp_df <- cell_states |>
     .before = 0
   )
 
-# rename columns based on cell state
-colnames(mean_exp_df) <- c("barcodes", glue::glue("{cell_states}_mean_expression"))
 
 # export
 readr::write_tsv(mean_exp_df, opt$output_file)
