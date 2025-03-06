@@ -46,7 +46,7 @@ process ewing_aucell {
       mean-gene-set-expression.R \
         --sce_file \$file \
         --cell_state_markers_file ${marker_gene_file} \
-        --output_file \$(basename \${file%.rds}_ewing-marker-gene-expression.tsv.gz)
+        --output_file \$(basename \${file%.rds}_ewing-geneset-means.tsv.gz)
 
     done
     """
@@ -58,12 +58,12 @@ process ewing_aucell {
       }
     marker_gene_output_files = library_files
       .collect{
-        it.name.replaceAll(/(?i).rds$/, "_ewing-marker-gene-expression.tsv.gz")
+        it.name.replaceAll(/(?i).rds$/, "_ewing-geneset-means.tsv.gz")
       }
     """
     for file in ${library_files}; do
       touch \$(basename \${file%.rds}_ewing-aucell-results.tsv.gz)
-      touch \$(basename \${file%.rds}_ewing-marker-gene-expression.tsv.gz)
+      touch \$(basename \${file%.rds}_ewing-geneset-means.tsv.gz)
     done
     """
 }
