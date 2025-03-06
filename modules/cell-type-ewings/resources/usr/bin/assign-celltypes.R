@@ -6,7 +6,7 @@
 # Normal cells are all non-tumor cells and are labeled with the consensus cell type
 # if tumor cells have mean expression of proliferative markers > 0 "proliferative" will be appended to cell type label
 
-# `custom_annotation` and `custom_ontology` columns in the output TSV file will contain the final cell type labels
+# `ewing_annotation` and `ewing_ontology` columns in the output TSV file will contain the final cell type labels
 
 library(optparse)
 
@@ -85,14 +85,14 @@ cell_state_df <- tumor_cell_states |>
 
     df <- data.frame(
       barcodes = cells,
-      custom_annotation = state
+      ewing_annotation = state
     )
   }) |>
   purrr::list_rbind() |>
   dplyr::group_by(barcodes) |>
   # account for anything that could be in both groups
   dplyr::summarise(
-    custom_annotation = paste0(custom_annotation, collapse = ",")
+    ewing_annotation = paste0(ewing_annotation, collapse = ",")
   )
 
 # add custom annotations back with original annotations
@@ -105,7 +105,7 @@ assignment_df <- consensus_df |>
 assignment_df <- assignment_df |>
   dplyr::mutate(
     # use consensus annotation if custom is missing
-    custom_annotation = dplyr::coalesce(custom_annotation, consensus_annotation)
+    ewing_annotation = dplyr::coalesce(ewing_annotation, consensus_annotation)
   )
 
 # Label proliferative tumor cells ----------------------------------------------
@@ -119,16 +119,16 @@ proliferative_cells <- mean_exp_df |>
 assignment_df <- assignment_df |>
   dplyr::mutate(
     # add proliferative label to tumor cells if mean proliferative > 0
-    custom_annotation = dplyr::if_else(
-      barcodes %in% proliferative_cells & stringr::str_detect(custom_annotation, "tumor"),
-      glue::glue("{custom_annotation} proliferative"),
-      custom_annotation
+    ewing_annotation = dplyr::if_else(
+      barcodes %in% proliferative_cells & stringr::str_detect(ewing_annotation, "tumor"),
+      glue::glue("{ewing_annotation} proliferative"),
+      ewing_annotation
     ),
     # add ontology column
-    custom_ontology = dplyr::if_else(
-      custom_annotation == consensus_annotation,
+    ewing_ontology = dplyr::if_else(
+      ewing_annotation == consensus_annotation,
       consensus_ontology,
-      custom_annotation
+      ewing_annotation
     )
   )
 
