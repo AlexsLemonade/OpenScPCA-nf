@@ -1,0 +1,5 @@
+cell_type	gene_set	auc_threshold
+tumor EWS-high	aynaud-ews-targets	0.04
+tumor EWS-high	staege	0.01
+tumor EWS-low	wrenn-nt5e-genes	0.1
+tumor EWS-low	hallmark_EMT	0.05

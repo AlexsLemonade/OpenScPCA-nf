@@ -11,3 +11,4 @@ This module also uses the following reference files found in the `OpenScPCA-anal
 - `aynaud-ews-targets.tsv` : <https://github.com/AlexsLemonade/OpenScPCA-analysis/blob/v0.2.2/analyses/cell-type-ewings/references/gene_signatures/aynaud-ews-targets.tsv>
 - `wrenn-nt5e-genes.tsv`: <https://github.com/AlexsLemonade/OpenScPCA-analysis/blob/v0.2.2/analyses/cell-type-ewings/references/gene_signatures/wrenn-nt5e-genes.tsv>
 - `msigdb-gene-sets.tsv`: <https://github.com/AlexsLemonade/OpenScPCA-analysis/blob/v0.2.2/analyses/cell-type-ewings/references/msigdb-gene-sets.tsv>
+- `tumor-cell-state-markers.tsv`: <https://github.com/AlexsLemonade/OpenScPCA-analysis/blob/v0.2.2/analyses/cell-type-ewings/references/tumor-cell-state-markers.tsv>

@@ -15,14 +15,20 @@ process ewing_aucell {
     path msigdb_list
     path ews_high_list
     path ews_low_list
+    path marker_gene_file
   output:
     tuple val(sample_id),
           val(project_id),
-          path(aucell_output_files)
+          path(aucell_output_files),
+          path(marker_gene_output_files)
   script:
     aucell_output_files = library_files
       .collect{
         it.name.replaceAll(/(?i).rds$/, "_ewing-aucell-results.tsv.gz")
+      }
+    marker_gene_output_files = library_files
+      .collect{
+        it.name.replaceAll(/(?i).rds$/, "_ewing-geneset-means.tsv.gz")
       }
     // combine the custom gene sets into a single input
     custom_geneset_files = [ews_high_list, ews_low_list].join(",")
@@ -36,6 +42,12 @@ process ewing_aucell {
         --output_file \$(basename \${file%.rds}_ewing-aucell-results.tsv.gz) \
         --threads ${task.cpus} \
         --seed 2025
+
+      mean-gene-set-expression.R \
+        --sce_file \$file \
+        --cell_state_markers_file ${marker_gene_file} \
+        --output_file \$(basename \${file%.rds}_ewing-geneset-means.tsv.gz)
+
     done
     """
 
@@ -44,9 +56,14 @@ process ewing_aucell {
       .collect{
         it.name.replaceAll(/(?i).rds$/, "_ewing-aucell-results.tsv.gz")
       }
+    marker_gene_output_files = library_files
+      .collect{
+        it.name.replaceAll(/(?i).rds$/, "_ewing-geneset-means.tsv.gz")
+      }
     """
     for file in ${library_files}; do
       touch \$(basename \${file%.rds}_ewing-aucell-results.tsv.gz)
+      touch \$(basename \${file%.rds}_ewing-geneset-means.tsv.gz)
     done
     """
 }
@@ -72,9 +89,10 @@ workflow cell_type_ewings {
       params.cell_type_ewings_auc_max_rank,
       file(params.cell_type_ewings_msigdb_list),
       file(params.cell_type_ewings_ews_high_list),
-      file(params.cell_type_ewings_ews_low_list)
+      file(params.cell_type_ewings_ews_low_list),
+      file(params.cell_type_ewings_marker_gene_file)
     )
 
   emit:
-    aucell = ewing_aucell.out // [sample_id, project_id, [list of aucell_output_files]]
+    aucell = ewing_aucell.out // [sample_id, project_id, [list of aucell_output_files], [list of marker gene expression output files]]
 }
