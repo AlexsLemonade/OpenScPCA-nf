@@ -151,7 +151,7 @@ workflow cell_type_ewings {
     assign_ch = ewing_aucell.out
       // join by sample ID and project ID
       .join(consensus_ch, by: [0, 1]) // sample id, project id, aucell, mean exp, consensus, consensus gene exp
-      .take(4) // we don't need the consensus gene exp file
+      .map { it.dropRight(1) } // we don't need the consensus gene exp file
 
     // assign cell types
     ewing_assign_celltypes(assign_ch, file(params.cell_type_ewings_auc_thresholds_file))
