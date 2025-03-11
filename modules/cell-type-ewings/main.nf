@@ -129,8 +129,6 @@ workflow cell_type_ewings {
         def library_files = Utils.getLibraryFiles(sample_path, format: "sce", process_level: "processed")
         return [sample_id, project_id, library_files]
       }
-      // only run on SCPCP000015 with Ewing sarcoma samples
-      .filter{ it[1] == "SCPCP000015" }
 
     // run aucell on ewing gene sets
     ewing_aucell(
