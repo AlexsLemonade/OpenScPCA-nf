@@ -86,24 +86,21 @@ process ewing_assign_celltypes {
           val(project_id),
           path(celltype_assignment_output_files)
   script:
-    celltype_assignment_output_files = aucell_files
-      .collect{
-        it.name.replaceAll(/(?i)_ewing-aucell-results.tsv$/, "_ewing-celltype-assignments.tsv")
-      }
+    library_ids = aucell_files.collect{(it.name =~ /SCPCL\d{6}/)[0]}
+    celltype_assignment_output_files = library_ids.collect{"${it}_ewing-aucell-results.tsv"}
     """
-    for file in ${aucell_files}; do
-      library_id=\$(basename \${file%_ewing-aucell-results.tsv})
-
+    for library_id in ${library_ids.join(" ")}; do
       # find files that have the appropriate library id in file name
       consensus_celltype_file=\$(ls ${consensus_celltype_files} | grep "\${library_id}")
       mean_exp_file=\$(ls ${mean_exp_files} | grep "\${library_id}")
+      aucell_file=\$(ls ${aucell_files} | grep "\${library_id}")
 
       assign-celltypes.R \
-        --consensus_celltype_file \$consensus_celltype_file \
-        --aucell_results_file \$file \
+        --consensus_celltype_file \${consensus_celltype_file} \
+        --aucell_results_file \${aucell_file} \
         --auc_thresholds_file ${auc_thresholds_file} \
         --mean_gene_expression_file \${mean_exp_file} \
-        --output_file \$(basename \${file%_ewing-aucell-results.tsv}_ewing-celltype-assignments.tsv)
+        --output_file \${library_id}_ewing-celltype-assignments.tsv)
     done
     """
 

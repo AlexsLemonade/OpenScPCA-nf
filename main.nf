@@ -65,8 +65,5 @@ workflow {
   cell_type_consensus(sample_ch)
 
   // Run the cell type ewings workflow
-  ewing_consensus_ch = cell_type_consensus.out
-    // only run on SCPCP000015 with Ewing sarcoma samples
-      .filter{ it[1] == "SCPCP000015" }
-  cell_type_ewings(sample_ch, ewing_consensus_ch)
+  cell_type_ewings(sample_ch, cell_type_consensus.out)
 }

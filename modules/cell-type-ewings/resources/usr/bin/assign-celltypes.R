@@ -91,13 +91,12 @@ cell_state_df <- tumor_cell_states |>
     } else {
       df <- data.frame(
         ewing_annotation = state,
-        barcodes = NA
+        barcodes = NA_character_
       )
     }
   }) |>
   purrr::list_rbind() |>
   tidyr::drop_na() |> # get rid of any states that don't have any assigned barcodes
-  dplyr::mutate(barcodes = as.character(barcodes)) |> # make sure its a character for joining later
   dplyr::group_by(barcodes) |>
   # account for anything that could be in both groups
   dplyr::summarise(
