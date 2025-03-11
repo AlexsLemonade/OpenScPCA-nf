@@ -87,7 +87,7 @@ process ewing_assign_celltypes {
           path(celltype_assignment_output_files)
   script:
     library_ids = aucell_files.collect{(it.name =~ /SCPCL\d{6}/)[0]}
-    celltype_assignment_output_files = library_ids.collect{"${it}_ewing-aucell-results.tsv"}
+    celltype_assignment_output_files = library_ids.collect{"${it}_ewing-celltype-assignments.tsv"}
     """
     for library_id in ${library_ids.join(" ")}; do
       # find files that have the appropriate library id in file name
@@ -105,10 +105,8 @@ process ewing_assign_celltypes {
     """
 
   stub:
-    celltype_assignment_output_files = aucell_files
-      .collect{
-        it.name.replaceAll(/(?i)_ewing-aucell-results.tsv$/, "_ewing-celltype-assignments.tsv")
-      }
+    clibrary_ids = aucell_files.collect{(it.name =~ /SCPCL\d{6}/)[0]}
+    celltype_assignment_output_files = library_ids.collect{"${it}_ewing-celltype-assignments.tsv"}
     """
     for file in ${aucell_files}; do
       touch \$(basename \${file%_ewing-aucell-results.tsv}_ewing-celltype-assignments.tsv)
