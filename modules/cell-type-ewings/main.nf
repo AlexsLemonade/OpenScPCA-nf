@@ -4,7 +4,7 @@
 
 process ewing_aucell {
   container params.cell_type_ewing_container
-  tag "${project_id}"
+  tag "${sample_id}"
   label 'mem_8'
   publishDir "${params.results_bucket}/${params.release_prefix}/cell-type-ewings/${project_id}/${sample_id}", mode: 'copy'
   input:
@@ -71,7 +71,7 @@ process ewing_aucell {
 
 process ewing_assign_celltypes {
   container params.cell_type_ewing_container
-  tag "${project_id}"
+  tag "${sample_id}"
   label 'mem_8'
   publishDir "${params.results_bucket}/${params.release_prefix}/cell-type-ewings/${project_id}/${sample_id}", mode: 'copy'
   input:
