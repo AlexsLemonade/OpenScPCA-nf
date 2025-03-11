@@ -100,7 +100,7 @@ process ewing_assign_celltypes {
         --aucell_results_file \${aucell_file} \
         --auc_thresholds_file ${auc_thresholds_file} \
         --mean_gene_expression_file \${mean_exp_file} \
-        --output_file \${library_id}_ewing-celltype-assignments.tsv)
+        --output_file \${library_id}_ewing-celltype-assignments.tsv
     done
     """
 
