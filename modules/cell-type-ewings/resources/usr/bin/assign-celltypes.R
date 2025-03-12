@@ -90,8 +90,8 @@ cell_state_df <- tumor_cell_states |>
       )
     } else {
       df <- data.frame(
-        ewing_annotation = state,
-        barcodes = NA_character_
+        barcodes = NA_character_,
+        ewing_annotation = state
       )
     }
   }) |>

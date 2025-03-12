@@ -105,11 +105,11 @@ process ewing_assign_celltypes {
     """
 
   stub:
-    clibrary_ids = aucell_files.collect{(it.name =~ /SCPCL\d{6}/)[0]}
+    library_ids = aucell_files.collect{(it.name =~ /SCPCL\d{6}/)[0]}
     celltype_assignment_output_files = library_ids.collect{"${it}_ewing-celltype-assignments.tsv"}
     """
-    for file in ${aucell_files}; do
-      touch \$(basename \${file%_ewing-aucell-results.tsv}_ewing-celltype-assignments.tsv)
+    for library_id in ${library_ids.join(" ")}; do
+      touch \${library_id}_ewing-celltype-assignments.tsv
     done
     """
 }
@@ -148,6 +148,6 @@ workflow cell_type_ewings {
     ewing_assign_celltypes(assign_ch, file(params.cell_type_ewings_auc_thresholds_file))
 
   emit:
-    aucell = ewing_aucell.out // [sample_id, project_id, aucell_output_file, mean gene expression output file]
-    celltypes = ewing_assign_celltypes. out // [sample_id, project_id, cell type assignment output file]
+    aucell = ewing_aucell.out // [sample_id, project_id, [aucell output files], [mean gene expression files]]
+    celltypes = ewing_assign_celltypes.out // [sample_id, project_id, [cell type assignment files]]
 }
