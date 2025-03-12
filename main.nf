@@ -65,5 +65,6 @@ workflow {
   cell_type_consensus(sample_ch)
 
   // Run the cell type ewings workflow
-  cell_type_ewings(sample_ch)
+  // only runs on SCPCP000015
+  cell_type_ewings(sample_ch.filter{ it[1] == "SCPCP000015" }, cell_type_consensus.out)
 }

@@ -128,11 +128,19 @@
         },
         "cell_type_ewings_marker_gene_file": {
           "type": "string",
-          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.2/analyses/cell-type-ewings/references/gene_signatures/tumor-cell-state-markers.tsv",
+          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.2/analyses/cell-type-ewings/references/tumor-cell-state-markers.tsv",
           "pattern": "\\.tsv$",
           "format": "file-path",
           "mimetype": "text/tab-separated-values",
           "description": "Table with custom gene sets specific to Ewing sarcoma tumor cells"
+        },
+        "cell_type_ewings_auc_thresholds_file": {
+          "type": "string",
+          "default": "${projectDir}/modules/cell-type-ewings/resources/auc-thresholds.tsv",
+          "pattern": "\\.tsv$",
+          "format": "file-path",
+          "mimetype": "text/tab-separated-values",
+          "description": "Table with AUC thresholds to use for each gene set to define cell states"
         }
       }
     },

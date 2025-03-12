@@ -4,7 +4,7 @@
 
 process assign_consensus {
   container params.consensus_cell_type_container
-  tag "${project_id}"
+  tag "${sample_id}"
   label 'mem_8'
   publishDir "${params.results_bucket}/${params.release_prefix}/cell-type-consensus/${project_id}/${sample_id}", mode: 'copy'
   input:
