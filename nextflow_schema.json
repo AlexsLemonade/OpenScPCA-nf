@@ -20,7 +20,7 @@
         },
         "release_prefix": {
           "type": "string",
-          "default": "2024-11-25",
+          "default": "2025-03-20",
           "format": "directory-path",
           "description": "Prefix for the specific release used as input"
         },
