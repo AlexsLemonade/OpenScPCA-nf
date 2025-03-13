@@ -122,7 +122,7 @@ coldata_df <- colData(sce) |>
     sample_id = sample_id,
     library_id = library_id,
     # add in sample type to make sure we don't assign consensus cell types to cell lines
-    sample_type = sample_type
+    sample_type = paste0(sample_type, collapse = ", ") # account for multiple sample types
   )
 
 # only select sample info and cell type info, we don't need the rest of the coldata
@@ -197,7 +197,7 @@ all_assignments_df <- celltype_df |>
   ) |>
   # use unknown for NA annotation but keep ontology ID as NA
   # if the sample type is cell line, keep as NA
-  dplyr::mutate(consensus_annotation = dplyr::if_else(is.na(consensus_annotation) & (sample_type != "cell line"), "Unknown", consensus_annotation))
+  dplyr::mutate(consensus_annotation = dplyr::if_else(is.na(consensus_annotation) & (!stringr::str_detect(sample_type, "cell line")), "Unknown", consensus_annotation))
 
 # export file
 readr::write_tsv(all_assignments_df, opt$consensus_output_file)
