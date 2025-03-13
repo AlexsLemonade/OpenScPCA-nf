@@ -8,6 +8,16 @@ Add new release notes in reverse numerical order (newest first) below this comme
 You may want to add temporary notes here for tracking as features are added, before a new release is ready.
 -->
 
+## v0.1.4
+
+- Default release date for ScPCA data is set to `2025-03-20`
+- One new module:
+  - `cell-type-ewings`: Assigns cell types to Ewing sarcoma samples in `SCPCP000015`
+- One module as been updated:
+  - `cell-type-consensus`:
+    - Now uses the consensus cell type reference from [`OpenScPCA-analysis:v0.2.2`](https://github.com/AlexsLemonade/OpenScPCA-analysis/blob/v0.2.2/analyses/cell-type-consensus/references/consensus-cell-type-reference.tsv)
+    - Exports gene expression for a set of marker genes in addition to assigned consensus cell types
+
 ## v0.1.3
 
 - Two new modules:
