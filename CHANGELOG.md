@@ -10,7 +10,7 @@ You may want to add temporary notes here for tracking as features are added, bef
 
 ## v0.1.4
 
-- Default release datae for ScPCA data is set to `2025-03-20`
+- Default release date for ScPCA data is set to `2025-03-20`
 - One new module:
   - `cell-type-ewings`: Assigns cell types to Ewing sarcoma samples in `SCPCP000015`
 - One module as been updated:
