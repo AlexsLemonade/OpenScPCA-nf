@@ -3,7 +3,7 @@
 # This script is used to run `AUCell` on a single SCE object for a set of marker gene sets
 # gene sets used are custom gene sets and a set of Ewing specific gene sets from MsigDB
 # the results are exported as a single TSV file with the following columns:
-# `gene_set`, `barcodes`, `auc`, and `auc_threshold`
+# `gene_set`, `barcodes`, `auc`, and `aucell_threshold`
 
 
 library(optparse)
@@ -196,7 +196,7 @@ if (any(overlap_pct <= 0.20)) {
     barcodes = colnames(sce),
     gene_set = NA,
     auc = NA,
-    auc_thresholds = NA
+    aucell_threshold = NA
   ) |>
     readr::write_tsv(opt$output_file)
 
@@ -215,7 +215,7 @@ auc_results <- AUCell::AUCell_run(
 # Get threshold ----------------------------------------------------------------
 
 # get auc threshold for each geneset
-auc_thresholds <- AUCell::AUCell_exploreThresholds(
+aucell_thresholds <- AUCell::AUCell_exploreThresholds(
   auc_results,
   assign = TRUE,
   plotHist = FALSE
@@ -227,8 +227,8 @@ auc_thresholds <- AUCell::AUCell_exploreThresholds(
 
 # put into a data frame for easy joining with all auc values
 threshold_df <- data.frame(
-  gene_set = names(auc_thresholds),
-  auc_threshold = auc_thresholds
+  gene_set = names(aucell_thresholds),
+  aucell_threshold = aucell_thresholds
 )
 
 # Combine and export results ---------------------------------------------------
