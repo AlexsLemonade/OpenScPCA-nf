@@ -24,7 +24,7 @@ repos:
         language: fail
         files: "(conda-meta|pyvenv.cfg|renv/library)"
   - repo: https://github.com/crate-ci/typos
-    rev: v1
+    rev: v1.34.0
     hooks:
       - id: typos
   - repo: https://github.com/astral-sh/ruff-pre-commit
