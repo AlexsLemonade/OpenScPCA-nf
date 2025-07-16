@@ -202,6 +202,8 @@ possible_columns <- c(
   "singler_celltype_ontology",
   "cellassign_celltype_annotation",
   "cellassign_max_prediction",
+  "consensus_celltype_annotation",
+  "consensus_celltype_ontology",
   # ADT statistics
   "adt_scpca_filter",
   "altexps_adt_sum",
