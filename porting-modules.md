@@ -40,12 +40,12 @@ If one module requires the output of another module as input, the default workfl
 
 Port each analysis module from `OpenScPCA-analysis` as separate [Nextflow module](https://www.nextflow.io/docs/stable/module.html) that is contained within a subdirectory within the `modules/` directory.
 
-- Give module directories  the same name as the `OpenScPCA-analysis` module from which they are derived
+- Give module directories the same name as the `OpenScPCA-analysis` module from which they are derived
 - Name the primary workflow file for the module `main.nf` file and place it within the module directory (i.e. `modules/module-name/main.nf`).
 See [Module components](#module-components) for more information on the structure of the primary workflow file.
 - Name the primary workflow within the `main.nf` file with the same name as the module (replacing any hyphens with underscores).
 For example, for a module named `analyze-cells`, the primary workflow file would be called `modules/analyze-cells/main.nf` and would contain a workflow called `analyze_cells`.
-- Reference the module workflow in the the default workflow file (`OpenScPCA-nf/main.nf`) using an  [`include` directive](https://www.nextflow.io/docs/stable/module.html#module-inclusion) such as the one below:
+- Reference the module workflow in the the default workflow file (`OpenScPCA-nf/main.nf`) using an [`include` directive](https://www.nextflow.io/docs/stable/module.html#module-inclusion) such as the one below:
 
 ```groovy
 include { analyze_cells } from './modules/analyze-cells'
