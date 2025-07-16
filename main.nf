@@ -8,6 +8,7 @@ include { detect_doublets } from './modules/doublet-detection'
 include { seurat_conversion } from './modules/seurat-conversion'
 include { cell_type_consensus } from './modules/cell-type-consensus'
 include { cell_type_ewings } from './modules/cell-type-ewings'
+include { infercnv_gene_order_file } from './modules/infercnv-gene-order-file'
 
 // **** Parameter checks ****
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
@@ -67,4 +68,7 @@ workflow {
   // Run the cell type ewings workflow
   // only runs on SCPCP000015
   cell_type_ewings(sample_ch.filter{ it[1] == "SCPCP000015" }, cell_type_consensus.out)
+
+  // Run the infercnv gene order file workflow
+  infercnv_gene_order_file()
 }
