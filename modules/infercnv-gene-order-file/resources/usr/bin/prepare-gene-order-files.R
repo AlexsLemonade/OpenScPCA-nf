@@ -27,13 +27,11 @@ option_list <- list(
   make_option(
     opt_str = c("--gene_order_file_name"),
     type = "character",
-    default = "inferCNV-gene-order.txt",
     help = "Output file name for the gene order file without chromosome arms."
   ),
   make_option(
     opt_str = c("--arms_gene_order_file_name"),
     type = "character",
-    default = "inferCNV-gene-order-chrarms.txt",
     help = "Output file name for the gene order file with chromosome arms."
   )
 )
@@ -42,7 +40,8 @@ option_list <- list(
 opts <- parse_args(OptionParser(option_list = option_list))
 stopifnot(
   "gtf_file does not exist" = file.exists(opts$gtf_file),
-  "cytoband_file does not exist" = file.exists(opts$cytoband_file)
+  "gene_order_file_name was not provided" = !is.null(opts$gene_order_file_name),
+  "arms_gene_order_file_name was not provided" = !is.null(opts$arms_gene_order_file_name)
 )
 
 # Gene order file without chromosome arms ------------------------------
