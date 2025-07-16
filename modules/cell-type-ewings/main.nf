@@ -1,6 +1,6 @@
 #!/usr/bin/env nextflow
 
-// Workflow to assign consensus cell type labels
+// Workflow to assign ewings cell type labels
 
 process ewing_aucell {
   container params.cell_type_ewing_container
