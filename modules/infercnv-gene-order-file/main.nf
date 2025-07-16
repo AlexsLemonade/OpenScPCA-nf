@@ -23,9 +23,11 @@ process create_gene_order_files {
         --arms_gene_order_file_name ${arms_gene_order_file}
     """
   stub:
+    gene_order_file="${params.infercnv_gene_order_file_output_no_arms}"
+    arms_gene_order_file="${params.infercnv_gene_order_file_output_with_arms}"
     """
-    touch ${params.infercnv_gene_order_file_output_no_arms}
-    touch ${params.infercnv_gene_order_file_output_with_arms}
+    touch ${gene_order_file}
+    touch ${arms_gene_order_file}
     """
 }
 
