@@ -16,13 +16,13 @@ option_list <- list(
   make_option(
     opt_str = c("--gtf_file"),
     type = "character",
-    default = "~/Desktop/Homo_sapiens.GRCh38.104.gtf.gz",
+    default = "",
     help = "Path to input GTF file"
   ),
   make_option(
     opt_str = c("--cytoband_file"),
     type = "character",
-    default = "~/Desktop/cytoBand.txt.gz",
+    default = "",
     help = "Path to input cytoband file"
   )
 )
