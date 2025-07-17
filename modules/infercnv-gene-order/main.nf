@@ -34,8 +34,7 @@ process create_gene_order_files {
 
 workflow infercnv_gene_order {
   main:
-     // Create input channel with URIs to GTF and cytoband files
-create_gene_order_files(file(params.infercnv_gene_order_file_gtf), file(params.infercnv_gene_order_file_cytoband))
+    create_gene_order_files(file(params.gtf_file), file(params.cytoband_file))
 
   emit:
     gene_order_files = create_gene_order_files.out // [gene_order_file, arm_gene_order_file]
