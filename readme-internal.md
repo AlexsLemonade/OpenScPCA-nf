@@ -23,7 +23,7 @@ The GHA workflow will run automatically when a new release tag is created, which
 
 Alternatively, manual launches of the GHA workflow can be triggered by a [`workflow_dispatch` trigger](https://github.com/AlexsLemonade/OpenScPCA-nf/actions/workflows/run-batch.yml), which will allow you to specify specific run and output modes.
 
-When launching manually, you can specify a specific branch or tag to run, but you need to specify this in the _second_ input field, "Branch or tag of workflow to run", not the dropdown menu in the first field, which _must_ be set to `main`.
+When launching manually, you can specify a specific branch or tag to run, but you need to specify this in the _second_ input field, "Branch or tag of Nextflow workflow to run", not the dropdown menu in the first field, which _must_ be set to `main`.
 
 You can also specify the data release date you want to use as input, as well as the run mode and output mode.
 
