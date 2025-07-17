@@ -1,8 +1,9 @@
 #!/usr/bin/env Rscript
 
-# This script prepares and exports gene order files for use with inferCNV with the GRCh38 reference genome, Ensembl 104 annotation:
-# - inferCNV-gene-order.txt: Gene order file with gene positions across chromosomes 1-22,X,Y
-# - inferCNV-gene-order-chrarms.txt: Gene order file with gene positions across chromosome arms 1-22,X,Y
+# This script prepares and exports gene order files for use with inferCNV:
+# - inferCNV-gene-order_chr_<genome reference build>_<ensembl version>.txt: Gene order file with gene positions across chromosomes 1-22,X,Y
+# - inferCNV-gene-order_arms_<genome reference build>_<ensembl version>.txt: Gene order file with gene positions across chromosome arms 1-22,X,Y
+# The genome reference build and ensembl version information is determined from the input GTF file name.
 
 # This script was adapted from the following:
 
@@ -15,36 +16,37 @@ option_list <- list(
   make_option(
     opt_str = c("--gtf_file"),
     type = "character",
-    default = "",
+    default = "~/Desktop/Homo_sapiens.GRCh38.104.gtf.gz",
     help = "Path to input GTF file"
   ),
   make_option(
     opt_str = c("--cytoband_file"),
     type = "character",
-    default = "",
+    default = "~/Desktop/cytoBand.txt.gz",
     help = "Path to input cytoband file"
-  ),
-  make_option(
-    opt_str = c("--gene_order_file_name"),
-    type = "character",
-    help = "Output file name for the gene order file without chromosome arms."
-  ),
-  make_option(
-    opt_str = c("--arms_gene_order_file_name"),
-    type = "character",
-    help = "Output file name for the gene order file with chromosome arms."
   )
 )
 
-# Parse options
+# Parse options ----------------------
 opts <- parse_args(OptionParser(option_list = option_list))
 stopifnot(
   "gtf_file does not exist" = file.exists(opts$gtf_file),
-  "gene_order_file_name was not provided" = !is.null(opts$gene_order_file_name),
-  "arms_gene_order_file_name was not provided" = !is.null(opts$arms_gene_order_file_name)
+  "cytoband_file does not exist" = file.exists(opts$cytoband_file)
 )
 
-# Gene order file without chromosome arms ------------------------------
+# Extract reference and version from GTF file
+matches <- stringr::str_match(basename(opts$gtf_file), ".+(GRCh\\d+)\\.(\\d+)\\.gtf\\.gz")
+stopifnot(
+  "Could not extract genome build and ensembl version from GTF file name" = length(matches) == 3
+)
+genome_build <- matches[2]
+ensembl_release <- matches[3]
+
+# Define output file names
+gene_order_file <- glue::glue("inferCNV-gene-order_chr_{genome_build}_{ensembl_release}.txt")
+arms_gene_order_file <- glue::glue("inferCNV-gene-order_arms_{genome_build}_{ensembl_release}.txt")
+
+# Prepare and export chromosome gene order file ------------------------------
 
 # read in gtf file
 gtf <- rtracklayer::import(opts$gtf_file, feature.type = "gene")
@@ -58,16 +60,15 @@ gene_order_df <- gtf |>
   # only keep chr1 - 22 and chrX and chrY
   dplyr::filter(grepl("^chr([1-9]|1[0-9]|2[0-2]|X|Y)$", chrom))
 
-# export gene order file without a header
+# export chromosome gene order file without a header
 readr::write_tsv(
   gene_order_df,
-  opts$gene_order_file,
+  gene_order_file,
   col_names = FALSE
 )
 
 
-# Gene order file with chromosome arms ------------------------------
-
+# Prepare and export chromosome arm gene order file ------------------------------
 
 # Load cytoBand file into R and assign column names
 cytoBand <- readr::read_tsv(
@@ -105,9 +106,9 @@ arms_gene_order_df <- gene_order_df |>
   dplyr::select(gene_id, chrom_arm, gene_start, gene_end)
 
 
-# export chromosome-arm gene order file without a header
+# export arm gene order file without a header
 readr::write_tsv(
   arms_gene_order_df,
-  opts$arms_gene_order_file_name,
+  arms_gene_order_file,
   col_names = FALSE
 )
