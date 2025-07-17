@@ -10,8 +10,8 @@ process create_gene_order_files {
     path gtf_file
     path cytoband_file
   output:
-    path "inferCNV-gene-order_chr_*.txt", emit: chr_file
-    path "inferCNV-gene-order_arms_*.txt", emit: arms_file
+    path "infercnv-gene-order_chr_*.txt", emit: chr_file
+    path "infercnv-gene-order_arms_*.txt", emit: arms_file
   script:
     """
       prepare-gene-order-files.R \

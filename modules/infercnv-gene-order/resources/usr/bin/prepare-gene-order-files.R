@@ -1,8 +1,8 @@
 #!/usr/bin/env Rscript
 
 # This script prepares and exports gene order files for use with inferCNV:
-# - inferCNV-gene-order_chr_<genome reference build>_<ensembl version>.txt: Gene order file with gene positions across chromosomes 1-22,X,Y
-# - inferCNV-gene-order_arms_<genome reference build>_<ensembl version>.txt: Gene order file with gene positions across chromosome arms 1-22,X,Y
+# - infercnv-gene-order_chr_<genome reference build>_<ensembl version>.txt: Gene order file with gene positions across chromosomes 1-22,X,Y
+# - infercnv-gene-order_arms_<genome reference build>_<ensembl version>.txt: Gene order file with gene positions across chromosome arms 1-22,X,Y
 # The genome reference build and ensembl version information is determined from the input GTF file name.
 
 # This script was adapted from the following:
@@ -43,8 +43,8 @@ genome_build <- matches[2]
 ensembl_release <- matches[3]
 
 # Define output file names
-gene_order_file <- glue::glue("inferCNV-gene-order_chr_{genome_build}_{ensembl_release}.txt")
-arms_gene_order_file <- glue::glue("inferCNV-gene-order_arms_{genome_build}_{ensembl_release}.txt")
+gene_order_file <- glue::glue("infercnv-gene-order_chr_{genome_build}_{ensembl_release}.txt")
+arms_gene_order_file <- glue::glue("infercnv-gene-order_arms_{genome_build}_{ensembl_release}.txt")
 
 # Prepare and export chromosome gene order file ------------------------------
 
