@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       revision:
-        description: Branch or tag of workflow to run
+        description: Branch or tag of Nextflow workflow to run
         required: true
         default: main
       data_release:
@@ -16,7 +16,7 @@ on:
         required: true
         default: default
       run_mode:
-        description: Workflow run mode
+        description: Nextflow workflow run mode
         type: choice
         options:
           - test
@@ -25,7 +25,7 @@ on:
           - scpca
           - full
       output_mode:
-        description: Workflow output mode
+        description: Nextflow workflow output mode
         type: choice
         default: staging
         options:
