@@ -17,7 +17,7 @@ option_list <- list(
     opt_str = c("--gtf_file"),
     type = "character",
     default = "",
-    help = "Path to input GTF file"
+    help = "Path to input GTF file. The file name should be Ensembl formatted with both build and Ensembl version indicators, e.g., Homo_sapiens.GRCh38.104.gtf.gz "
   ),
   make_option(
     opt_str = c("--cytoband_file"),
@@ -35,9 +35,9 @@ stopifnot(
 )
 
 # Extract reference and version from GTF file
-matches <- stringr::str_match(basename(opts$gtf_file), ".+(GRCh\\d+)\\.(\\d+)\\.gtf\\.gz")
+matches <- stringr::str_match(opts$gtf_file, "\\.(GRCh\\d+)\\.(\\d+)\\.gtf(\\.gz)?$")
 stopifnot(
-  "Could not extract genome build and ensembl version from GTF file name" = length(matches) == 3
+  "Could not extract genome build and ensembl version from GTF file name" = !is.na(matches[1])
 )
 genome_build <- matches[2]
 ensembl_release <- matches[3]

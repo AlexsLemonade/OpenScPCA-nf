@@ -10,13 +10,13 @@ process create_gene_order_files {
     path gtf_file
     path cytoband_file
   output:
-    path "infercnv-gene-order_chr_*.txt", emit: chr_file
-    path "infercnv-gene-order_arms_*.txt", emit: arms_file
+    path "infercnv-gene-order_chr_*.txt", emit: chr_file, arity: '1'
+    path "infercnv-gene-order_arms_*.txt", emit: arms_file, arity: '1'
   script:
     """
-      prepare-gene-order-files.R \
-        --gtf_file ${gtf_file} \
-        --cytoband_file ${cytoband_file}
+    prepare-gene-order-files.R \
+      --gtf_file ${gtf_file} \
+      --cytoband_file ${cytoband_file}
     """
   stub:
     """
