@@ -11,6 +11,7 @@ You may want to add temporary notes here for tracking as features are added, bef
 ## v0.1.5
 
 - Default release date for ScPCA data is set to `2025-06-30`
+- Update scpcaTools images to v0.4.3 versions
 - One new module:
   - `infercnv-gene-order-file`: Produce gene order files that can be used as input to `inferCNV`
 - Two modules have been updated:
