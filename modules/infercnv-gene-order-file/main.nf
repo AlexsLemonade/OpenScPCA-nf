@@ -5,10 +5,10 @@
 process create_gene_order_files {
   container params.scpcatools_slim_container
   label 'mem_8'
-  publishDir "${params.results_bucket}/${params.release_prefix}/infercnv-gene-order-file", mode: 'copy'
+  publishDir "${params.results_bucket}/${params.release_prefix}/infercnv-gene-order", mode: 'copy'
   input:
-    tuple path(gtf_file),
-          path(cytoband_file)
+    path gtf_file
+    path cytoband_file
   output:
     tuple path(gene_order_file),
           path(arms_gene_order_file)
@@ -35,13 +35,7 @@ process create_gene_order_files {
 workflow infercnv_gene_order_file {
   main:
      // Create input channel with URIs to GTF and cytoband files
-    input_ch = Channel.of([
-        file(params.infercnv_gene_order_file_gtf, checkIfExists: false),
-        file(params.infercnv_gene_order_file_cytoband, checkIfExists: false)
-    ])
-
-    // Generate the gene order files
-    create_gene_order_files(input_ch)
+create_gene_order_files(file(params.infercnv_gene_order_file_gtf), file(params.infercnv_gene_order_file_cytoband))
 
   emit:
     gene_order_files = create_gene_order_files.out // [gene_order_file, arm_gene_order_file]

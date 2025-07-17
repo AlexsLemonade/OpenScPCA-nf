@@ -70,8 +70,10 @@ readr::write_tsv(
 
 
 # Load cytoBand file into R and assign column names
-cytoBand <- readr::read_tsv(opts$cytoband_file, col_names = FALSE)
-colnames(cytoBand) <- c("chrom", "chrom_arm_start", "chrom_arm_end", "band", "stain")
+cytoBand <- readr::read_tsv(
+  opts$cytoband_file, 
+  col_names =  c("chrom", "chrom_arm_start", "chrom_arm_end", "band", "stain")
+)
 
 # Add a column for the chromosome arm (p or q) and calculate arm positions
 chromosome_arms_df <- cytoBand |>
