@@ -46,6 +46,10 @@ ensembl_release <- matches[3]
 gene_order_file <- glue::glue("infercnv-gene-order_chr_{genome_build}_{ensembl_release}.txt")
 arms_gene_order_file <- glue::glue("infercnv-gene-order_arms_{genome_build}_{ensembl_release}.txt")
 
+# Define factor orders for chromosome arms
+chrom_levels <- paste0("chr", c(1:22, "X", "Y"))
+chrom_arm_levels <- paste0("chr", rep(c(1:22, "X", "Y"), each = 2), c("p", "q"))
+
 # Prepare and export chromosome gene order file ------------------------------
 
 # read in gtf file
@@ -57,8 +61,11 @@ gene_order_df <- gtf |>
   # rename to support joining in next section of script
   dplyr::select(gene_id, chrom = seqnames, gene_start = start, gene_end = end) |>
   dplyr::mutate(chrom = glue::glue("chr{chrom}")) |>
-  # only keep chr1 - 22 and chrX and chrY
-  dplyr::filter(grepl("^chr([1-9]|1[0-9]|2[0-2]|X|Y)$", chrom))
+  # keep only chrs of interest
+  dplyr::filter(chrom %in% chrom_levels) |>
+  # arrange
+  dplyr::mutate(chrom = factor(chrom, levels = chrom_levels)) |>
+  dplyr::arrange(chrom, gene_start)
 
 # export chromosome gene order file without a header
 readr::write_tsv(
@@ -102,7 +109,12 @@ arms_gene_order_df <- gene_order_df |>
   ) |>
   # create chrom_arm column as identifier to use instead of chrom
   dplyr::mutate(chrom_arm = glue::glue("{chrom}{arm}")) |>
-  # Select only relevant column for infercnv
+  # ensure we've kept only chrs of interest
+  dplyr::filter(chrom_arm %in% chrom_arm_levels) |>
+  # arrange
+  dplyr::mutate(chrom_arm = factor(chrom, levels = chrom_levels)) |>
+  dplyr::arrange(chrom_arm, gene_start) |>
+  # select relevant columns for infercnv
   dplyr::select(gene_id, chrom_arm, gene_start, gene_end)
 
 
