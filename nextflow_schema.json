@@ -203,7 +203,7 @@
   "properties": {
     "gtf_file": {
       "type": "string",
-      "default": "s3://scpca-references/homo_sapiens/ensembl-104/annotation/Homo_sapiens.GRCh38.104.gtf.gz",
+      "default": "s3://scpca-nf-references/homo_sapiens/ensembl-104/annotation/Homo_sapiens.GRCh38.104.gtf.gz",
       "description": "Path or URI to GTF file corresponding to reference genome build used with scpca-nf"
     },
     "cytoband_file": {
