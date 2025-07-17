@@ -2,8 +2,10 @@ This module creates and exports gene order files for use with `inferCNV`.
 
 This module exports two versions of the gene order file:
 
-- `inferCNV-gene-order.txt`: This file shows genes ordered by chromosome
-- `inferCNV-gene-order-chrarms.txt`: This file shows genes ordered by chromosome arms, e.g. `chr1p` and `chr1q` are separately denoted
+- `infercnv-gene-order_chr_<genome reference build>_<ensembl version>.txt`: Gene order file with gene positions across chromosomes 1-22,X,Y
+- `infercnv-gene-order_arms_<genome reference build>_<ensembl version>.txt`: Gene order file with gene positions across chromosome arms 1-22,X,Y
+
+The genome reference build and ensembl version information is determined from the input GTF file name.
 
 The module script is derived from the following scripts in the [OpenScPCA-analysis](https://github.com/AlexsLemonade/OpenScPCA-analysis) repository:
 
