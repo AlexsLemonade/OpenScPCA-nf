@@ -10,24 +10,18 @@ process create_gene_order_files {
     path gtf_file
     path cytoband_file
   output:
-    tuple path(gene_order_file),
-          path(arms_gene_order_file)
+    path "inferCNV-gene-order_chr_*.txt", emit: chr_file
+    path "inferCNV-gene-order_arms_*.txt", emit: arms_file
   script:
-    gene_order_file="${params.infercnv_gene_order_file_output_no_arms}"
-    arms_gene_order_file="${params.infercnv_gene_order_file_output_with_arms}"
     """
       prepare-gene-order-files.R \
         --gtf_file ${gtf_file} \
-        --cytoband_file ${cytoband_file} \
-        --gene_order_file_name ${gene_order_file} \
-        --arms_gene_order_file_name ${arms_gene_order_file}
+        --cytoband_file ${cytoband_file}
     """
   stub:
-    gene_order_file="${params.infercnv_gene_order_file_output_no_arms}"
-    arms_gene_order_file="${params.infercnv_gene_order_file_output_with_arms}"
     """
-    touch ${gene_order_file}
-    touch ${arms_gene_order_file}
+    touch infercnv-gene-order_chr_stub.txt
+    touch infercnv-gene-order_arms_stub.txt
     """
 }
 
@@ -37,5 +31,6 @@ workflow infercnv_gene_order {
     create_gene_order_files(file(params.gtf_file), file(params.cytoband_file))
 
   emit:
-    gene_order_files = create_gene_order_files.out // [gene_order_file, arm_gene_order_file]
+    create_gene_order_files.out.chr_file
+    create_gene_order_files.out.arms_file
 }
