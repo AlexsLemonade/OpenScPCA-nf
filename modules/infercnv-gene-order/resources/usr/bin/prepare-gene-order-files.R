@@ -112,7 +112,7 @@ arms_gene_order_df <- gene_order_df |>
   # ensure we've kept only chrs of interest
   dplyr::filter(chrom_arm %in% chrom_arm_levels) |>
   # arrange
-  dplyr::mutate(chrom_arm = factor(chrom, levels = chrom_levels)) |>
+  dplyr::mutate(chrom_arm = factor(chrom_arm, levels = chrom_arm_levels)) |>
   dplyr::arrange(chrom_arm, gene_start) |>
   # select relevant columns for infercnv
   dplyr::select(gene_id, chrom_arm, gene_start, gene_end)
