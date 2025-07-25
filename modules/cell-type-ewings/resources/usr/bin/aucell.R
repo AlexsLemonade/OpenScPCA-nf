@@ -58,6 +58,9 @@ opt <- parse_args(OptionParser(option_list = option_list))
 
 # Set up -----------------------------------------------------------------------
 
+# set the seed
+set.seed(opt$seed)
+
 # make sure input files exist
 stopifnot(
   "sce file must be specified using `--sce_file`" = !is.null(opt$sce_file)
