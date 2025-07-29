@@ -32,14 +32,14 @@ export PATH
 # Get secrets from AWS Secrets Manager/1Password
 AWS_SECRETS=$(aws secretsmanager get-secret-value --secret-id openscpca_service_account_token | jq -r '.SecretString')
 # AWS secrets are a key-value store: retrieve individual values with jq
-OP_SERVICE_ACCOUNT_TOKEN=$(jq -r '.op_token' <<< $AWS_SECRETS)
+OP_SERVICE_ACCOUNT_TOKEN=$(jq -r '.op_token' <<< "$AWS_SECRETS")
 export OP_SERVICE_ACCOUNT_TOKEN
-TOWER_ACCESS_TOKEN=$(op read "$(jq -r '.op_seqera_token' <<< $AWS_SECRETS)")
+TOWER_ACCESS_TOKEN=$(op read "$(jq -r '.op_seqera_token' <<< "$AWS_SECRETS")")
 export TOWER_ACCESS_TOKEN
-TOWER_WORKSPACE_ID=$(op read "$(jq -r '.op_seqera_workspace' <<< $AWS_SECRETS)") # Use the OpenScPCA workspace
+TOWER_WORKSPACE_ID=$(op read "$(jq -r '.op_seqera_workspace' <<< "$AWS_SECRETS")") # Use the OpenScPCA workspace
 export TOWER_WORKSPACE_ID
 
-SLACK_WEBHOOK=$(op read "$(jq -r '.op_slack_webhook' <<< $AWS_SECRETS)")
+SLACK_WEBHOOK=$(op read "$(jq -r '.op_slack_webhook' <<< "$AWS_SECRETS")")
 export SLACK_WEBHOOK
 
 slack_error() {
@@ -61,7 +61,11 @@ slack_error() {
 }
 
 # move to nextflow app directory
-cd /opt/nextflow
+cd /opt/nextflow || {
+  cat "Could not change directory to /opt/nextflow" > run_errors.log
+  slack_error run_errors.log
+  exit 1
+}
 # create an empty log file to capture any errors
 cat /dev/null > run_errors.log
 
@@ -70,15 +74,15 @@ profile="batch"
 sim_profile="${profile},simulated"
 # Add prod profiles if output is set to prod
 if [ "$OUTPUT_MODE" == "prod" ]; then
-  profile="${profile},prod"
   sim_profile="${profile},prod_simulated"
+  profile="${profile},prod"
 fi
 
 # Set the release_prefix param if data release is not default
 release_param=""
 if [ "$DATA_RELEASE" != "default" ]; then
   # check release is valid
-  if [ "$(aws s3 ls s3://openscpca-data-release/${DATA_RELEASE})" ]; then
+  if [ "$(aws s3 ls "s3://openscpca-data-release/${DATA_RELEASE}")" ]; then
     release_param="--release_prefix $DATA_RELEASE"
   else
     echo "Data release '$DATA_RELEASE' not found in S3" >> run_errors.log
