@@ -110,6 +110,7 @@ if [ "$RUN_MODE" == "test" ]; then
     -revision $GITHUB_TAG \
     -entry test \
     -profile $profile \
+    -name "test_${RUN_MODE}_${GITHUB_TAG}_${datetime}" \
     -with-report "${datetime}_test_report.html" \
     -with-trace  "${datetime}_test_trace.txt" \
     -with-tower \
@@ -143,6 +144,7 @@ if [ "$RUN_MODE" == "full" ] || [ "$RUN_MODE" == "simulate-only" ]; then
     -revision $GITHUB_TAG \
     -entry simulate \
     -profile $profile \
+    -name "simulate_${RUN_MODE}_${GITHUB_TAG}_${datetime}" \
     -with-report "${datetime}_simulate_report.html" \
     -with-trace  "${datetime}_simulate_trace.txt" \
     -with-tower \
@@ -158,6 +160,7 @@ if [ "$RUN_MODE" == "simulated" ] || [ "$RUN_MODE" == "full" ]; then
   nextflow run AlexsLemonade/OpenScPCA-nf \
     -revision $GITHUB_TAG \
     -profile $sim_profile \
+    -name "simulated_${RUN_MODE}_${GITHUB_TAG}_${datetime}" \
     -with-report "${datetime}_simulated_report.html" \
     -with-trace  "${datetime}_simulated_trace.txt" \
     -with-tower \
@@ -174,6 +177,7 @@ if [ "$RUN_MODE" == "scpca" ] || [ "$RUN_MODE" == "full" ]; then
   nextflow run AlexsLemonade/OpenScPCA-nf \
     -revision $GITHUB_TAG \
     -profile $profile \
+    -name "main_${RUN_MODE}_${GITHUB_TAG}_${datetime}" \
     -with-report "${datetime}_scpca_report.html" \
     -with-trace  "${datetime}_scpca_trace.txt" \
     -with-tower \
