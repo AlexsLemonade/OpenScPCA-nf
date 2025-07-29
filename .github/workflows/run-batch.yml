@@ -67,7 +67,7 @@ jobs:
           run_mode: ${{ github.event_name == 'push' && 'full' || inputs.run_mode }}
           # default output mode is prod for release events, otherwise use the specified mode
           output_mode: ${{ github.event_name == 'push' && 'prod' || inputs.output_mode }}
-          resume: ${{ github.event_name == 'push' && 'true' || inputs.resume }}
+          resume: ${{ github.event_name == 'push' && 'false' || inputs.resume }}
         run: |
           echo '#!/bin/bash' > scripts/tmux_launch.sh
           echo "export GITHUB_TAG=$revision" >> scripts/tmux_launch.sh
