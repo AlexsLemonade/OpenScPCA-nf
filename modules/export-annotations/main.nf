@@ -38,6 +38,15 @@ process format_annotations {
         --output_json_file \$json_file
     done
     """
+
+  stub:
+    library_ids = annotations_tsv_files.collect{(it.name =~ /SCPCL\d{6}/)[0]}
+    json_files = library_ids.collect{"${it}_openscpca-annotations.json"}
+    """
+    for library_id in ${library_ids.join(" ")};do
+      touch \${library_id}_openscpca-annotations.json
+    done
+    """
 }
 
 workflow export_annotations {
