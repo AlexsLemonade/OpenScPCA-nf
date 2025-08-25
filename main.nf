@@ -9,6 +9,7 @@ include { seurat_conversion } from './modules/seurat-conversion'
 include { cell_type_consensus } from './modules/cell-type-consensus'
 include { cell_type_ewings } from './modules/cell-type-ewings'
 include { infercnv_gene_order } from './modules/infercnv-gene-order'
+include { export_annotations } from './modules/export-annotations'
 
 // **** Parameter checks ****
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
@@ -71,4 +72,10 @@ workflow {
 
   // Run the infercnv gene order file workflow
   infercnv_gene_order()
+
+  // format and export json files with openscpca annotations
+  // input expected to be sample id, project id, tsv files, annotation column, ontology column, module name
+  // mix outputs from all cell type modules first
+  export_ch = cell_type_ewings.out.celltypes
+  export_annotations(export_ch)
 }
