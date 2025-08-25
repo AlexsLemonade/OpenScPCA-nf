@@ -147,7 +147,18 @@ workflow cell_type_ewings {
     // assign cell types
     ewing_assign_celltypes(assign_ch, file(params.cell_type_ewings_auc_thresholds_file))
 
+    // add ewing specific metadata to output tuple
+    celltype_output_ch = ewing_assign_celltypes.out
+      .map{ sample_id, project_id, assignment_files -> tuple(
+        sample_id,
+        project_id,
+        assignment_files,
+        "ewing_annotation", // annotation column
+        "ewing_ontology", // ontology column
+        "cell-type-ewings" // module name
+      )}
+
   emit:
     aucell = ewing_aucell.out // [sample_id, project_id, [aucell output files], [mean gene expression files]]
-    celltypes = ewing_assign_celltypes.out // [sample_id, project_id, [cell type assignment files]]
+    celltypes = celltype_output_ch // [sample_id, project_id, [cell type assignment files], annotation column, ontology column, module name]
 }
