@@ -30,8 +30,8 @@ process format_annotations {
 
       export-celltype-json.R \
         --annotations_tsv_file \$annotations_file \
-        --annotation_column ${annotation_column} \
-        ${ontology_included ? "--ontology_column  ${ontology_column}" : ''} \
+        --annotation_column "${annotation_column}" \
+        ${ontology_included ? "--ontology_column  '${ontology_column}'" : ''} \
         --module_name ${module_name} \
         --release_date ${params.release_prefix} \
         --openscpca_nf_version ${workflow.manifest.version} \
