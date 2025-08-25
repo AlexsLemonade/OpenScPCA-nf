@@ -33,7 +33,7 @@ process format_annotations {
         --annotation_column ${annotation_column} \
         ${ontology_included ? "--ontology_column  ${ontology_column}" : ''} \
         --module_name ${module_name} \
-        --release_data ${params.release_prefix} \
+        --release_date ${params.release_prefix} \
         --openscpca_nf_version ${workflow.manifest.version} \
         --output_json_file \$json_file
     done
