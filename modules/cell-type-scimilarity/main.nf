@@ -29,7 +29,7 @@ process assign_scimilarity {
         --processed_h5ad_file \$file \
         --ontology_map_file ${ontology_map_file} \
         --predictions_tsv \$(basename \${file%_rna.h5ad}_scimilarity-celltype-assignments.tsv.gz) \
-        --seed ${params.seed}
+        --seed 2025
     done
     """
 
