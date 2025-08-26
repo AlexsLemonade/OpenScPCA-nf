@@ -141,6 +141,20 @@
           "format": "file-path",
           "mimetype": "text/tab-separated-values",
           "description": "Table with AUC thresholds to use for each gene set to define cell states"
+        },
+        "cell_type_scimilarity_model": {
+          "type": "string",
+          "default": "s3://scpca-references/celltype/scimilarity_references/model_v1.1",
+          "format": "directory-path",
+          "description": "URI to SCimilarity model"
+        },
+        "cell_type_scimilarity_ontology_ref_file": {
+          "type": "string",
+          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/heads/main/analyses/cell-type-scimilarity/references/scimilarity-mapped-ontologies.tsv",
+          "pattern": "\\.tsv$",
+          "format": "file-path",
+          "mimetype": "text/tab-separated-values",
+          "description": "TSV file with SCimilarity annotation labels and associated cell ontology identifiers"
         }
       }
     },
@@ -185,6 +199,10 @@
         "cell_type_ewing_container": {
           "type": "string",
           "default": "public.ecr.aws/openscpca/cell-type-ewings:v0.2.2"
+        },
+        "cell_type_scimilarity_container": {
+          "type": "string",
+          "default": "public.ecr.aws/openscpca/cell-type-scimilarity:latest"
         }
       }
     }
