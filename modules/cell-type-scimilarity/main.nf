@@ -5,7 +5,7 @@
 process assign_scimilarity {
   container params.cell_type_scimilarity_container
   tag "${sample_id}"
-  label 'mem_8'
+  label 'mem_32'
   publishDir "${params.results_bucket}/${params.release_prefix}/cell-type-scimilarity/${project_id}/${sample_id}", mode: 'copy'
   input:
     tuple val(sample_id),
@@ -24,7 +24,7 @@ process assign_scimilarity {
       }
     """
     for file in ${library_files}; do
-      run-scimilarity.py \
+      python3 run-scimilarity.py \
         --model_dir ${scimilarity_model} \
         --processed_h5ad_file \$file \
         --ontology_map_file ${ontology_map_file} \
