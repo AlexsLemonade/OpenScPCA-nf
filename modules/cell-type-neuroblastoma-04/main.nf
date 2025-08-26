@@ -6,6 +6,8 @@
 process convert_nbatlas {
   container params.cell_type_nb_04_container
   label 'mem_8'
+  // TODO: Remove publishDir after initial PR
+  publishDir "${params.results_bucket}/${params.release_prefix}/cell-type-neuroblastoma-04"
   input:
     path nbatlas_seurat_file
   output:
