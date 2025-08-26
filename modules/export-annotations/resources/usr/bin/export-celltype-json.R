@@ -62,7 +62,6 @@ stopifnot(
 
 # read in annotations
 annotations_df <- readr::read_tsv(opt$annotations_tsv_file)
-message("Annotations read in")
 
 # check that barcodes and annotation column exist
 stopifnot(
@@ -90,14 +89,11 @@ json_contents <- list(
   release_date = opt$release_date
 )
 
-print(json_contents)
-message("Json created")
-
 # export json file
 jsonlite::write_json(
   json_contents,
   path = opt$output_json_file,
+  simplifyVector = TRUE,
   auto_unbox = TRUE,
   pretty = TRUE
 )
-message("Json exported")
