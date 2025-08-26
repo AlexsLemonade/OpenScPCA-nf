@@ -43,7 +43,12 @@ option_list <- list(
 # Parse options and check arguments
 opts <- parse_args(OptionParser(option_list = option_list))
 
-stopifnot("nbatlas_file does not exist" = file.exists(opts$nbatlas_file))
+stopifnot(
+  "nbatlas_file does not exist" = file.exists(opts$nbatlas_file),
+  "sce_file was not provided" = !is.null(opts$sce_file),
+  "anndata_file was not provided" = !is.null(opts$anndata_file),
+  "nbatlas_hvg_file was not provided" = !is.null(opts$nbatlas_hvg_file)
+)
 
 # load the bigger libraries after passing checks
 suppressPackageStartupMessages({
