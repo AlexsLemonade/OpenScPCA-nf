@@ -54,7 +54,10 @@ suppressPackageStartupMessages({
 
 # read input file and convert to SCE
 nbatlas_seurat <- readRDS(opts$nbatlas_file)
-nbatlas_sce <- as.SingleCellExperiment(nbatlas_seurat)
+# seurat gives an expected warning here
+suppressWarnings({
+  nbatlas_sce <- as.SingleCellExperiment(nbatlas_seurat)
+})
 
 # remove Seurat file to save space
 rm(nbatlas_seurat)
