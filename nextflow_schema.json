@@ -227,10 +227,10 @@
       "$ref": "#/$defs/input_and_output_locations"
     },
     {
-      "$ref": "#/$defs/containers"
+      "$ref": "#/$defs/module_specific_parameters"
     },
     {
-      "$ref": "#/$defs/module_specific_parameters"
+      "$ref": "#/$defs/containers"
     }
   ],
   "properties": {
