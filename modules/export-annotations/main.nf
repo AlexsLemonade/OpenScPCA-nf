@@ -24,9 +24,8 @@ process format_annotations {
     ontology_included = "${ontology_column}" != "NONE"
     """
     for library_id in ${library_ids.join(" ")};do
-      # get the input and output files for the library id
+      # get the input files for the library id
       annotations_file=\$(ls ${annotations_tsv_files} | grep "\${library_id}")
-      json_file=\$(ls ${json_files} | grep "\${library_id}")
 
       export-celltype-json.R \
         --annotations_tsv_file \$annotations_file \
@@ -35,7 +34,7 @@ process format_annotations {
         --module_name ${module_name} \
         --release_date ${params.release_prefix} \
         --openscpca_nf_version ${workflow.manifest.version} \
-        --output_json_file \$json_file
+        --output_json_file \${library_id}_openscpca-annotations.json
     done
     """
 
