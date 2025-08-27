@@ -40,7 +40,7 @@ process train_singler_model {
   label 'mem_8'
   publishDir "${params.results_bucket}/${params.release_prefix}/cell-type-neuroblastoma-04"
   input:
-    path nbatlas_sce_file,
+    path nbatlas_sce_file
     path gtf_file
   output:
     path nbatlas_singler_model
