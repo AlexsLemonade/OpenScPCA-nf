@@ -24,7 +24,7 @@ process assign_scimilarity {
       }
     """
     for file in ${library_files}; do
-      ./run-scimilarity.py \
+      run-scimilarity.py \
         --model_dir ${scimilarity_model} \
         --processed_h5ad_file \$file \
         --ontology_map_file ${ontology_map_file} \
