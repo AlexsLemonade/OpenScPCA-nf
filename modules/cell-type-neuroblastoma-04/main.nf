@@ -87,5 +87,5 @@ workflow cell_type_neuroblastoma_04 {
 
     // Emit temporarily for testing while workflow is being developed
     emit:
-      train_singler_model.out.nbatlas_singler_model
+      train_singler_model.out
 }
