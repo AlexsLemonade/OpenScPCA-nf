@@ -45,6 +45,62 @@
         }
       }
     },
+    "containers": {
+      "title": "Containers",
+      "type": "object",
+      "description": "Locations for Docker images used by workflow processes",
+      "default": "",
+      "properties": {
+        "python_container": {
+          "type": "string",
+          "default": "python:3.11"
+        },
+        "scpcatools_slim_container": {
+          "type": "string",
+          "default": "ghcr.io/alexslemonade/scpcatools-slim:v0.4.3"
+        },
+        "scpcatools_reports_container": {
+          "type": "string",
+          "default": "ghcr.io/alexslemonade/scpcatools-reports:v0.4.3"
+        },
+        "scpcatools_anndata_container": {
+          "type": "string",
+          "default": "ghcr.io/alexslemonade/scpcatools-anndata:v0.4.3"
+        },
+        "simulate_sce_container": {
+          "type": "string",
+          "default": "public.ecr.aws/openscpca/simulate-sce:v0.2.2"
+        },
+        "doublet_detection_container": {
+          "type": "string",
+          "default": "public.ecr.aws/openscpca/doublet-detection:v0.2.2",
+          "description": "Docker container for the doublet-detection module to run in"
+        },
+        "seurat_conversion_container": {
+          "type": "string",
+          "default": "public.ecr.aws/openscpca/seurat-conversion:v0.2.2",
+          "description": "Docker container for the seurat-conversion module to run in"
+        },
+        "consensus_cell_type_container": {
+          "type": "string",
+          "default": "public.ecr.aws/openscpca/cell-type-consensus:v0.2.2",
+          "description": "Docker container for the cell-type-consensus module to run in"
+        },
+        "cell_type_ewing_container": {
+          "type": "string",
+          "default": "public.ecr.aws/openscpca/cell-type-ewings:v0.2.2",
+          "description": "Docker container for the cell-type-ewings module to run in"
+        },
+        "cell_type_nb_04_container": {
+          "type": "string",
+          "default": "public.ecr.aws/openscpca/cell-type-neuroblastoma-04:latest"
+        },
+        "cell_type_scimilarity_container": {
+          "type": "string",
+          "default": "public.ecr.aws/openscpca/cell-type-scimilarity:latest"
+        }
+      }
+    },
     "module_specific_parameters": {
       "title": "Module-specific parameters",
       "type": "object",
@@ -155,54 +211,31 @@
           "format": "file-path",
           "mimetype": "text/tab-separated-values",
           "description": "TSV file with SCimilarity annotation labels and associated cell ontology identifiers"
-        }
-      }
-    },
-    "containers": {
-      "title": "Containers",
-      "type": "object",
-      "description": "Locations for Docker images used by workflow processes",
-      "default": "",
-      "properties": {
-        "python_container": {
-          "type": "string",
-          "default": "python:3.11"
         },
-        "scpcatools_slim_container": {
-          "type": "string",
-          "default": "ghcr.io/alexslemonade/scpcatools-slim:v0.4.1"
+        "cell_type_nb_04_scanvi_pp_threshold": {
+          "type": "number",
+          "default": 0.75,
+          "description": "Posterior probability threshold for annotating cells with scANVI/scArches"
         },
-        "scpcatools_reports_container": {
+        "cell_type_nb_04_label_map_file": {
           "type": "string",
-          "default": "ghcr.io/alexslemonade/scpcatools-reports:v0.4.1"
+          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/heads/main/analyses/cell-type-neuroblastoma-04/references/nbatlas-label-map.tsv",
+          "description": "Path or URL to TSV mapping NBAtlas labels across levels of organization"
         },
-        "scpcatools_anndata_container": {
+        "cell_type_nb_04_validation_group_file": {
           "type": "string",
-          "default": "ghcr.io/alexslemonade/scpcatools-anndata:v0.4.1"
+          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/heads/main/analyses/cell-type-consensus/references/consensus-validation-groups.tsv",
+          "description": "Path or URL to TSV mapping consensus cell types to broad validation groups"
         },
-        "simulate_sce_container": {
+        "cell_type_nb_04_ontology_map_fie": {
           "type": "string",
-          "default": "public.ecr.aws/openscpca/simulate-sce:v0.2.2"
+          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/heads/main/analyses/cell-type-neuroblastoma-04/references/nbatlas-ontology-ids.tsv",
+          "description": "Path or URL to TSV mapping NBAtlas labels to ontology ids"
         },
-        "doublet_detection_container": {
+        "cell_type_nb_04_nbatlas_url": {
           "type": "string",
-          "default": "public.ecr.aws/openscpca/doublet-detection:v0.2.2"
-        },
-        "seurat_conversion_container": {
-          "type": "string",
-          "default": "public.ecr.aws/openscpca/seurat-conversion:v0.2.2"
-        },
-        "consensus_cell_type_container": {
-          "type": "string",
-          "default": "public.ecr.aws/openscpca/cell-type-consensus:v0.2.2"
-        },
-        "cell_type_ewing_container": {
-          "type": "string",
-          "default": "public.ecr.aws/openscpca/cell-type-ewings:v0.2.2"
-        },
-        "cell_type_scimilarity_container": {
-          "type": "string",
-          "default": "public.ecr.aws/openscpca/cell-type-scimilarity:latest"
+          "default": "https://data.mendeley.com/public-files/datasets/yhcf6787yp/files/f5969395-5f6e-4c5d-a61a-5894773d0fee/file_downloaded",
+          "description": "Path or URL to the released NBAtlas object"
         }
       }
     }
