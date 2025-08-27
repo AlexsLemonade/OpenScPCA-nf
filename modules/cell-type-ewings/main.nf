@@ -153,11 +153,11 @@ workflow cell_type_ewings {
         sample_id,
         project_id,
         assignment_files,
-        { // annotation metadata
-          module_name: "cell-type-ewings", 
-          annotation_column: "ewing_annotation", 
-          ontology_column: "ewing_ontology" 
-        }
+        [ // annotation metadata
+          module_name: "cell-type-ewings",
+          annotation_column: "ewing_annotation",
+          ontology_column: "ewing_ontology"
+        ]
       )}
 
   emit:
