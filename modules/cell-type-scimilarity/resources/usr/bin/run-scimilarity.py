@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/bin/bash python3
 
 # Script to annotate processed ScPCA objects with SCimilarity
 # Follows this tutorial: https://genentech.github.io/scimilarity/notebooks/cell_annotation_tutorial.html
