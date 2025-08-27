@@ -8,6 +8,7 @@ include { detect_doublets } from './modules/doublet-detection'
 include { seurat_conversion } from './modules/seurat-conversion'
 include { cell_type_consensus } from './modules/cell-type-consensus'
 include { cell_type_ewings } from './modules/cell-type-ewings'
+include { cell_type_neuroblastoma_04 } from './modules/cell-type-neuroblastoma-04'
 include { infercnv_gene_order } from './modules/infercnv-gene-order'
 
 // **** Parameter checks ****
@@ -71,4 +72,8 @@ workflow {
 
   // Run the infercnv gene order file workflow
   infercnv_gene_order()
+
+  // Run the cell type neuroblastoma 04 workflow
+  // only runs on SCPCP000004
+  cell_type_neuroblastoma_04(sample_ch.filter{ it[1] == "SCPCP000004" })
 }
