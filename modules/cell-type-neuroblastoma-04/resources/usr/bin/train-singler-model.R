@@ -20,19 +20,18 @@ option_list <- list(
   make_option(
     opt_str = c("--nbatlas_sce"),
     type = "character",
-    default = "~/ALSF/open-scpca/OpenScPCA-analysis/analyses/cell-type-neuroblastoma-04/references/NBAtlas_sce.rds",
+    default = "",
     help = "Path to an NBAtlas object in SCE format"
   ),
   make_option(
     opt_str = c("--gtf_file"),
     type = "character",
-    default = "~/Desktop/Homo_sapiens.GRCh38.104.gtf.gz",
+    default = "",
     help = "Path to GTF file for determining genes to restrict to"
   ),
   make_option(
     opt_str = c("--singler_model_file"),
     type = "character",
-    default = "model.rds",
     help = "Path to RDS file to save trained SingleR model"
   ),
   make_option(
@@ -53,7 +52,8 @@ option_list <- list(
 opts <- parse_args(OptionParser(option_list = option_list))
 stopifnot(
   "nbatlas_sce does not exist" = file.exists(opts$nbatlas_sce),
-  "gtf_file does not exist" = file.exists(opts$gtf_file)
+  "gtf_file does not exist" = file.exists(opts$gtf_file),
+  "singler_model_file must be specified" = !is.null(opts$singler_model_file)
 )
 set.seed(opts$seed)
 
