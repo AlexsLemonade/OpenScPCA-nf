@@ -94,4 +94,8 @@ nbatlas_trained <- SingleR::trainSingleR(
   aggr.ref = TRUE,
   BPPARAM = bp_param
 )
-readr::write_rds(nbatlas_trained, opts$singler_model_file)
+readr::write_rds(
+  nbatlas_trained,
+  opts$singler_model_file,
+  compress = "gz"
+)
