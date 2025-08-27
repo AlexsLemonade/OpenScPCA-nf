@@ -23,6 +23,8 @@ process assign_scimilarity {
         it.name.replaceAll(/(?i)_rna.h5ad$/, "_scimilarity-celltype-assignments.tsv.gz")
       }
     """
+    # temporary fix to activate conda environment to see if that solves the issue
+    conda activate openscpca-cell-type-scimilarity
     for file in ${library_files}; do
       run-scimilarity.py \
         --model_dir ${scimilarity_model} \
