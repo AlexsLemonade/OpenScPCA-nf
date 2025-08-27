@@ -56,13 +56,13 @@ workflow {
     .filter{ run_all || it[1] in project_ids }
 
   // Run the merge workflow
-  //merge_sce(sample_ch)
+  merge_sce(sample_ch)
 
   // Run the doublet detection workflow
-  //detect_doublets(sample_ch)
+  detect_doublets(sample_ch)
 
   // Run the seurat conversion workflow
-  //seurat_conversion(sample_ch)
+  seurat_conversion(sample_ch)
 
   // Run the consensus cell type workflow
   cell_type_consensus(sample_ch)
