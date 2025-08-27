@@ -81,12 +81,12 @@ if (!is.null(opt$ontology_column)) {
 
 # build json contents
 json_contents <- list(
-  barcodes = annotations_df$barcodes,
-  openscpca_celltype_annotation = annotations_df[[opt$annotation_column]],
-  openscpca_celltype_ontology = ontology_ids,
   module_name = opt$module_name,
   openscpca_nf_version = opt$openscpca_nf_version,
-  release_date = opt$release_date
+  release_date = opt$release_date,
+  barcodes = annotations_df$barcodes,
+  openscpca_celltype_annotation = annotations_df[[opt$annotation_column]],
+  openscpca_celltype_ontology = ontology_ids
 )
 
 # export json file

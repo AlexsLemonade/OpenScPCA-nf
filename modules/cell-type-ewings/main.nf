@@ -153,12 +153,14 @@ workflow cell_type_ewings {
         sample_id,
         project_id,
         assignment_files,
-        "ewing_annotation", // annotation column
-        "ewing_ontology", // ontology column
-        "cell-type-ewings" // module name
+        { // annotation metadata
+          module_name: "cell-type-ewings", 
+          annotation_column: "ewing_annotation", 
+          ontology_column: "ewing_ontology" 
+        }
       )}
 
   emit:
     aucell = ewing_aucell.out // [sample_id, project_id, [aucell output files], [mean gene expression files]]
-    celltypes = celltype_output_ch // [sample_id, project_id, [cell type assignment files], annotation column, ontology column, module name]
+    celltypes = celltype_output_ch // [sample_id, project_id, [cell type assignment files], annotation_metadata]
 }

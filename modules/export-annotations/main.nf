@@ -11,17 +11,14 @@ process format_annotations {
     tuple val(sample_id),
           val(project_id),
           path(annotations_tsv_files),
-          val(annotation_column),
-          val(ontology_column),
-          val(module_name)
+          val(annotation_metadata)
   output:
     tuple val(sample_id),
           val(project_id),
-          path(json_files)
+          path("*_openscpca-annotations.json")
   script:
     library_ids = annotations_tsv_files.collect{(it.name =~ /SCPCL\d{6}/)[0]}
     json_files = library_ids.collect{"${it}_openscpca-annotations.json"}
-    ontology_included = "${ontology_column}" != "NONE"
     """
     for library_id in ${library_ids.join(" ")};do
       # get the input files for the library id
@@ -29,9 +26,9 @@ process format_annotations {
 
       export-celltype-json.R \
         --annotations_tsv_file \$annotations_file \
-        --annotation_column "${annotation_column}" \
-        ${ontology_included ? "--ontology_column  '${ontology_column}'" : ''} \
-        --module_name ${module_name} \
+        --annotation_column "${annotation_metadata.annotation_column}" \
+        ${annotation_metadata.ontology_column ? "--ontology_column  '${annotation_metadata.ontology_column}'" : ''} \
+        --module_name ${annotation_metadata.module_name} \
         --release_date ${params.release_prefix} \
         --openscpca_nf_version ${workflow.manifest.version} \
         --output_json_file \${library_id}_openscpca-annotations.json
@@ -50,7 +47,7 @@ process format_annotations {
 
 workflow export_annotations {
   take:
-    celltype_ch  // [sample_id, project_id, [cell type assignment files], annotation column, ontology column, module name]
+    celltype_ch  // [sample_id, project_id, [cell type assignment files], annotation metadata]
   main:
     // export json
     format_annotations(celltype_ch)
