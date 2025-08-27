@@ -49,7 +49,8 @@ process train_singler_model {
     train-singler-model.R \
       --nbatlas_file ${nbatlas_sce_file} \
       --gtf_file ${gtf_file} \
-      --singler_model_file ${nbatlas_singler_model}
+      --singler_model_file ${nbatlas_singler_model} \
+      --threads ${task.cpus}
     """
   stub:
     nbatlas_singler_model = "nbatlas_singler_model.rds"
@@ -83,6 +84,44 @@ process train_scanvi_model {
     """
 }
 
+process classify_singler {
+  container params.cell_type_nb_04_container
+  tag "${sample_id}"
+  label 'mem_8'
+  input:
+    path singler_model
+    tuple val(sample_id),
+          val(project_id),
+          path(library_files)
+  output:
+    tuple val(sample_id),
+          val(project_id),
+          path(singler_files)
+  script:
+    singler_files = library_files
+      .collect{
+        it.name.replaceAll(/(?i).rds$/, "_singler.tsv")
+      }
+    """
+    for file in ${library_files}; do
+      classify-singler.R \
+        --sce_file ${file} \
+        --singler_model_file ${singler_model} \
+        --singler_output_tsv \$(basename \${file%.rds}_singler.tsv) \
+        --threads ${task.cpus}
+    done
+    """
+  stub:
+    singler_files = library_files
+      .collect{
+        it.name.replaceAll(/(?i).rds$/, "_singler.tsv")
+      }
+    """
+    for file in ${library_files}; do
+      touch \$(basename \${file%.rds}_singler.tsv)
+    done
+    """
+}
 
 
 workflow cell_type_neuroblastoma_04 {
@@ -96,6 +135,10 @@ workflow cell_type_neuroblastoma_04 {
         return [sample_id, project_id, library_files]
       }
 
+    /////////////////////////////////////////////////////
+    // Prepare references for cell type classification //
+    /////////////////////////////////////////////////////
+
     // convert NBAtlas to SCE and AnnData objects
     // emits: sce, anndata, hvg_file
     convert_nbatlas(file(params.cell_type_nb_04_nbatlas_url))
@@ -107,4 +150,12 @@ workflow cell_type_neuroblastoma_04 {
     // train scANVI model
     // outputs the scanvi model directory
     train_scanvi_model(convert_nbatlas.out.anndata)
+
+    /////////////////////////////////////////////////////
+    //        Perform  cell type classification        //
+    /////////////////////////////////////////////////////
+
+    // classify with SingleR
+    classify_singler(train_singler_model.out, libraries_ch)
+
 }
