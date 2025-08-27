@@ -18,7 +18,6 @@ process format_annotations {
           path("*_openscpca-annotations.json")
   script:
     library_ids = annotations_tsv_files.collect{(it.name =~ /SCPCL\d{6}/)[0]}
-    json_files = library_ids.collect{"${it}_openscpca-annotations.json"}
     """
     for library_id in ${library_ids.join(" ")};do
       # get the input files for the library id
@@ -37,7 +36,6 @@ process format_annotations {
 
   stub:
     library_ids = annotations_tsv_files.collect{(it.name =~ /SCPCL\d{6}/)[0]}
-    json_files = library_ids.collect{"${it}_openscpca-annotations.json"}
     """
     for library_id in ${library_ids.join(" ")};do
       touch \${library_id}_openscpca-annotations.json

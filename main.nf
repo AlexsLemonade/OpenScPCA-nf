@@ -77,7 +77,8 @@ workflow {
   cell_type_neuroblastoma_04(sample_ch.filter{ it[1] == "SCPCP000004" })
 
   // format and export json files with openscpca annotations
-  // input expected to be sample id, project id, tsv files, annotation column, ontology column, module name
+  // input expected to be sample id, project id, tsv files, annotation meta
+  // annotation meta should be [annotation column, ontology column, module name]
   // mix outputs from all cell type modules first
   export_ch = cell_type_ewings.out.celltypes
   export_annotations(export_ch)
