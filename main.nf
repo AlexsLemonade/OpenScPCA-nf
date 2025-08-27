@@ -8,6 +8,7 @@ include { detect_doublets } from './modules/doublet-detection'
 include { seurat_conversion } from './modules/seurat-conversion'
 include { cell_type_consensus } from './modules/cell-type-consensus'
 include { cell_type_ewings } from './modules/cell-type-ewings'
+include { cell_type_neuroblastoma_04 } from './modules/cell-type-neuroblastoma-04'
 include { infercnv_gene_order } from './modules/infercnv-gene-order'
 include { export_annotations } from './modules/export-annotations'
 
@@ -71,7 +72,9 @@ workflow {
   cell_type_ewings(sample_ch.filter{ it[1] == "SCPCP000015" }, cell_type_consensus.out)
 
   // Run the infercnv gene order file workflow
-  //infercnv_gene_order()
+  // Run the cell type neuroblastoma 04 workflow
+  // only runs on SCPCP000004
+  cell_type_neuroblastoma_04(sample_ch.filter{ it[1] == "SCPCP000004" })
 
   // format and export json files with openscpca annotations
   // input expected to be sample id, project id, tsv files, annotation column, ontology column, module name
