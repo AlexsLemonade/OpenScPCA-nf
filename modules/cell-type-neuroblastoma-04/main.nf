@@ -9,9 +9,9 @@ process convert_nbatlas {
   input:
     path nbatlas_seurat_file
   output:
-    tuple path(nbatlas_sce_file),
-          path(nbatlas_anndata_file),
-          path(nbatlas_hvg_file)
+    path nbatlas_sce_file, emit: sce
+    tuple  path(nbatlas_anndata_file),
+      path(nbatlas_hvg_file), emit: anndata
   script:
     nbatlas_sce_file = "nbatlas_sce.rds"
     nbatlas_anndata_file = "nbatlas_anndata.h5ad"
@@ -40,8 +40,8 @@ process train_singler_model {
   label 'mem_8'
   publishDir "${params.results_bucket}/${params.release_prefix}/cell-type-neuroblastoma-04"
   input:
-    tuple path(nbatlas_sce_file),
-          path(gtf_file)
+    path nbatlas_sce_file,
+    path gtf_file
   output:
     path nbatlas_singler_model
   script:
@@ -76,14 +76,9 @@ workflow cell_type_neuroblastoma_04 {
     // returns [nbatlas_sce_file, nbatlas_anndata_file, nbatlas_hvg_file]
     convert_nbatlas(file(params.cell_type_nb_04_nbatlas_url))
 
-    // creates [nbatlas_sce_file, gtf_file]
-    singler_train_ch = convert_nbatlas.out
-      .map{ nbatlas_sce_file, nbatlas_anndata_file, nbatlas_hvg_file ->
-        return [nbatlas_sce_file, file(params.gtf_file)]
-      }
 
     // train Singler model
-    train_singler_model(singler_train_ch)
+    train_singler_model(singler_train_ch.sce, file(params.gtf_file))
 
     // Emit temporarily for testing while workflow is being developed
     emit:
