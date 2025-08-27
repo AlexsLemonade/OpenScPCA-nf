@@ -38,7 +38,6 @@ process convert_nbatlas {
 process train_singler_model {
   container params.cell_type_nb_04_container
   label 'mem_8'
-  publishDir "${params.results_bucket}/${params.release_prefix}/cell-type-neuroblastoma-04"
   input:
     path nbatlas_sce_file
     path gtf_file
@@ -77,8 +76,4 @@ workflow cell_type_neuroblastoma_04 {
 
     // train Singler model
     train_singler_model(convert_nbatlas.out.sce, file(params.gtf_file))
-
-    // Emit temporarily for testing while workflow is being developed
-    emit:
-      train_singler_model.out
 }
