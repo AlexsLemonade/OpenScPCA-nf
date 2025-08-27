@@ -10,8 +10,8 @@ process convert_nbatlas {
     path nbatlas_seurat_file
   output:
     path nbatlas_sce_file, emit: sce
-    tuple  path(nbatlas_anndata_file),
-      path(nbatlas_hvg_file), emit: anndata
+    tuple path(nbatlas_anndata_file),
+          path(nbatlas_hvg_file), emit: anndata
   script:
     nbatlas_sce_file = "nbatlas_sce.rds"
     nbatlas_anndata_file = "nbatlas_anndata.h5ad"
@@ -73,12 +73,10 @@ workflow cell_type_neuroblastoma_04 {
       }
 
     // convert NBAtlas to SCE and AnnData objects
-    // returns [nbatlas_sce_file, nbatlas_anndata_file, nbatlas_hvg_file]
     convert_nbatlas(file(params.cell_type_nb_04_nbatlas_url))
 
-
     // train Singler model
-    train_singler_model(singler_train_ch.sce, file(params.gtf_file))
+    train_singler_model(convert_nbatlas.out.sce, file(params.gtf_file))
 
     // Emit temporarily for testing while workflow is being developed
     emit:
