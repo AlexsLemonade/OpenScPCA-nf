@@ -6,14 +6,12 @@
 process convert_nbatlas {
   container params.cell_type_nb_04_container
   label 'mem_8'
-  // TODO: Remove publishDir after initial PR
-  publishDir "${params.results_bucket}/${params.release_prefix}/cell-type-neuroblastoma-04"
   input:
     path nbatlas_seurat_file
   output:
-    path nbatlas_sce_file
-    path nbatlas_anndata_file
-    path nbatlas_hvg_file
+    path nbatlas_sce_file, emit: sce
+    tuple path(nbatlas_anndata_file),
+          path(nbatlas_hvg_file), emit: anndata
   script:
     nbatlas_sce_file = "nbatlas_sce.rds"
     nbatlas_anndata_file = "nbatlas_anndata.h5ad"
@@ -27,12 +25,36 @@ process convert_nbatlas {
     """
   stub:
     nbatlas_sce_file = "nbatlas_sce.rds"
-    nbatlas_anndata_file = "nbatlas_anndata.rds"
+    nbatlas_anndata_file = "nbatlas_anndata.h5ad"
     nbatlas_hvg_file = "nbatlas_hvg.txt.gz"
     """
     touch ${nbatlas_sce_file}
     touch ${nbatlas_anndata_file}
     touch ${nbatlas_hvg_file}
+    """
+}
+
+
+process train_singler_model {
+  container params.cell_type_nb_04_container
+  label 'mem_8'
+  input:
+    path nbatlas_sce_file
+    path gtf_file
+  output:
+    path nbatlas_singler_model
+  script:
+    nbatlas_singler_model = "nbatlas_singler_model.rds"
+    """
+    train-singler-model.R \
+      --nbatlas_file ${nbatlas_sce_file} \
+      --gtf_file ${gtf_file} \
+      --singler_model_file ${nbatlas_singler_model}
+    """
+  stub:
+    nbatlas_singler_model = "nbatlas_singler_model.rds"
+    """
+    touch ${nbatlas_singler_model}
     """
 }
 
@@ -50,7 +72,8 @@ workflow cell_type_neuroblastoma_04 {
       }
 
     // convert NBAtlas to SCE and AnnData objects
-    // returns [nbatlas_sce_file, nbatlas_anndata_file, nbatlas_hvg_file]
     convert_nbatlas(file(params.cell_type_nb_04_nbatlas_url))
 
+    // train Singler model
+    train_singler_model(convert_nbatlas.out.sce, file(params.gtf_file))
 }
