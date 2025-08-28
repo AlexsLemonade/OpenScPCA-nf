@@ -89,30 +89,28 @@ process classify_singler {
   tag "${sample_id}"
   label 'mem_8'
   input:
-    path singler_model
     tuple val(sample_id),
           val(project_id),
           path(library_files)
+    path singler_model
   output:
     tuple val(sample_id),
           val(project_id),
-          path(singler_files)
+          path("*_singler.tsv.gz")
   script:
-    singler_files = path("*_singler.tsv")
     """
     for file in ${library_files}; do
       classify-singler.R \
         --sce_file ${file} \
         --singler_model_file ${singler_model} \
-        --singler_output_tsv \$(basename \${file%.rds}_singler.tsv) \
+        --singler_output_tsv \$(basename \${file%.rds}_singler.tsv.gz) \
         --threads ${task.cpus}
     done
     """
   stub:
-    singler_files = path("*_singler.tsv")
     """
     for file in ${library_files}; do
-      touch \$(basename \${file%.rds}_singler.tsv)
+      touch \$(basename \${file%.rds}_singler.tsv.gz)
     done
     """
 }
@@ -150,6 +148,9 @@ workflow cell_type_neuroblastoma_04 {
     /////////////////////////////////////////////////////
 
     // classify with SingleR
-    classify_singler(train_singler_model.out, libraries_ch)
+    classify_singler(
+      libraries_ch,
+      train_singler_model.out
+    )
 
 }
