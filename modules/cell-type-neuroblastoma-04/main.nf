@@ -5,7 +5,7 @@
 
 process convert_nbatlas {
   container params.cell_type_nb_04_container
-  label 'mem_8'
+  label 'mem_16'
   input:
     path nbatlas_seurat_file
   output:
@@ -120,7 +120,7 @@ process classify_singler {
 process classify_scanvi {
   container params.cell_type_nb_04_container
   tag "${sample_id}"
-  label 'mem_8'
+  label 'mem_16'
   input:
     tuple val(sample_id),
           val(project_id),
