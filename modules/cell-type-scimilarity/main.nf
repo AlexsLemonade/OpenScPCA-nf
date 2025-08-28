@@ -16,12 +16,8 @@ process assign_scimilarity {
   output:
     tuple val(sample_id),
           val(project_id),
-          path(scimilarity_annotation_files)
+          path("*_scimilarity-celltype-assignments.tsv.gz")
   script:
-    scimilarity_annotation_files = library_files
-      .collect{
-        it.name.replaceAll(/(?i)_rna.h5ad$/, "_scimilarity-celltype-assignments.tsv.gz")
-      }
     """
     for file in ${library_files}; do
       run-scimilarity.py \
@@ -34,10 +30,6 @@ process assign_scimilarity {
     """
 
   stub:
-    scimilarity_annotation_files = library_files
-      .collect{
-        it.name.replaceAll(/(?i)_rna.h5ad$/, "_scimilarity-celltype-assignments.tsv.gz")
-      }
     """
     for file in ${library_files}; do
       touch \$(basename \${file%_rna.h5ad}_scimilarity-celltype-assignments.tsv.gz)
