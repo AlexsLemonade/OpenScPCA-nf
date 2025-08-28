@@ -10,8 +10,8 @@ process convert_nbatlas {
     path nbatlas_seurat_file
   output:
     path nbatlas_sce_file, emit: sce
-    tuple path(nbatlas_anndata_file),
-          path(nbatlas_hvg_file), emit: anndata
+    path nbatlas_anndata_file, emit: anndata
+    path nbatlas_hvg_file, emit: hvg_file
   script:
     nbatlas_sce_file = "nbatlas_sce.rds"
     nbatlas_anndata_file = "nbatlas_anndata.h5ad"
@@ -59,6 +59,31 @@ process train_singler_model {
 }
 
 
+process train_scanvi_model {
+  container params.cell_type_nb_04_container
+  label 'mem_16'
+  input:
+    path nbatlas_anndata_file
+  output:
+    path scanvi_ref_model_dir
+  script:
+    scanvi_ref_model_dir = "scanvi_ref_model_dir"
+    """
+    train-scanvi-model.R \
+      --reference_file ${nbatlas_anndata_file} \
+      --reference_scanvi_model_dir ${scanvi_ref_model_dir}
+    """
+  stub:
+    scanvi_ref_model_dir = "scanvi_ref_model_dir"
+    """
+    mkdir ${scanvi_ref_model_dir}
+    # touch expected model files
+    touch ${scanvi_ref_model_dir}/adata.h5ad
+    touch ${scanvi_ref_model_dir}/model.pt
+    """
+}
+
+
 
 workflow cell_type_neuroblastoma_04 {
   take:
@@ -72,8 +97,14 @@ workflow cell_type_neuroblastoma_04 {
       }
 
     // convert NBAtlas to SCE and AnnData objects
+    // emits: sce, anndata, hvg_file
     convert_nbatlas(file(params.cell_type_nb_04_nbatlas_url))
 
-    // train Singler model
+    // train SingleR model
+    // outputs the singler model file
     train_singler_model(convert_nbatlas.out.sce, file(params.gtf_file))
+
+    // train scANVI model
+    // outputs the scanvi model directory
+    train_scanvi_model(convert_nbatlas.out.anndata)
 }
