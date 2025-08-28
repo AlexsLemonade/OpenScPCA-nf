@@ -98,10 +98,7 @@ process classify_singler {
           val(project_id),
           path(singler_files)
   script:
-    singler_files = library_files
-      .collect{
-        it.name.replaceAll(/(?i).rds$/, "_singler.tsv")
-      }
+    singler_files = path("*_singler.tsv")
     """
     for file in ${library_files}; do
       classify-singler.R \
@@ -112,10 +109,7 @@ process classify_singler {
     done
     """
   stub:
-    singler_files = library_files
-      .collect{
-        it.name.replaceAll(/(?i).rds$/, "_singler.tsv")
-      }
+    singler_files = path("*_singler.tsv")
     """
     for file in ${library_files}; do
       touch \$(basename \${file%.rds}_singler.tsv)
