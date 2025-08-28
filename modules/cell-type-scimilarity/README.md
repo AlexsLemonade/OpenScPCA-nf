@@ -9,4 +9,4 @@ This module uses the [`SCimilarity` foundational model](https://zenodo.org/recor
 
 This module also uses the following reference files found in the `OpenScPCA-analysis` repository:
 
-- `scimilarity-mapped-ontologies.tsv` : <https://github.com/AlexsLemonade/OpenScPCA-analysis/blob/main/analyses/cell-type-scimilarity/references/scimilarity-mapped-ontologies.tsv>
+- `scimilarity-mapped-ontologies.tsv`: <https://github.com/AlexsLemonade/OpenScPCA-analysis/blob/main/analyses/cell-type-scimilarity/references/scimilarity-mapped-ontologies.tsv>
