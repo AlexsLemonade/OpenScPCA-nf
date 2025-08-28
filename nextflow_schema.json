@@ -227,7 +227,7 @@
           "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/heads/main/analyses/cell-type-consensus/references/consensus-validation-groups.tsv",
           "description": "Path or URL to TSV mapping consensus cell types to broad validation groups"
         },
-        "cell_type_nb_04_ontology_map_fie": {
+        "cell_type_nb_04_ontology_map_file": {
           "type": "string",
           "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/heads/main/analyses/cell-type-neuroblastoma-04/references/nbatlas-ontology-ids.tsv",
           "description": "Path or URL to TSV mapping NBAtlas labels to ontology ids"
