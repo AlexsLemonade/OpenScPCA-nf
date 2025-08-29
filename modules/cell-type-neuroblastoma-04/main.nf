@@ -70,7 +70,7 @@ process train_scanvi_model {
   script:
     scanvi_ref_model_dir = "scanvi_ref_model_dir"
     """
-    train-scanvi-model.R \
+    train-scanvi-model.py \
       --reference_file ${nbatlas_anndata_file} \
       --reference_scanvi_model_dir ${scanvi_ref_model_dir}
     """
