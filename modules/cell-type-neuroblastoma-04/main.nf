@@ -48,7 +48,7 @@ process train_singler_model {
     nbatlas_singler_model = "nbatlas_singler_model.rds"
     """
     train-singler-model.R \
-      --nbatlas_file ${nbatlas_sce_file} \
+      --nbatlas_sce ${nbatlas_sce_file} \
       --gtf_file ${gtf_file} \
       --singler_model_file ${nbatlas_singler_model} \
       --threads ${task.cpus}
