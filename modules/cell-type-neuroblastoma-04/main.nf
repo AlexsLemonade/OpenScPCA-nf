@@ -5,7 +5,7 @@
 
 process convert_nbatlas {
   container params.cell_type_nb_04_container
-  label 'mem_8'
+  label 'mem_16'
   input:
     path nbatlas_seurat_file
   output:
@@ -37,7 +37,7 @@ process convert_nbatlas {
 
 process train_singler_model {
   container params.cell_type_nb_04_container
-  label 'mem_8'
+  label 'mem_16' // may need 32, real memory is above 18 here
   input:
     path nbatlas_sce_file
     path gtf_file
@@ -62,7 +62,7 @@ process train_singler_model {
 
 process train_scanvi_model {
   container params.cell_type_nb_04_container
-  label 'mem_16'
+  label 'mem_8'
   input:
     path nbatlas_anndata_file
   output:
