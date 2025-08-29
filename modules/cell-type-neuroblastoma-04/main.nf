@@ -37,7 +37,7 @@ process convert_nbatlas {
 
 process train_singler_model {
   container params.cell_type_nb_04_container
-  label 'mem_16' // may need 32, real memory is above 18 here
+  label 'mem_32'
   label 'cpus_4'
   input:
     path nbatlas_sce_file
