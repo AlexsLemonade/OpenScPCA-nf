@@ -53,31 +53,36 @@ workflow {
 
   // sample channel of [sample_id, project_id, sample_path]
   sample_ch = Channel.fromList(Utils.getSampleTuples(release_dir))
-    .filter{ run_all || it[1] in project_ids }
+    .filter{ it[0] in ["SCPCS000101"] } // TEMPORARY FOR TESTING
 
-  // Run the merge workflow
-  merge_sce(sample_ch)
 
-  // Run the doublet detection workflow
-  detect_doublets(sample_ch)
+  // // Run the merge workflow
+  // merge_sce(sample_ch)
 
-  // Run the seurat conversion workflow
-  seurat_conversion(sample_ch)
+  // // Run the doublet detection workflow
+  // detect_doublets(sample_ch)
 
-  // Run the consensus cell type workflow
-  cell_type_consensus(sample_ch)
+  // // Run the seurat conversion workflow
+  // seurat_conversion(sample_ch)
 
-  // Run the cell type ewings workflow
-  // only runs on SCPCP000015
-  cell_type_ewings(sample_ch.filter{ it[1] == "SCPCP000015" }, cell_type_consensus.out)
+  // // Run the infercnv gene order file workflow
+  // infercnv_gene_order()
 
-  // Run the infercnv gene order file workflow
-  infercnv_gene_order()
+  // // Cell type annotation workflows //
+
+  // // Run the consensus cell type workflow
+  // cell_type_consensus(sample_ch)
+
+  // // run the scimilarity cell type workflow
+  // cell_type_scimilarity(sample_ch)
+
+  // // Run the cell type ewings workflow
+  // // only runs on SCPCP000015
+  // cell_type_ewings(sample_ch.filter{ it[1] == "SCPCP000015" }, cell_type_consensus.out)
 
   // Run the cell type neuroblastoma 04 workflow
   // only runs on SCPCP000004
   cell_type_neuroblastoma_04(sample_ch.filter{ it[1] == "SCPCP000004" })
 
-  // run the scimilarity cell type workflow
-  cell_type_scimilarity(sample_ch)
+
 }
