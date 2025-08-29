@@ -5,7 +5,7 @@
 
 process convert_nbatlas {
   container params.cell_type_nb_04_container
-  label 'mem_16'
+  label 'mem_32'
   input:
     path nbatlas_seurat_file
   output:
