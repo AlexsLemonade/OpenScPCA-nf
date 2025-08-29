@@ -38,6 +38,7 @@ process convert_nbatlas {
 process train_singler_model {
   container params.cell_type_nb_04_container
   label 'mem_16' // may need 32, real memory is above 18 here
+  label 'cpus_4'
   input:
     path nbatlas_sce_file
     path gtf_file
@@ -88,6 +89,7 @@ process classify_singler {
   container params.cell_type_nb_04_container
   tag "${sample_id}"
   label 'mem_8'
+  label 'cpus_2'
   input:
     tuple val(sample_id),
           val(project_id),
