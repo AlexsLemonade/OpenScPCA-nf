@@ -53,7 +53,7 @@ workflow {
 
   // sample channel of [sample_id, project_id, sample_path]
   sample_ch = Channel.fromList(Utils.getSampleTuples(release_dir))
-    .filter{ it[0] in ["SCPCS000101"] } // TEMPORARY FOR TESTING
+    .filter{ run_all || it[1] in project_ids }
 
 
   // // Run the merge workflow
