@@ -144,8 +144,7 @@ process classify_scanvi {
       prepare-scanvi-query.R \
         --sce_file \$file \
         --nbatlas_hvg_file ${hvg_file} \
-        --prepared_anndata_file \${anndata_file} \
-        --threads ${task.cpus}
+        --prepared_anndata_file \${anndata_file}
 
       # Run label transfer with scANVI/scArches
       classify-scanvi.py \
