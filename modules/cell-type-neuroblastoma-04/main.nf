@@ -290,8 +290,8 @@ workflow cell_type_neuroblastoma_04 {
         assignment_files,
         [ // annotation metadata
           module_name: "cell-type-neuroblastoma-04",
-          annotation_column: "final_label",
-          ontology_column: "final_ontology_id"
+          annotation_column: "neuroblastoma_04_annotation",
+          ontology_column: "neuroblastoma_04_ontology"
         ]
       )}
 

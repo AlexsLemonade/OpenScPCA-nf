@@ -232,9 +232,9 @@ final_annotation_df <- annotation_df |>
   ) |>
   dplyr::select(
     barcodes,
-    final_label,
-    final_ontology_id,
-    final_cl_ontology_label = CL_annotation,
+    neuroblastoma_04_annotation,
+    neuroblastoma_04_ontology,
+    neuroblastoma_04_ontology_label = CL_annotation,
     singler_label,
     scanvi_label
   )
