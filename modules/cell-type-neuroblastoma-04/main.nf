@@ -137,18 +137,18 @@ process classify_scanvi {
     """
     for file in ${library_files}; do
 
-      library_id=\$(basename \${file%.rds})
+      anndata_file=\$(basename \${file%.rds}_prepared.h5ad
 
       # Prepare the query data for input to scANVI/scArches
       prepare-scanvi-query.R \
         --sce_file \$file \
         --nbatlas_hvg_file ${hvg_file} \
-        --prepared_anndata_file ${library_id}_prepared.h5ad \
+        --prepared_anndata_file \${anndata_file} \
         --threads ${task.cpus}
 
       # Run label transfer with scANVI/scArches
       classify-scanvi.py \
-        --query_file ${library_id}_prepared.h5ad \
+        --query_file \${anndata_file} \
         --reference_scanvi_model_dir ${scanvi_ref_model_dir} \
         --predictions_tsv ${library_id}_scanvi.tsv.gz
     done
