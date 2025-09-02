@@ -137,7 +137,8 @@ process classify_scanvi {
     """
     for file in ${library_files}; do
 
-      anndata_file=\$(basename \${file%.rds}_prepared.h5ad
+      anndata_file=\$(basename \${file%.rds}_prepared.h5ad)
+      scanvi_tsv=\$(basename \${file%.rds}_scanvi.tsv.gz)
 
       # Prepare the query data for input to scANVI/scArches
       prepare-scanvi-query.R \
@@ -150,7 +151,7 @@ process classify_scanvi {
       classify-scanvi.py \
         --query_file \${anndata_file} \
         --reference_scanvi_model_dir ${scanvi_ref_model_dir} \
-        --predictions_tsv ${library_id}_scanvi.tsv.gz
+        --predictions_tsv ${scanvi_tsv}
     done
     """
   stub:
