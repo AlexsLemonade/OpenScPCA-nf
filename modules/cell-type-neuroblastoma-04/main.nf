@@ -193,9 +193,9 @@ process nb_04_assign_celltypes {
       consensus_file=\$(ls ${consensus_files} | grep "\${library_id}")
 
       # output file
-      output_tsv=\${library_id}_neuroblastoma-04_celltype-assignments.tsv
-      assign-celltypes.R \
-        --singler_tsv \${consensus_file} \
+      output_tsv=\${library_id}_neuroblastoma-04_celltype-assignments.tsv.gz
+      assign-labels.R \
+        --singler_tsv \${singler_file} \
         --scanvi_tsv \${scanvi_file} \
         --consensus_tsv \${consensus_file} \
         --nbatlas_label_tsv ${nbatlas_label_file} \
@@ -208,10 +208,10 @@ process nb_04_assign_celltypes {
 
   stub:
     library_ids = singler_files.collect{(it.name =~ /SCPCL\d{6}/)[0]}
-    celltype_assignment_output_files = library_ids.collect{"${it}_neuroblastoma-04_celltype-assignments.tsv"}
+    celltype_assignment_output_files = library_ids.collect{"${it}_neuroblastoma-04_celltype-assignments.tsv.gz"}
     """
     for library_id in ${library_ids.join(" ")}; do
-      output_tsv=\${library_id}_neuroblastoma-04_celltype-assignments.tsv
+      output_tsv=\${library_id}_neuroblastoma-04_celltype-assignments.tsv.gz
       touch \${output_tsv}
     done
     """
@@ -270,8 +270,6 @@ workflow cell_type_neuroblastoma_04 {
       // join consensus by sample ID and project ID
       .join(consensus_ch, by: [0, 1]) // sample id, project id, singler, scanvi, consensus, consensus gene exp
       .map { it.dropRight(1) } // we don't need the consensus gene exp file
-
-    assign_ch.view()
 
     // assign final labels
     nb_04_assign_celltypes(

@@ -11,6 +11,7 @@
 
 library(optparse)
 
+
 option_list <- list(
   make_option(
     opt_str = c("--singler_tsv"),
@@ -49,18 +50,17 @@ option_list <- list(
     help = "Path to TSV file with consensus validation groups and ontology ids NBAtlas labels to ontology ids"
   ),
   make_option(
+    opt_str = c("--annotations_tsv"),
+    type = "character",
+    help = "Path to output tsv file with final annotations for a given library"
+  ),
+  make_option(
     opt_str = c("--scanvi_posterior_threshold"),
     type = "numeric",
     default = 0.75,
     help = "Posterior probability threshold for labeling cells with scANVI/scArches"
-  ),
-  make_option(
-    opt_str = c("--annotations_tsv"),
-    type = "character",
-    help = "Path to output tsv file with final annotations for a given library"
   )
 )
-
 
 # Set up --------------------
 
@@ -230,10 +230,11 @@ final_annotation_df <- annotation_df |>
       .default = "normal"
     )
   ) |>
+  # rename for final export
   dplyr::select(
     barcodes,
-    neuroblastoma_04_annotation,
-    neuroblastoma_04_ontology,
+    neuroblastoma_04_annotation = final_label,
+    neuroblastoma_04_ontology = final_ontology_id,
     neuroblastoma_04_ontology_label = CL_annotation,
     singler_label,
     scanvi_label
