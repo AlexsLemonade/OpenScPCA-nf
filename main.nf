@@ -91,5 +91,6 @@ workflow {
   // The optional key `ontology_column:` will also be used if provided.
   // mix outputs from all cell type modules first
   export_ch = cell_type_ewings.out.celltypes
+    .mix(cell_type_neuroblastoma_04.out.celltypes)
   export_annotations(export_ch)
 }
