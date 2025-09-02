@@ -3,7 +3,7 @@
 // Workflow to assign neuroblastoma (SCPCP000004) cell type labels
 
 
-process neuroblastoma_04_convert_nbatlas {
+process nb_04_convert_nbatlas {
   container params.cell_type_nb_04_container
   label 'mem_32'
   input:
@@ -35,7 +35,7 @@ process neuroblastoma_04_convert_nbatlas {
 }
 
 
-process neuroblastoma_04_train_singler_model {
+process nb_04_train_singler_model {
   container params.cell_type_nb_04_container
   label 'mem_32'
   label 'cpus_4'
@@ -61,7 +61,7 @@ process neuroblastoma_04_train_singler_model {
 }
 
 
-process neuroblastoma_04_train_scanvi_model {
+process nb_04_train_scanvi_model {
   container params.cell_type_nb_04_container
   label 'mem_8'
   input:
@@ -85,7 +85,7 @@ process neuroblastoma_04_train_scanvi_model {
     """
 }
 
-process neuroblastoma_04_classify_singler {
+process nb_04_classify_singler {
   container params.cell_type_nb_04_container
   tag "${sample_id}"
   label 'mem_8'
@@ -119,7 +119,7 @@ process neuroblastoma_04_classify_singler {
 
 
 
-process neuroblastoma_04_classify_scanvi {
+process nb_04_classify_scanvi {
   container params.cell_type_nb_04_container
   tag "${sample_id}"
   label 'mem_8'
@@ -162,8 +162,8 @@ process neuroblastoma_04_classify_scanvi {
 }
 
 
-process neuroblastoma_04_assign_celltypes {
-  container params.cell_type_neuroblastoma_04_container
+process nb_04_assign_celltypes {
+  container params.cell_type_nb_04_container
   tag "${sample_id}"
   label 'mem_8'
   publishDir "${params.results_bucket}/${params.release_prefix}/cell-type-neuroblastoma/${project_id}/${sample_id}", mode: 'copy'
@@ -184,7 +184,7 @@ process neuroblastoma_04_assign_celltypes {
           path(celltype_assignment_output_files)
   script:
     library_ids = singler_files.collect{(it.name =~ /SCPCL\d{6}/)[0]}
-    celltype_assignment_output_files = library_ids.collect{"${it}_neuroblastoma-04_celltype-assignments.tsv"}
+    celltype_assignment_output_files = library_ids.collect{"${it}_neuroblastoma-04_celltype-assignments.tsv.gz"}
     """
     for library_id in ${library_ids.join(" ")}; do
       # find files that have the appropriate library id in file name
@@ -207,8 +207,8 @@ process neuroblastoma_04_assign_celltypes {
     """
 
   stub:
-    library_ids = aucell_files.collect{(it.name =~ /SCPCL\d{6}/)[0]}
-    celltype_assignment_output_files = library_ids.collect{"${it}_ewing-celltype-assignments.tsv"}
+    library_ids = singler_files.collect{(it.name =~ /SCPCL\d{6}/)[0]}
+    celltype_assignment_output_files = library_ids.collect{"${it}_neuroblastoma-04_celltype-assignments.tsv"}
     """
     for library_id in ${library_ids.join(" ")}; do
       output_tsv=\${library_id}_neuroblastoma-04_celltype-assignments.tsv
@@ -221,6 +221,7 @@ process neuroblastoma_04_assign_celltypes {
 workflow cell_type_neuroblastoma_04 {
   take:
     sample_ch  // [sample_id, project_id, sample_path]
+    consensus_ch // [sample_id, project_id, [list of consensus_output_files], [list of gene_exp_output_files]]
   main:
     // create [sample_id, project_id, [list of processed files]]
     libraries_ch = sample_ch
@@ -235,43 +236,45 @@ workflow cell_type_neuroblastoma_04 {
 
     // convert NBAtlas to SCE and AnnData objects
     // emits: sce, anndata, hvg_file
-    neuroblastoma_04_convert_nbatlas(file(params.cell_type_nb_04_nbatlas_url))
+    nb_04_convert_nbatlas(file(params.cell_type_nb_04_nbatlas_url))
 
     // train SingleR model
     // outputs the singler model file
-    neuroblastoma_04_train_singler_model(convert_nbatlas.out.sce, file(params.gtf_file))
+    nb_04_train_singler_model(nb_04_convert_nbatlas.out.sce, file(params.gtf_file))
 
     // train scANVI model
     // outputs the scanvi model directory
-    neuroblastoma_04_train_scanvi_model(convert_nbatlas.out.anndata)
+    nb_04_train_scanvi_model(nb_04_convert_nbatlas.out.anndata)
 
     /////////////////////////////////////////////////////
     //        Perform  cell type classification        //
     /////////////////////////////////////////////////////
 
     // classify with SingleR
-    neuroblastoma_04_classify_singler(
+    nb_04_classify_singler(
       libraries_ch,
-      train_singler_model.out
+      nb_04_train_singler_model.out
     )
 
     // classify with scANVI
-    neuroblastoma_04_classify_scanvi(
+    nb_04_classify_scanvi(
       libraries_ch,
-      convert_nbatlas.out.hvg_file,
-      train_scanvi_model.out
+      nb_04_convert_nbatlas.out.hvg_file,
+      nb_04_train_scanvi_model.out
     )
 
     // combine singler, scanvi, and consensus cell types for assignment
-    assign_ch = neuroblastoma_04_classify_singler.out
+    assign_ch = nb_04_classify_singler.out
       // join scanvi by sample ID and project ID
-      .join(neuroblastoma_04_classify_scanvi.out, by: [0, 1]) // sample id, project id, singler, scanvi
+      .join(nb_04_classify_scanvi.out, by: [0, 1]) // sample id, project id, singler, scanvi
       // join consensus by sample ID and project ID
       .join(consensus_ch, by: [0, 1]) // sample id, project id, singler, scanvi, consensus, consensus gene exp
       .map { it.dropRight(1) } // we don't need the consensus gene exp file
 
+    assign_ch.view()
+
     // assign final labels
-    neuroblastoma_04_assign_celltypes(
+    nb_04_assign_celltypes(
       assign_ch,
       params.cell_type_nb_04_label_map_file,
       params.cell_type_nb_04_ontology_map_file,
@@ -279,9 +282,8 @@ workflow cell_type_neuroblastoma_04 {
       params.cell_type_nb_04_scanvi_pp_threshold
     )
 
-
     // add metadata to output tuple
-    neuroblastoma_04_output_ch = assign_celltypes.out
+    nb_04_output_ch = nb_04_assign_celltypes.out
       .map{ sample_id, project_id, assignment_files -> tuple(
         sample_id,
         project_id,
@@ -294,5 +296,5 @@ workflow cell_type_neuroblastoma_04 {
       )}
 
   emit:
-    celltypes = neuroblastoma_04_output_ch.out // [sample_id, project_id, [cell type assignment files], annotation_metadata]
+    celltypes = nb_04_output_ch // [sample_id, project_id, [cell type assignment files], annotation_metadata]
 }
