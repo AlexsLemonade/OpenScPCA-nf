@@ -81,9 +81,6 @@ workflow {
   // only runs on SCPCP000015
   cell_type_ewings(sample_ch.filter{ it[1] == "SCPCP000015" }, cell_type_consensus.out)
 
-  // Run the infercnv gene order file workflow
-  infercnv_gene_order()
-
   // Run the cell type neuroblastoma 04 workflow
   // only runs on SCPCP000004
   cell_type_neuroblastoma_04(sample_ch.filter{ it[1] == "SCPCP000004" })
