@@ -5,7 +5,7 @@
 
 process convert_nbatlas {
   container params.cell_type_nb_04_container
-  label 'mem_16'
+  label 'mem_32'
   input:
     path nbatlas_seurat_file
   output:
@@ -37,7 +37,8 @@ process convert_nbatlas {
 
 process train_singler_model {
   container params.cell_type_nb_04_container
-  label 'mem_8'
+  label 'mem_32'
+  label 'cpus_4'
   input:
     path nbatlas_sce_file
     path gtf_file
@@ -47,7 +48,7 @@ process train_singler_model {
     nbatlas_singler_model = "nbatlas_singler_model.rds"
     """
     train-singler-model.R \
-      --nbatlas_file ${nbatlas_sce_file} \
+      --nbatlas_sce ${nbatlas_sce_file} \
       --gtf_file ${gtf_file} \
       --singler_model_file ${nbatlas_singler_model} \
       --threads ${task.cpus}
@@ -62,7 +63,7 @@ process train_singler_model {
 
 process train_scanvi_model {
   container params.cell_type_nb_04_container
-  label 'mem_16'
+  label 'mem_8'
   input:
     path nbatlas_anndata_file
   output:
@@ -70,7 +71,7 @@ process train_scanvi_model {
   script:
     scanvi_ref_model_dir = "scanvi_ref_model_dir"
     """
-    train-scanvi-model.R \
+    train-scanvi-model.py \
       --reference_file ${nbatlas_anndata_file} \
       --reference_scanvi_model_dir ${scanvi_ref_model_dir}
     """
@@ -88,6 +89,7 @@ process classify_singler {
   container params.cell_type_nb_04_container
   tag "${sample_id}"
   label 'mem_8'
+  label 'cpus_2'
   input:
     tuple val(sample_id),
           val(project_id),
@@ -101,7 +103,7 @@ process classify_singler {
     """
     for file in ${library_files}; do
       classify-singler.R \
-        --sce_file ${file} \
+        --sce_file \$file \
         --singler_model_file ${singler_model} \
         --singler_output_tsv \$(basename \${file%.rds}_singler.tsv.gz) \
         --threads ${task.cpus}
@@ -120,7 +122,7 @@ process classify_singler {
 process classify_scanvi {
   container params.cell_type_nb_04_container
   tag "${sample_id}"
-  label 'mem_16'
+  label 'mem_8'
   input:
     tuple val(sample_id),
           val(project_id),
@@ -139,7 +141,7 @@ process classify_scanvi {
 
       # Prepare the query data for input to scANVI/scArches
       prepare-scanvi-query.R \
-        --sce_file ${file} \
+        --sce_file \$file \
         --nbatlas_hvg_file ${hvg_file} \
         --prepared_anndata_file ${library_id}_prepared.h5ad \
         --threads ${task.cpus}
