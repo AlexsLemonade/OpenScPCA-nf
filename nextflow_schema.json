@@ -36,6 +36,12 @@
           "description": "Base URI for simulated data output",
           "help_text": "Standard configurations will use an S3 bucket, but local paths can also be used."
         },
+        "annotations_bucket": {
+          "type": "string",
+          "default": "s3://openscpca-celltype-annotations-public-access",
+          "description": "Base URI for saving cell type annotations output",
+          "help_text": "Standard configurations will use an S3 bucket, but local paths can also be used."
+        },
         "project": {
           "type": "string",
           "default": "all",
