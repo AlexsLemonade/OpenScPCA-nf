@@ -151,7 +151,7 @@ process classify_scanvi {
       classify-scanvi.py \
         --query_file \${anndata_file} \
         --reference_scanvi_model_dir ${scanvi_ref_model_dir} \
-        --predictions_tsv ${scanvi_tsv}
+        --predictions_tsv \${scanvi_tsv}
     done
     """
   stub:
