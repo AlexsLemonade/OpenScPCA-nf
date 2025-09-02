@@ -5,7 +5,7 @@
 
 process convert_nbatlas {
   container params.cell_type_nb_04_container
-  label 'mem_8'
+  label 'mem_32'
   input:
     path nbatlas_seurat_file
   output:
@@ -37,7 +37,8 @@ process convert_nbatlas {
 
 process train_singler_model {
   container params.cell_type_nb_04_container
-  label 'mem_8'
+  label 'mem_32'
+  label 'cpus_4'
   input:
     path nbatlas_sce_file
     path gtf_file
@@ -47,9 +48,10 @@ process train_singler_model {
     nbatlas_singler_model = "nbatlas_singler_model.rds"
     """
     train-singler-model.R \
-      --nbatlas_file ${nbatlas_sce_file} \
+      --nbatlas_sce ${nbatlas_sce_file} \
       --gtf_file ${gtf_file} \
-      --singler_model_file ${nbatlas_singler_model}
+      --singler_model_file ${nbatlas_singler_model} \
+      --threads ${task.cpus}
     """
   stub:
     nbatlas_singler_model = "nbatlas_singler_model.rds"
@@ -61,7 +63,7 @@ process train_singler_model {
 
 process train_scanvi_model {
   container params.cell_type_nb_04_container
-  label 'mem_16'
+  label 'mem_8'
   input:
     path nbatlas_anndata_file
   output:
@@ -69,7 +71,7 @@ process train_scanvi_model {
   script:
     scanvi_ref_model_dir = "scanvi_ref_model_dir"
     """
-    train-scanvi-model.R \
+    train-scanvi-model.py \
       --reference_file ${nbatlas_anndata_file} \
       --reference_scanvi_model_dir ${scanvi_ref_model_dir}
     """
@@ -83,6 +85,37 @@ process train_scanvi_model {
     """
 }
 
+process classify_singler {
+  container params.cell_type_nb_04_container
+  tag "${sample_id}"
+  label 'mem_8'
+  label 'cpus_2'
+  input:
+    tuple val(sample_id),
+          val(project_id),
+          path(library_files)
+    path singler_model
+  output:
+    tuple val(sample_id),
+          val(project_id),
+          path("*_singler.tsv.gz")
+  script:
+    """
+    for file in ${library_files}; do
+      classify-singler.R \
+        --sce_file \$file \
+        --singler_model_file ${singler_model} \
+        --singler_output_tsv \$(basename \${file%.rds}_singler.tsv.gz) \
+        --threads ${task.cpus}
+    done
+    """
+  stub:
+    """
+    for file in ${library_files}; do
+      touch \$(basename \${file%.rds}_singler.tsv.gz)
+    done
+    """
+}
 
 
 workflow cell_type_neuroblastoma_04 {
@@ -96,6 +129,10 @@ workflow cell_type_neuroblastoma_04 {
         return [sample_id, project_id, library_files]
       }
 
+    /////////////////////////////////////////////////////
+    // Prepare references for cell type classification //
+    /////////////////////////////////////////////////////
+
     // convert NBAtlas to SCE and AnnData objects
     // emits: sce, anndata, hvg_file
     convert_nbatlas(file(params.cell_type_nb_04_nbatlas_url))
@@ -107,4 +144,14 @@ workflow cell_type_neuroblastoma_04 {
     // train scANVI model
     // outputs the scanvi model directory
     train_scanvi_model(convert_nbatlas.out.anndata)
+
+    /////////////////////////////////////////////////////
+    //        Perform  cell type classification        //
+    /////////////////////////////////////////////////////
+
+    // classify with SingleR
+    classify_singler(
+      libraries_ch,
+      train_singler_model.out
+    )
 }
