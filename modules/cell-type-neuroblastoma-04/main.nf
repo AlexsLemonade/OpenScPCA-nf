@@ -87,7 +87,6 @@ process train_scanvi_model {
 
 process classify_singler {
   container params.cell_type_nb_04_container
-  publishDir "${params.results_bucket}/${params.release_prefix}/cell-type-neuroblastoma-04/${project_id}/${sample_id}", mode: 'copy'
   tag "${sample_id}"
   label 'mem_8'
   label 'cpus_2'
@@ -104,7 +103,7 @@ process classify_singler {
     """
     for file in ${library_files}; do
       classify-singler.R \
-        --sce_file ${file} \
+        --sce_file \$file \
         --singler_model_file ${singler_model} \
         --singler_output_tsv \$(basename \${file%.rds}_singler.tsv.gz) \
         --threads ${task.cpus}
@@ -155,8 +154,4 @@ workflow cell_type_neuroblastoma_04 {
       libraries_ch,
       train_singler_model.out
     )
-
-    emit:
-      classify_singler.out
-
 }
