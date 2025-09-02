@@ -90,6 +90,6 @@ workflow {
   // annotation meta should be a groovy map (dictionary) containing at least `module_name:` and  `annotation_column:` keys.
   // The optional key `ontology_column:` will also be used if provided.
   // mix outputs from all cell type modules first
-  export_ch = cell_type_ewings.out.celltypes
-  export_annotations(export_ch)
+  //export_ch = cell_type_ewings.out.celltypes
+  //export_annotations(export_ch)
 }
