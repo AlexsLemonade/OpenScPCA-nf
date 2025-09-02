@@ -100,6 +100,10 @@
         "cell_type_nb_04_container": {
           "type": "string",
           "default": "public.ecr.aws/openscpca/cell-type-neuroblastoma-04:latest"
+        },
+        "cell_type_scimilarity_container": {
+          "type": "string",
+          "default": "public.ecr.aws/openscpca/cell-type-scimilarity:latest"
         }
       }
     },
@@ -200,6 +204,20 @@
           "mimetype": "text/tab-separated-values",
           "description": "Table with AUC thresholds to use for each gene set to define cell states"
         },
+        "cell_type_scimilarity_model": {
+          "type": "string",
+          "default": "s3://scpca-references/celltype/scimilarity_references/model_v1.1",
+          "format": "directory-path",
+          "description": "URI to SCimilarity model"
+        },
+        "cell_type_scimilarity_ontology_ref_file": {
+          "type": "string",
+          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/heads/main/analyses/cell-type-scimilarity/references/scimilarity-mapped-ontologies.tsv",
+          "pattern": "\\.tsv$",
+          "format": "file-path",
+          "mimetype": "text/tab-separated-values",
+          "description": "TSV file with SCimilarity annotation labels and associated cell ontology identifiers"
+        },
         "cell_type_nb_04_scanvi_pp_threshold": {
           "type": "number",
           "default": 0.75,
@@ -215,7 +233,7 @@
           "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/heads/main/analyses/cell-type-consensus/references/consensus-validation-groups.tsv",
           "description": "Path or URL to TSV mapping consensus cell types to broad validation groups"
         },
-        "cell_type_nb_04_ontology_map_fie": {
+        "cell_type_nb_04_ontology_map_file": {
           "type": "string",
           "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/heads/main/analyses/cell-type-neuroblastoma-04/references/nbatlas-ontology-ids.tsv",
           "description": "Path or URL to TSV mapping NBAtlas labels to ontology ids"

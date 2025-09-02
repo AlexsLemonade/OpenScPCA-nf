@@ -10,6 +10,7 @@ include { cell_type_consensus } from './modules/cell-type-consensus'
 include { cell_type_ewings } from './modules/cell-type-ewings'
 include { cell_type_neuroblastoma_04 } from './modules/cell-type-neuroblastoma-04'
 include { infercnv_gene_order } from './modules/infercnv-gene-order'
+include { cell_type_scimilarity } from './modules/cell-type-scimilarity'
 include { export_annotations } from './modules/export-annotations'
 
 // **** Parameter checks ****
@@ -55,6 +56,7 @@ workflow {
   sample_ch = Channel.fromList(Utils.getSampleTuples(release_dir))
     .filter{ run_all || it[1] in project_ids }
 
+
   // Run the merge workflow
   merge_sce(sample_ch)
 
@@ -64,14 +66,24 @@ workflow {
   // Run the seurat conversion workflow
   seurat_conversion(sample_ch)
 
+  // Run the infercnv gene order file workflow
+  infercnv_gene_order()
+
+  // Cell type annotation workflows //
+
   // Run the consensus cell type workflow
   cell_type_consensus(sample_ch)
+
+  // run the scimilarity cell type workflow
+  cell_type_scimilarity(sample_ch)
 
   // Run the cell type ewings workflow
   // only runs on SCPCP000015
   cell_type_ewings(sample_ch.filter{ it[1] == "SCPCP000015" }, cell_type_consensus.out)
 
   // Run the infercnv gene order file workflow
+  infercnv_gene_order()
+
   // Run the cell type neuroblastoma 04 workflow
   // only runs on SCPCP000004
   cell_type_neuroblastoma_04(sample_ch.filter{ it[1] == "SCPCP000004" })
