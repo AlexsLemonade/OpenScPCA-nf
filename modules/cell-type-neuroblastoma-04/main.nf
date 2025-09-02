@@ -87,6 +87,7 @@ process train_scanvi_model {
 
 process classify_singler {
   container params.cell_type_nb_04_container
+  publishDir "${params.results_bucket}/${params.release_prefix}/cell-type-neuroblastoma-04/${project_id}/${sample_id}", mode: 'copy'
   tag "${sample_id}"
   label 'mem_8'
   label 'cpus_2'
@@ -154,5 +155,8 @@ workflow cell_type_neuroblastoma_04 {
       libraries_ch,
       train_singler_model.out
     )
+
+    emit:
+      classify_singler.out
 
 }
