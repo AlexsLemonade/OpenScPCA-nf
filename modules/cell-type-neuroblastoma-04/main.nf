@@ -177,7 +177,6 @@ process nb_04_assign_celltypes {
     path(nbatlas_ontology_file)
     path(consensus_validation_file)
     val(scanvi_pp_threshold)
-
   output:
     tuple val(sample_id),
           val(project_id),
