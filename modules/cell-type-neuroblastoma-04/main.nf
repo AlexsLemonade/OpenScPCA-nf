@@ -63,7 +63,7 @@ process nb_04_train_singler_model {
 
 process nb_04_train_scanvi_model {
   container params.cell_type_nb_04_container
-  label 'mem_8'
+  label 'mem_16'
   input:
     path nbatlas_anndata_file
   output:
