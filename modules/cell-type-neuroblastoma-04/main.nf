@@ -118,6 +118,50 @@ process classify_singler {
 }
 
 
+
+process classify_scanvi {
+  container params.cell_type_nb_04_container
+  tag "${sample_id}"
+  label 'mem_8'
+  input:
+    tuple val(sample_id),
+          val(project_id),
+          path(library_files)
+    path hvg_file
+    path scanvi_ref_model_dir
+  output:
+    tuple val(sample_id),
+          val(project_id),
+          path("*_scanvi.tsv.gz")
+  script:
+    """
+    for file in ${library_files}; do
+
+      anndata_file="prepared.h5ad"
+      scanvi_tsv=\$(basename \${file%.rds}_scanvi.tsv.gz)
+
+      # Prepare the query data for input to scANVI/scArches
+      prepare-scanvi-query.R \
+        --sce_file \$file \
+        --nbatlas_hvg_file ${hvg_file} \
+        --prepared_anndata_file \${anndata_file}
+
+      # Run label transfer with scANVI/scArches
+      classify-scanvi.py \
+        --query_file \${anndata_file} \
+        --reference_scanvi_model_dir ${scanvi_ref_model_dir} \
+        --predictions_tsv \${scanvi_tsv}
+    done
+    """
+  stub:
+    """
+    for file in ${library_files}; do
+      touch \$(basename \${file%.rds}_scanvi.tsv.gz)
+    done
+    """
+}
+
+
 workflow cell_type_neuroblastoma_04 {
   take:
     sample_ch  // [sample_id, project_id, sample_path]
@@ -154,4 +198,12 @@ workflow cell_type_neuroblastoma_04 {
       libraries_ch,
       train_singler_model.out
     )
+
+    // classify with scANVI
+    classify_scanvi(
+      libraries_ch,
+      convert_nbatlas.out.hvg_file,
+      train_scanvi_model.out
+    )
+
 }
