@@ -137,7 +137,7 @@ process nb_04_classify_scanvi {
     """
     for file in ${library_files}; do
 
-      anndata_file=\$(basename \${file%.rds}_prepared.h5ad)
+      anndata_file="prepared.h5ad"
       scanvi_tsv=\$(basename \${file%.rds}_scanvi.tsv.gz)
 
       # Prepare the query data for input to scANVI/scArches
