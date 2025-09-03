@@ -37,7 +37,7 @@ process nb_04_convert_nbatlas {
 
 process nb_04_train_singler_model {
   container params.cell_type_nb_04_container
-  label 'mem_32'
+  label 'mem_max'
   label 'cpus_4'
   input:
     path nbatlas_sce_file
