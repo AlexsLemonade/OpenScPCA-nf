@@ -237,7 +237,8 @@ final_annotation_df <- annotation_df |>
     neuroblastoma_04_ontology = final_ontology_id,
     neuroblastoma_04_ontology_label = CL_annotation,
     singler_label,
-    scanvi_label
+    scanvi_label,
+    cell_class
   )
 
 

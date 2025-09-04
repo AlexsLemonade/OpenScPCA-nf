@@ -166,7 +166,7 @@ process nb_04_assign_celltypes {
   container params.cell_type_nb_04_container
   tag "${sample_id}"
   label 'mem_8'
-  publishDir "${params.results_bucket}/${params.release_prefix}/cell-type-neuroblastoma/${project_id}/${sample_id}", mode: 'copy'
+  publishDir "${params.results_bucket}/${params.release_prefix}/cell-type-neuroblastoma-04/${project_id}/${sample_id}", mode: 'copy'
   input:
     tuple val(sample_id),
           val(project_id),
