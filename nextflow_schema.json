@@ -145,19 +145,27 @@
         },
         "cell_type_consensus_ref_file": {
           "type": "string",
-          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.2/analyses/cell-type-consensus/references/consensus-cell-type-reference.tsv",
+          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/heads/main/analyses/cell-type-consensus/references/consensus-cell-type-reference.tsv",
           "pattern": "\\.tsv$",
           "format": "file-path",
           "mimetype": "text/tab-separated-values",
           "description": "Consensus cell types reference file"
         },
-        "cell_type_consensus_marker_gene_ref_file": {
+        "cell_type_consensus_validation_marker_genes_file": {
           "type": "string",
           "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/tags/v0.2.2/analyses/cell-type-consensus/references/validation-markers.tsv",
           "pattern": "\\.tsv$",
           "format": "file-path",
           "mimetype": "text/tab-separated-values",
-          "description": "Table of marker genes used to validate consensus cell types"
+          "description": "Table of marker genes for validation groups used to validate consensus cell types"
+        },
+        "cell_type_consensus_all_marker_genes_file": {
+          "type": "string",
+          "default": "https://raw.githubusercontent.com/AlexsLemonade/OpenScPCA-analysis/refs/heads/main/analyses/cell-type-consensus/references/consensus-markers.tsv",
+          "pattern": "\\.tsv$",
+          "format": "file-path",
+          "mimetype": "text/tab-separated-values",
+          "description": "Table of marker genes for all consensus cell types"
         },
         "cell_type_ewings_auc_max_rank": {
           "type": "integer",
