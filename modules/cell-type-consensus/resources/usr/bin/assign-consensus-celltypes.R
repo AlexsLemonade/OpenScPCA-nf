@@ -248,12 +248,24 @@ all_assignments_df <- celltype_df |>
   ) |>
   # use unknown for NA annotation but keep ontology ID as NA
   # if the sample type is cell line, keep as NA
-  dplyr::mutate(consensus_annotation = dplyr::if_else(is.na(consensus_annotation) & (sample_type != "cell line"), "Unknown", consensus_annotation)) |>
-  # rename old consensus columns to avoid confusion
-  dplyr::rename(
-    singler_cellassign_consensus_annotation = consensus_celltype_annotation,
-    singler_cellassign_consensus_ontology = consensus_celltype_ontology
-  )
+  dplyr::mutate(consensus_annotation = dplyr::if_else(is.na(consensus_annotation) & (sample_type != "cell line"), "Unknown", consensus_annotation))
+
+# rename old consensus cell type columns if they are present
+if ("consensus_celltype_annotation" %in% colnames(all_assignments_df)) {
+  all_assignments_df <- all_assignments_df |>
+    # rename old consensus columns to avoid confusion
+    dplyr::rename(
+      singler_cellassign_consensus_annotation = consensus_celltype_annotation,
+      singler_cellassign_consensus_ontology = consensus_celltype_ontology
+    )
+} else {
+  # if no consensus from the object, set to NA
+  all_assignments_df <- all_assignments_df |>
+    dplyr::mutate(
+      singler_cellassign_consensus_annotation = NA,
+      singler_cellassign_consensus_ontology = NA
+    )
+}
 
 # export file
 readr::write_tsv(all_assignments_df, opt$consensus_output_file)
