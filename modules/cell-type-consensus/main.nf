@@ -51,8 +51,8 @@ process assign_consensus {
     gene_exp_output_files = library_ids.collect{"${it}_marker-gene-expression.tsv.gz"}
     """
     for library_id in ${library_ids.join(" ")}; do
-      touch \${library_id}_consensus-cell-types.tsv.gz)
-      touch \${library_id}_marker-gene-expression.tsv.gz)
+      touch \${library_id}_consensus-cell-types.tsv.gz
+      touch \${library_id}_marker-gene-expression.tsv.gz
     done
     """
 }
@@ -71,10 +71,19 @@ workflow cell_type_consensus {
         return [sample_id, project_id, library_files]
       }
 
+    // define empty file to use if scimilarity doesn't exist
+    def empty_file = "${projectDir}/assets/NO_FILE"
     // add scimilarity to input channel
     consensus_ch = libraries_ch
       // join by sample and project id
-      .join(scimilarity_ch, by: [0,1]) // [sample id, project id, [list of processed files], [list of scimilarity files]]
+      // keep any instances of the library channel that are missing a scimilarity file
+      .join(scimilarity_ch, by: [0,1], remainder: true) // [sample id, project id, [list of processed files], [list of scimilarity files]]
+      .map{sample_id, project_id, sce_files, scimilarity_files -> tuple(
+        sample_id,
+        project_id,
+        sce_files,
+        scimilarity_files ?: [file(empty_file)]
+      )}
 
     // assign consensus cell types
     assign_consensus(
