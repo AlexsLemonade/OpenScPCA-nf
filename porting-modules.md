@@ -18,6 +18,7 @@
     - [Process granularity](#process-granularity)
     - [Process resources](#process-resources)
     - [Stub processes](#stub-processes)
+  - [Special considerations for custom cell type annotation modules](#special-considerations-for-custom-cell-type-annotation-modules)
 
 ## Introduction
 
@@ -154,6 +155,8 @@ If a module creates multiple output files (e.g., a table of results and an R obj
 
 Where possible, include the `SCPCS` sample id, `SCPCL` library id, or `SCPCP` project id as appropriate in the file name to facilitate searching and filtering.
 
+If the added module adds custom cell type annotations, see the [Special considerations for custom cell type annotation modules](#special-considerations-for-custom-cell-type-annotation-modules) to ensure the output of the module is formatted properly.
+
 ### Module parameters
 
 If a module requires additional parameters, these should be defined as entries in the `config/module_parameters.config` file.
@@ -218,3 +221,43 @@ If an instance of a process fails, Nextflow will automatically increase the memo
 Include a [`stub` section](https://www.nextflow.io/docs/stable/process.html#stub) for each process that uses only basic `bash` commands to create (usually empty) output files that mirror the expected output of the process.
 This stub process is used for initial testing to ensure the overall logic of the workflow is valid.
 Note that stub processes are not run in the process container, so they should only include commands that are common to `bash` environments, such as `touch`, `mkdir`, `echo`, etc.
+
+### Special considerations for custom cell type annotation modules
+
+If the module being added includes assigning custom cell type annotations (e.g., `cell-type-ewings` module) and the annotations output from this module will be included in processed objects on the ScPCA Portal, the cell type annotations can be provided as input to the `export-annotations` module.
+This module outputs a JSON file for each library containing an array of cell barcodes, array of cell type annotations, array of cell type ontologies, the original module name, workflow release, and data release.
+All exported annotations can be found in `s3://openscpca-celltype-annotations-public-access`.
+
+Within the cell typing module, the published output file should be a TSV file with one row for each barcode and column(s) containing any assigned cell type annotations.
+The output channel from the module should be properly formatted and provided as input to the `export_annotations()` process in the main workflow.
+This includes a tuple of `[sample id, project id, [cell type assignment files], annotation metadata]` where `annotation metadata` is a dictionary containing `module_name`, `annotation_column`, and `ontology_column`.
+The `module_name` should correspond to the original module name in `OpenScPCA-analysis`.
+The `annotation_column` and `ontology_column` should contain the name of the column within the TSV file containing the annotations to be ported to the objects on the ScPCA Portal.
+
+Below is an example of creating the required module output within the `main.nf` script of the cell type annotation module being added.
+
+```groovy
+// add ewing specific metadata to output tuple
+celltype_output_ch = ewing_assign_celltypes.out
+  .map{ sample_id, project_id, assignment_files -> tuple(
+    sample_id,
+    project_id,
+    assignment_files,
+    [ // annotation metadata
+      module_name: "cell-type-ewings",
+      annotation_column: "ewing_annotation",
+      ontology_column: "ewing_ontology"
+    ]
+  )}
+
+emit:
+  celltypes = celltype_output_ch // [sample_id, project_id, [cell type assignment files], annotation_metadata]
+```
+
+Then in the main workflow, the output should be mixed with the output from other cell type annotation channels and provided as input to `export_annotations()`.
+
+```groovy
+export_ch = cell_type_ewings.out.celltypes
+  .mix(cell_type_neuroblastoma_04.out.celltypes)
+export_annotations(export_ch)
+```
