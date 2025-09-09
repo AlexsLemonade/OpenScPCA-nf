@@ -1,4 +1,4 @@
-This module assigns a consensus cell type based on cell types assigned by `SingleR` and `CellAssign`.
+This module assigns a consensus cell type based on cell types assigned by `SingleR`, `CellAssign`, and `SCimilarity`.
 
 Scripts are derived from the the `cell-type-consensus` module of the [OpenScPCA-analysis](https://github.com/AlexsLemonade/OpenScPCA-analysis) repository.
 
