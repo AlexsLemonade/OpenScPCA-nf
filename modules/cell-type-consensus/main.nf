@@ -40,8 +40,8 @@ process assign_consensus {
         --consensus_ref_file ${consensus_ref} \
         --validation_marker_gene_file ${val_marker_gene_ref} \
         --consensus_marker_gene_file ${consensus_marker_gene_ref} \
-        --consensus_output_file \${library_id}_consensus-cell-types.tsv.gz) \
-        --gene_exp_output_file \${library_id}_marker-gene-expression.tsv.gz)
+        --consensus_output_file \${library_id}_consensus-cell-types.tsv.gz \
+        --gene_exp_output_file \${library_id}_marker-gene-expression.tsv.gz
     done
     """
 
