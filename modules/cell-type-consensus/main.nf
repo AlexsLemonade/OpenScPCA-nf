@@ -34,7 +34,7 @@ process assign_consensus {
 
       assign-consensus-celltypes.R \
         --sce_file \$sce_file \
-        --scimilarity_annotations_file \$scimilarity_file \
+        --scimilarity_annotations_file "\$scimilarity_file" \
         --blueprint_ref_file ${blueprint_ref} \
         --panglao_ref_file ${panglao_ref} \
         --consensus_ref_file ${consensus_ref} \
@@ -82,7 +82,7 @@ workflow cell_type_consensus {
         sample_id,
         project_id,
         sce_files,
-        scimilarity_files ?: [file(empty_file)]
+        scimilarity_files ?: []
       )}
 
     // assign consensus cell types
