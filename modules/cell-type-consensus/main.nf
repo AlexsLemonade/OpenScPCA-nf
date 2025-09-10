@@ -71,8 +71,6 @@ workflow cell_type_consensus {
         return [sample_id, project_id, library_files]
       }
 
-    // define empty file to use if scimilarity doesn't exist
-    def empty_file = "${projectDir}/assets/NO_FILE"
     // add scimilarity to input channel
     consensus_ch = libraries_ch
       // join by sample and project id
