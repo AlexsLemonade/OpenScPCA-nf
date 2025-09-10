@@ -237,16 +237,16 @@ The `annotation_column` and `ontology_column` should contain the name of the col
 Below is an example of creating the required module output within the `main.nf` script of the cell type annotation module being added.
 
 ```groovy
-// add ewing specific metadata to output tuple
-celltype_output_ch = ewing_assign_celltypes.out
+// add module-specific cell type metadata to output tuple
+celltype_output_ch = new_celltyping_module.out
   .map{ sample_id, project_id, assignment_files -> tuple(
     sample_id,
     project_id,
     assignment_files,
     [ // annotation metadata
-      module_name: "cell-type-ewings",
-      annotation_column: "ewing_annotation",
-      ontology_column: "ewing_ontology"
+      module_name: "new-celltyping-module",
+      annotation_column: "new_celltype_annotation",
+      ontology_column: "new_celltype_ontology"
     ]
   )}
 
@@ -259,5 +259,6 @@ Then in the main workflow, the output should be mixed with the output from other
 ```groovy
 export_ch = cell_type_ewings.out.celltypes
   .mix(cell_type_neuroblastoma_04.out.celltypes)
+  .mix(new_celltype_module.out.celltypes) # mix in new module results
 export_annotations(export_ch)
 ```
