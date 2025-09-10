@@ -51,6 +51,10 @@ workflow cell_type_scimilarity {
         library_files = library_files.findAll{ it.name =~ /(?i)_rna.h5ad$/ }
         return [sample_id, project_id, library_files]
       }
+      // remove any samples that don't have a processed file
+      .filter{ sample_id, project_id, library_files ->
+        !library_files.isEmpty()
+      }
 
     // assign cell types using scimilarity
     assign_scimilarity(
