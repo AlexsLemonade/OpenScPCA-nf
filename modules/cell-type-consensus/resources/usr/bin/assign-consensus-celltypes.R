@@ -198,7 +198,7 @@ if (is_cell_line) {
 # minimal columns to join for assigning cell types
 join_columns <- c("singler_celltype_ontology", "cellassign_celltype_annotation", "panglao_ontology")
 # by default use the lca between cellassign and singler as the consensus cell type
-consensus_column_prefix <- "cellassign_singler_pair"
+consensus_column_prefix <- "existing_consensus"
 
 # if the library has scimilarity annotations add them in to the coldata
 if (file.exists(opt$scimilarity_annotations_file)) {
