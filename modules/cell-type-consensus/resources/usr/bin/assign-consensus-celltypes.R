@@ -17,8 +17,8 @@
 # scimilarity_celltype_ontology: Original ontology label from SCimilarity
 # scimilarity_celltype_annotation: Original cell type name from SCimilarity
 # scimilarity_annotation_cl: human readable value associated with the CL term for scimilarity
-# singler_cellassign_consensus_annotation: Previous consensus annotation that considered only SingleR and CellAssign
-# singler_cellassign_consensus_ontology: CL ontology ID for previous consensus annotation that considered only SingleR and CellAssign
+# existing_consensus_annotation: Previous consensus annotation present in the processed object
+# existing_consensus_ontology: CL ontology ID for previous consensus annotation present in the processed object
 # consensus_annotation: human readable name associated with the consensus label
 # consensus_ontology: CL ontology term for the consensus cell type
 
@@ -149,6 +149,23 @@ coldata_df <- colData(sce) |>
     sample_type = paste0(sample_type, collapse = ", ") # account for multiple sample types
   )
 
+# rename old consensus cell type columns if they are present
+if ("consensus_celltype_annotation" %in% colnames(coldata_df)) {
+  coldata_df <- coldata_df |>
+    # rename old consensus columns to avoid confusion
+    dplyr::rename(
+      existing_consensus_annotation = consensus_celltype_annotation,
+      existing_consensus_ontology = consensus_celltype_ontology
+    )
+} else {
+  # if no consensus from the object, set to NA
+  coldata_df <- coldata_df |>
+    dplyr::mutate(
+      existing_consensus_annotation = NA,
+      existing_consensus_annotation = NA
+    )
+}
+
 # only select sample info and cell type info, we don't need the rest of the coldata
 # if sample is cell line, fill in celltype columns with NA
 if (is_cell_line) {
@@ -215,13 +232,11 @@ panglao_ref_df <- readr::read_tsv(opt$panglao_ref_file) |>
 
 consensus_ref_df <- readr::read_tsv(opt$consensus_ref_file) |>
   # select columns to use for joining and consensus assigmments
-  # first select all options and make sure the names match what we expect
-  dplyr::select(
-    panglao_ontology,
+  # first make sure the names match what we expect
+  dplyr::rename(
     cellassign_celltype_annotation = original_panglao_name,
     singler_celltype_ontology = blueprint_ontology,
-    scimilarity_celltype_ontology = scimilarity_ontology,
-    starts_with(consensus_column_prefix)
+    scimilarity_celltype_ontology = scimilarity_ontology
   ) |>
   # now just filter to join columns and get unique combinations
   dplyr::select(all_of(join_columns), starts_with(consensus_column_prefix)) |>
@@ -248,24 +263,8 @@ all_assignments_df <- celltype_df |>
   ) |>
   # use unknown for NA annotation but keep ontology ID as NA
   # if the sample type is cell line, keep as NA
-  dplyr::mutate(consensus_annotation = dplyr::if_else(is.na(consensus_annotation) & (sample_type != "cell line"), "Unknown", consensus_annotation))
+  dplyr::mutate(consensus_annotation = dplyr::if_else(is.na(consensus_annotation) & (!stringr::str_detect(sample_type, "cell line")), "Unknown", consensus_annotation))
 
-# rename old consensus cell type columns if they are present
-if ("consensus_celltype_annotation" %in% colnames(all_assignments_df)) {
-  all_assignments_df <- all_assignments_df |>
-    # rename old consensus columns to avoid confusion
-    dplyr::rename(
-      singler_cellassign_consensus_annotation = consensus_celltype_annotation,
-      singler_cellassign_consensus_ontology = consensus_celltype_ontology
-    )
-} else {
-  # if no consensus from the object, set to NA
-  all_assignments_df <- all_assignments_df |>
-    dplyr::mutate(
-      singler_cellassign_consensus_annotation = NA,
-      singler_cellassign_consensus_ontology = NA
-    )
-}
 
 # export file
 readr::write_tsv(all_assignments_df, opt$consensus_output_file)
