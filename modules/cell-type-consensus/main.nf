@@ -30,7 +30,13 @@ process assign_consensus {
     for library_id in ${library_ids.join(" ")}; do
       # find files that have the appropriate library id in file name
       sce_file=\$(ls ${library_files} | grep "\${library_id}")
-      scimilarity_file=\$(ls ${scimilarity_files} | grep "\${library_id}")
+
+      # define scimilarity file as long as it's not empty
+      if [[ -n ${scimilarity_files} ]]; then
+        scimilarity_file=\$(ls ${scimilarity_files} | grep "\${library_id}")
+      else
+        scimilarity_file=""
+      fi
 
       assign-consensus-celltypes.R \
         --sce_file \$sce_file \
