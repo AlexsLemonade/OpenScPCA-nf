@@ -58,16 +58,16 @@ workflow {
 
 
   // Run the merge workflow
-  merge_sce(sample_ch)
+  //merge_sce(sample_ch)
 
   // Run the doublet detection workflow
-  detect_doublets(sample_ch)
+  //detect_doublets(sample_ch)
 
   // Run the seurat conversion workflow
-  seurat_conversion(sample_ch)
+  //seurat_conversion(sample_ch)
 
   // Run the infercnv gene order file workflow
-  infercnv_gene_order()
+  //infercnv_gene_order()
 
   // Cell type annotation workflows //
 
@@ -79,18 +79,18 @@ workflow {
 
   // Run the cell type ewings workflow
   // only runs on SCPCP000015
-  cell_type_ewings(sample_ch.filter{ it[1] == "SCPCP000015" }, cell_type_consensus.out)
+  //cell_type_ewings(sample_ch.filter{ it[1] == "SCPCP000015" }, cell_type_consensus.out)
 
   // Run the cell type neuroblastoma 04 workflow
   // only runs on SCPCP000004
-  cell_type_neuroblastoma_04(sample_ch.filter{ it[1] == "SCPCP000004" }, cell_type_consensus.out)
+  //cell_type_neuroblastoma_04(sample_ch.filter{ it[1] == "SCPCP000004" }, cell_type_consensus.out)
 
   // format and export json files with openscpca annotations
   // input expected to be sample id, project id, tsv files, annotation meta
   // annotation meta should be a groovy map (dictionary) containing at least `module_name:` and  `annotation_column:` keys.
   // The optional key `ontology_column:` will also be used if provided.
   // mix outputs from all cell type modules first
-  export_ch = cell_type_ewings.out.celltypes
-    .mix(cell_type_neuroblastoma_04.out.celltypes)
-  export_annotations(export_ch)
+  //export_ch = cell_type_ewings.out.celltypes
+  //  .mix(cell_type_neuroblastoma_04.out.celltypes)
+  //export_annotations(export_ch)
 }
