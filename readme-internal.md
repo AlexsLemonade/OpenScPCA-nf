@@ -72,7 +72,7 @@ To attach to the tmux session (if it is still active), run the following command
 
 ```bash
 # attach to the `nextflow` tmux session as ec2-user
-sudo -u ec2-user tmux a -t nextflow`
+sudo -u ec2-user tmux a -t nextflow
 ```
 
 Note that if the run is complete, the `tmux` session will be closed.
