@@ -154,15 +154,15 @@ if ("consensus_celltype_annotation" %in% colnames(coldata_df)) {
   coldata_df <- coldata_df |>
     # rename old consensus columns to avoid confusion
     dplyr::rename(
-      existing_consensus_annotation = consensus_celltype_annotation,
-      existing_consensus_ontology = consensus_celltype_ontology
+      existing_consensus_celltype_annotation = consensus_celltype_annotation,
+      existing_consensus_celltype_ontology = consensus_celltype_ontology
     )
 } else {
   # if no consensus from the object, set to NA
   coldata_df <- coldata_df |>
     dplyr::mutate(
-      existing_consensus_annotation = NA,
-      existing_consensus_annotation = NA
+      existing_consensus_celltype_annotation = NA,
+      existing_consensus_celltype_annotation = NA
     )
 }
 
@@ -198,7 +198,7 @@ if (is_cell_line) {
 # minimal columns to join for assigning cell types
 join_columns <- c("singler_celltype_ontology", "cellassign_celltype_annotation", "panglao_ontology")
 # by default use the lca between cellassign and singler as the consensus cell type
-consensus_column_prefix <- "existing_consensus"
+consensus_column_prefix <- "cellassign_singler_pair"
 
 # if the library has scimilarity annotations add them in to the coldata
 if (file.exists(opt$scimilarity_annotations_file)) {
