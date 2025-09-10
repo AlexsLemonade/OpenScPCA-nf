@@ -32,7 +32,7 @@ process assign_consensus {
       sce_file=\$(ls ${library_files} | grep "\${library_id}")
 
       # define scimilarity file as long as it's not empty
-      if [[ -n ${scimilarity_files} ]]; then
+      if [[ -n "${scimilarity_files}" ]]; then
         scimilarity_file=\$(ls ${scimilarity_files} | grep "\${library_id}")
       else
         scimilarity_file=""
