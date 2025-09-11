@@ -24,8 +24,8 @@ process assign_consensus {
           path(gene_exp_output_files)
   script:
     library_ids = library_files.collect{(it.name =~ /SCPCL\d{6}/)[0]}
-    consensus_output_files = library_ids.collect{"${it}_consensus-cell-types.tsv.gz"}
-    gene_exp_output_files = library_ids.collect{"${it}_marker-gene-expression.tsv.gz"}
+    consensus_output_files = library_ids.collect{"${it}_processed_consensus-cell-types.tsv.gz"}
+    gene_exp_output_files = library_ids.collect{"${it}_processed_marker-gene-expression.tsv.gz"}
     """
     for library_id in ${library_ids.join(" ")}; do
       # find files that have the appropriate library id in file name
@@ -53,8 +53,8 @@ process assign_consensus {
 
   stub:
     library_ids = library_files.collect{(it.name =~ /SCPCL\d{6}/)[0]}
-    consensus_output_files = library_ids.collect{"${it}_consensus-cell-types.tsv.gz"}
-    gene_exp_output_files = library_ids.collect{"${it}_marker-gene-expression.tsv.gz"}
+    consensus_output_files = library_ids.collect{"${it}_processed_consensus-cell-types.tsv.gz"}
+    gene_exp_output_files = library_ids.collect{"${it}_processed_marker-gene-expression.tsv.gz"}
     """
     for library_id in ${library_ids.join(" ")}; do
       touch \${library_id}_consensus-cell-types.tsv.gz
