@@ -57,8 +57,8 @@ process assign_consensus {
     gene_exp_output_files = library_ids.collect{"${it}_processed_marker-gene-expression.tsv.gz"}
     """
     for library_id in ${library_ids.join(" ")}; do
-      touch \${library_id}_consensus-cell-types.tsv.gz
-      touch \${library_id}_marker-gene-expression.tsv.gz
+      touch \${library_id}_processed_consensus-cell-types.tsv.gz
+      touch \${library_id}_processed_marker-gene-expression.tsv.gz
     done
     """
 }
