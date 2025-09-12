@@ -71,11 +71,11 @@ workflow {
 
   // Cell type annotation workflows //
 
-  // Run the consensus cell type workflow
-  cell_type_consensus(sample_ch)
-
   // run the scimilarity cell type workflow
   cell_type_scimilarity(sample_ch)
+
+  // Run the consensus cell type workflow
+  cell_type_consensus(sample_ch, cell_type_scimilarity.out)
 
   // Run the cell type ewings workflow
   // only runs on SCPCP000015
