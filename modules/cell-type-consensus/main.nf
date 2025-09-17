@@ -20,12 +20,10 @@ process assign_consensus {
   output:
     tuple val(sample_id),
           val(project_id),
-          path(consensus_output_files),
-          path(gene_exp_output_files)
+          path("*_processed_consensus-cell-types.tsv.gz"),
+          path("*_processed_marker-gene-expression.tsv.gz")
   script:
     library_ids = library_files.collect{(it.name =~ /SCPCL\d{6}/)[0]}
-    consensus_output_files = library_ids.collect{"${it}_processed_consensus-cell-types.tsv.gz"}
-    gene_exp_output_files = library_ids.collect{"${it}_processed_marker-gene-expression.tsv.gz"}
     """
     for library_id in ${library_ids.join(" ")}; do
       # find files that have the appropriate library id in file name
@@ -46,15 +44,13 @@ process assign_consensus {
         --consensus_ref_file ${consensus_ref} \
         --validation_marker_gene_file ${val_marker_gene_ref} \
         --consensus_marker_gene_file ${consensus_marker_gene_ref} \
-        --consensus_output_file \${library_id}_consensus-cell-types.tsv.gz \
-        --gene_exp_output_file \${library_id}_marker-gene-expression.tsv.gz
+        --consensus_output_file \${library_id}_processed_consensus-cell-types.tsv.gz \
+        --gene_exp_output_file \${library_id}_processed_marker-gene-expression.tsv.gz
     done
     """
 
   stub:
     library_ids = library_files.collect{(it.name =~ /SCPCL\d{6}/)[0]}
-    consensus_output_files = library_ids.collect{"${it}_processed_consensus-cell-types.tsv.gz"}
-    gene_exp_output_files = library_ids.collect{"${it}_processed_marker-gene-expression.tsv.gz"}
     """
     for library_id in ${library_ids.join(" ")}; do
       touch \${library_id}_processed_consensus-cell-types.tsv.gz
