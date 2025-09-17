@@ -18,7 +18,7 @@ You may want to add temporary notes here for tracking as features are added, bef
   - `export-annotations`: Exports annotations from cell typing modules in a standard format for use with `scpca-nf`
 - One module has been updated:
   - `cell-type-consensus`:
-    - Consensus cell types are now assigned by looking for agreement between `SingleR`, `CellAssign`, and `SCimilarity.
+    - Consensus cell types are now assigned by looking for agreement between `SingleR`, `CellAssign`, and `SCimilarity`.
     If 2 of the 3 methods agree, a consensus cell type is assigned.
 
 
