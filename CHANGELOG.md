@@ -8,6 +8,20 @@ Add new release notes in reverse numerical order (newest first) below this comme
 You may want to add temporary notes here for tracking as features are added, before a new release is ready.
 -->
 
+
+## v0.1.6
+
+- All reference files and containers from `OpenScPCA-analysis` use the `v0.2.3` tag
+- Two new modules:
+  - `cell-type-neuroblastoma-04`: Assigns cell types to Neuroblastoma samples in SCPCP000004
+  - `cell-type-scimilarity`: Assigns cell types to all samples using [`SCimilarity`](https://genentech.github.io/scimilarity/index.html)
+  - `export-annotations`: Exports annotations from cell typing modules in a standard format for use with `scpca-nf`
+- One module has been updated:
+  - `cell-type-consensus`:
+    - Consensus cell types are now assigned by looking for agreement between `SingleR`, `CellAssign`, and `SCimilarity`.
+    If 2 of the 3 methods agree, a consensus cell type is assigned.
+
+
 ## v0.1.5
 
 - Default release date for ScPCA data is set to `2025-06-30`
