@@ -3,19 +3,13 @@
 // Workflow to merge SCE objects into a single object.
 // This workflow does NOT perform integration, i.e. batch correction.
 
-// merge workflow variables
-def module_name = "merge-sce"
-def publish_merge_base = "${params.results_bucket}/${params.release_prefix}/${module_name}"
-def merge_report_template = "${projectDir}/modules/merge-sce/resources/merge-report.rmd"
-
-
 // merge individual SCE objects into one SCE object
 process merge_group {
   container params.scpcatools_slim_container
   tag "${merge_group_id}"
   label 'mem_max'
   label 'long_running'
-  publishDir "${publish_merge_base}/${merge_group_id}"
+  publishDir "${params.results_bucket}/${params.release_prefix}/merge-sce/${merge_group_id}"
   input:
     tuple val(merge_group_id), val(library_ids), path(processed_files)
   output:
@@ -44,7 +38,7 @@ process merge_group {
 process generate_merge_report {
   container params.scpcatools_reports_container
   tag "${merge_group_id}"
-  publishDir "${publish_merge_base}/${merge_group_id}"
+  publishDir "${params.results_bucket}/${params.release_prefix}/merge-sce/${merge_group_id}"
   label 'mem_max'
   input:
     tuple val(merge_group_id), path(merged_sce_file)
@@ -76,7 +70,7 @@ process export_anndata {
     label 'mem_max'
     label 'long_running'
     tag "${merge_group_id}"
-    publishDir "${publish_merge_base}/${merge_group_id}"
+    publishDir "${params.results_bucket}/${params.release_prefix}/merge-sce/${merge_group_id}"
     input:
       tuple val(merge_group_id), path(merged_sce_file)
     output:
@@ -111,6 +105,10 @@ workflow merge_sce {
   take:
     sample_ch  // Channel of [sample_id, project_id, file(sample_dir)]
   main:
+    // merge workflow variables
+    def publish_merge_base = "${params.results_bucket}/${params.release_prefix}/merge-sce"
+    def merge_report_template = "${projectDir}/modules/merge-sce/resources/merge-report.rmd"
+
     // create a channel of [project_id, file(project_dir)] with one per project
     project_ch = sample_ch
       .map{[it[1], it[2].parent]} // parent of the sample_dir is the project_dir

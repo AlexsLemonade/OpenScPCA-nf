@@ -31,6 +31,6 @@ workflow infercnv_gene_order {
     create_gene_order_files(file(params.gtf_file), file(params.cytoband_file))
 
   emit:
-    create_gene_order_files.out.chr_file
-    create_gene_order_files.out.arms_file
+    chr_file = create_gene_order_files.out.chr_file
+    arms_file = create_gene_order_files.out.arms_file
 }

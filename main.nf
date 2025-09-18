@@ -15,32 +15,39 @@ include { export_annotations } from './modules/export-annotations'
 
 // **** Parameter checks ****
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
-param_error = false
 
-// Validate input parameters
-validateParameters()
+def check_parameters() {
+  // parameter check function
+  def param_error = false
 
-// Print summary of supplied parameters
-log.info paramsSummaryLog(workflow)
+  // Validate input parameters
+  validateParameters()
 
-def release_dir = Utils.getReleasePath(params.release_bucket, params.release_prefix)
+  // Print summary of supplied parameters
+  log.info paramsSummaryLog(workflow)
 
-if (!release_dir.exists()) {
-  log.error "Release directory does not exist: ${release_dir}"
-  param_error = true
-}
+  def release_dir = Utils.getReleasePath(params.release_bucket, params.release_prefix)
 
-if (param_error) {
-  System.exit(1)
+  if (!release_dir.exists()) {
+    log.error "Release directory does not exist: ${release_dir}"
+    param_error = true
+  }
+
+  if (param_error) {
+    System.exit(1)
+  }
 }
 
 workflow test {
+  check_parameters()
   example()
 }
 
 workflow simulate {
-  project_ids = params.project?.tokenize(';, ') ?: []
-  run_all = project_ids.isEmpty() || project_ids[0].toLowerCase() == 'all'
+  check_parameters()
+  def project_ids = params.project?.tokenize(';, ') ?: []
+  def run_all = project_ids.isEmpty() || project_ids[0].toLowerCase() == 'all'
+  def release_dir = Utils.getReleasePath(params.release_bucket, params.release_prefix)
 
   project_ch = Channel.fromList(Utils.getProjectTuples(release_dir))
     .filter{ run_all || it[0] in project_ids }
@@ -49,8 +56,10 @@ workflow simulate {
 
 // **** Default workflow ****
 workflow {
-  project_ids = params.project?.tokenize(';, ') ?: []
-  run_all = project_ids.isEmpty() || project_ids[0].toLowerCase() == 'all'
+  check_parameters()
+  def project_ids = params.project?.tokenize(';, ') ?: []
+  def run_all = project_ids.isEmpty() || project_ids[0].toLowerCase() == 'all'
+  def release_dir = Utils.getReleasePath(params.release_bucket, params.release_prefix)
 
   // sample channel of [sample_id, project_id, sample_path]
   sample_ch = Channel.fromList(Utils.getSampleTuples(release_dir))

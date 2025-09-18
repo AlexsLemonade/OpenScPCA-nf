@@ -52,7 +52,7 @@ workflow cell_type_scimilarity {
         return [sample_id, project_id, library_files]
       }
       // remove any samples that don't have a processed file
-      .filter{ sample_id, project_id, library_files ->
+      .filter{ _sample_id, _project_id, library_files ->
         !library_files.isEmpty()
       }
 
