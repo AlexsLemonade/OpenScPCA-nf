@@ -3,7 +3,7 @@
 // Workflow to detect doublets in a SingleCellExperiment object using scDblFinder
 
 process run_scdblfinder {
-  container params.doublet_detection_container
+  container Utils.pullthroughContainer(params.doublet_detection_container, params.pullthrough_registry)
   tag "${sample_id}"
   label 'mem_8'
   publishDir "${params.results_bucket}/${params.release_prefix}/doublet-detection/${project_id}/${sample_id}", mode: 'copy'

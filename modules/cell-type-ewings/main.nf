@@ -3,7 +3,7 @@
 // Workflow to assign ewings cell type labels
 
 process ewing_aucell {
-  container params.cell_type_ewing_container
+  container Utils.pullthroughContainer(params.cell_type_ewing_container, params.pullthrough_registry)
   tag "${sample_id}"
   label 'mem_8'
   publishDir "${params.results_bucket}/${params.release_prefix}/cell-type-ewings/${project_id}/${sample_id}", mode: 'copy'
@@ -70,7 +70,7 @@ process ewing_aucell {
 }
 
 process ewing_assign_celltypes {
-  container params.cell_type_ewing_container
+  container Utils.pullthroughContainer(params.cell_type_ewing_container, params.pullthrough_registry)
   tag "${sample_id}"
   label 'mem_8'
   publishDir "${params.results_bucket}/${params.release_prefix}/cell-type-ewings/${project_id}/${sample_id}", mode: 'copy'

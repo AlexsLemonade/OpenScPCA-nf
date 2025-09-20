@@ -1,5 +1,5 @@
 process say_hello{
-  container params.python_container
+  container Utils.pullthroughContainer(params.python_container, params.pullthrough_registry)
   input:
     val name
   output:

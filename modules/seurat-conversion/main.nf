@@ -3,7 +3,7 @@
 // Workflow to convert SCE objects to Seurat objects
 
 process seurat_convert {
-  container params.seurat_conversion_container
+  container Utils.pullthroughContainer(params.seurat_conversion_container, params.pullthrough_registry)
   tag "${sample_id}"
   label 'mem_8'
   publishDir "${params.results_bucket}/${params.release_prefix}/seurat-conversion/${project_id}/${sample_id}", mode: 'copy'
