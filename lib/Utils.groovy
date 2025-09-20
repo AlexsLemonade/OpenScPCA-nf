@@ -71,18 +71,18 @@ class Utils {
     return files
   }
 
- static def pullthroughContainer(docker_url, private_registry_url = ""){
-    def container = docker_url
+ static def pullthroughContainer(image_url, pullthrough_url = ""){
+    def container = image_url
     def pullthrough_prefixes = [
       "public.ecr.aws": "public_ecr_aws",
       "quay.io": "quay_io",
       "docker.io": "docker_io",
       "ghcr.io": "ghcr_io",
     ]
-    if (private_registry_url) {
+    if (pullthrough_url) {
       def registry = container.tokenize('/')[0]
       if (registry in pullthrough_prefixes.keySet()) {
-        container = container.replaceFirst(registry, "${private_registry_url}/${pullthrough_prefixes[registry]}")
+        container = container.replaceFirst(registry, "${pullthrough_url}/${pullthrough_prefixes[registry]}")
       }
     }
     return container
