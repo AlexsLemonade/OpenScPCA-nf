@@ -76,8 +76,6 @@ class Utils {
     def pullthrough_prefixes = [
       "public.ecr.aws": "public_ecr_aws",
       "quay.io": "quay_io",
-      "docker.io": "docker_io",
-      "ghcr.io": "ghcr_io",
     ]
     if (pullthrough_url) {
       def registry = container.tokenize('/')[0]
