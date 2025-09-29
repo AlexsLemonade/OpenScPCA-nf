@@ -60,7 +60,6 @@ class Utils {
         files = Nextflow.files(parent_dir / "**_${process_level}_*.h5ad")
         break
       case ["sce", "rds"]:
-        def extension="rds"
         files = Nextflow.files(parent_dir / "**_${process_level}.rds")
         break
       default:
