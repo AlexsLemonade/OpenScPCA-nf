@@ -69,7 +69,8 @@
       "properties": {
         "pullthrough_registry": {
           "type": "string",
-          "description": "Path to docker pull-through registry, if using"
+          "description": "address of docker pull-through registry, if using",
+          "help_text": "If using a pull-through registry, this is the address that will be used as prefix, i.e., '<account_id>.dkr.ecr.<region>.amazonaws.com'."
         },
         "python_container": {
           "type": "string",
