@@ -187,7 +187,7 @@ Define each image with a version tag to ensure that the images used are consiste
 #### Pull-through registry
 
 For most images, we use a pull-through cache in our AWS account to speed up transfers and image pulls.
-To simplify management, we keep the source image name in the containers.config files, and then prepend the pull-through registry address defined in the `params.pullthrough_registry` parameter, if it exists, using the `Utils.pullthroughContainer()` function within the module container directive.
+To simplify management, we keep the source image name in the `containers.config` file, and then prepend the pull-through registry address defined in the `params.pullthrough_registry` parameter, if it exists, using the `Utils.pullthroughContainer()` function within the module container directive.
 For example, we define the container directive for a process that uses the `python_container` image as follows:
 
 ```groovy
