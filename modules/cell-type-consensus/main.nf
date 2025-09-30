@@ -3,7 +3,7 @@
 // Workflow to assign consensus cell type labels
 
 process assign_consensus {
-  container params.consensus_cell_type_container
+  container Utils.pullthroughContainer(params.consensus_cell_type_container, params.pullthrough_registry)
   tag "${sample_id}"
   label 'mem_8'
   publishDir "${params.results_bucket}/${params.release_prefix}/cell-type-consensus/${project_id}/${sample_id}", mode: 'copy'

@@ -3,7 +3,7 @@
 // Workflow to create gene order files for use with inferCNV
 
 process create_gene_order_files {
-  container params.scpcatools_slim_container
+  container Utils.pullthroughContainer(params.scpcatools_slim_container, params.pullthrough_registry)
   label 'mem_8'
   publishDir "${params.results_bucket}/${params.release_prefix}/infercnv-gene-order", mode: 'copy'
   input:

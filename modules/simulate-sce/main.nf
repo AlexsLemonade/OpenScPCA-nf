@@ -5,7 +5,7 @@
 
 
 process permute_metadata {
-  container params.simulate_sce_container
+  container Utils.pullthroughContainer(params.simulate_sce_container, params.pullthrough_registry)
   tag "$project_id"
   publishDir "${params.sim_bucket}/test/${project_id}", mode: 'copy'
   input:
@@ -28,7 +28,7 @@ process permute_metadata {
 }
 
 process simulate_sample {
-  container params.simulate_sce_container
+  container Utils.pullthroughContainer(params.simulate_sce_container, params.pullthrough_registry)
   label "mem_8"
   tag "$project_id-$sample_id"
   input:
@@ -57,7 +57,7 @@ process simulate_sample {
 }
 
 process export_anndata {
-  container params.scpcatools_anndata_container
+  container Utils.pullthroughContainer(params.scpcatools_anndata_container, params.pullthrough_registry)
   tag "$project_id-$sample_id"
   publishDir "${params.sim_bucket}/test/${project_id}", mode: 'copy'
   input:
@@ -84,7 +84,7 @@ process export_anndata {
 }
 
 process permute_bulk{
-  container params.simulate_sce_container
+  container Utils.pullthroughContainer(params.simulate_sce_container, params.pullthrough_registry)
   tag "$project_id"
   publishDir "${params.sim_bucket}/test/${project_id}", mode: 'copy'
   input:

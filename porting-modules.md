@@ -14,6 +14,7 @@
   - [Module output (emit)](#module-output-emit)
   - [Module parameters](#module-parameters)
   - [Docker images](#docker-images)
+    - [Pull-through registry](#pull-through-registry)
   - [Module processes](#module-processes)
     - [Process granularity](#process-granularity)
     - [Process resources](#process-resources)
@@ -180,7 +181,23 @@ conda env create -n openscpca-nf -f environment.yml
 Each process should run in a Docker container, usually the image defined in `OpenScPCA-analysis` for the module, which will be available on the [AWS Public ECR](https://gallery.ecr.aws/openscpca/).
 
 Define Docker image names as parameters in the `config/containers.config` file, and reference those in the process definitions with the [`container` directive](https://www.nextflow.io/docs/stable/process.html#container).
+
 Define each image with a version tag to ensure that the images used are consistent across runs of the workflow (though `latest` is acceptable during development).
+
+#### Pull-through registry
+
+For most images, we use a pull-through cache in our AWS account to speed up transfers and image pulls.
+To simplify management, we keep the source image name in the `containers.config` file, and then prepend the pull-through registry address defined in the `params.pullthrough_registry` parameter, if it exists, using the `Utils.pullthroughContainer()` function within the module container directive.
+For example, we define the container directive for a process that uses the `python_container` image as follows:
+
+```groovy
+container: Utils.pullthroughContainer(params.python_container, params.pullthrough_registry)
+```
+
+Setup note:
+When setting up the pull through rules, the prefix for each pull-through rule should be defined as the address of the registry with periods replaced by underscores, e.g., `quay_io` for `quay.io`.
+At the moment, pull-through is only enabled for images hosted in the AWS Public ECR and quay.io; any other sources will be pulled directly.
+
 
 ### Module processes
 

@@ -48,6 +48,16 @@
           "description": "Projects that will be used in the workflow run",
           "help_text": "Default is to run all projects. To run a single project or specified projects, include them as a list of SCPCP ids, separated by commas, semicolons, or spaces.",
           "pattern": "^[aA][lL][lL]$|^(SCPCP\\d{6}([,; ]+|$))+$"
+        },
+        "gtf_file": {
+          "type": "string",
+          "default": "s3://scpca-nf-references/homo_sapiens/ensembl-104/annotation/Homo_sapiens.GRCh38.104.gtf.gz",
+          "description": "Path or URI to GTF file corresponding to reference genome build used with scpca-nf"
+        },
+        "cytoband_file": {
+          "type": "string",
+          "default": "ftp://hgdownload.cse.ucsc.edu/goldenPath/hg38/database/cytoBand.txt.gz",
+          "description": "Path or URI to cytoband file corresponding to reference genome build used with scpca-nf"
         }
       }
     },
@@ -57,9 +67,14 @@
       "description": "Locations for Docker images used by workflow processes",
       "default": "",
       "properties": {
+        "pullthrough_registry": {
+          "type": "string",
+          "description": "address of docker pull-through registry, if using",
+          "help_text": "If using a pull-through registry, this is the address that will be used as prefix, i.e., '<account_id>.dkr.ecr.<region>.amazonaws.com'."
+        },
         "python_container": {
           "type": "string",
-          "default": "python:3.11"
+          "default": "docker.io/library/python:3.11"
         },
         "scpcatools_slim_container": {
           "type": "string",
@@ -259,22 +274,10 @@
       "$ref": "#/$defs/input_and_output_locations"
     },
     {
-      "$ref": "#/$defs/module_specific_parameters"
+      "$ref": "#/$defs/containers"
     },
     {
-      "$ref": "#/$defs/containers"
+      "$ref": "#/$defs/module_specific_parameters"
     }
-  ],
-  "properties": {
-    "gtf_file": {
-      "type": "string",
-      "default": "s3://scpca-nf-references/homo_sapiens/ensembl-104/annotation/Homo_sapiens.GRCh38.104.gtf.gz",
-      "description": "Path or URI to GTF file corresponding to reference genome build used with scpca-nf"
-    },
-    "cytoband_file": {
-      "type": "string",
-      "default": "ftp://hgdownload.cse.ucsc.edu/goldenPath/hg38/database/cytoBand.txt.gz",
-      "description": "Path or URI to cytoband file corresponding to reference genome build used with scpca-nf"
-    }
-  }
+  ]
 }
