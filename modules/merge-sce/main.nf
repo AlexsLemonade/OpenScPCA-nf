@@ -5,7 +5,7 @@
 
 // merge individual SCE objects into one SCE object
 process merge_group {
-  container params.scpcatools_slim_container
+  container Utils.pullthroughContainer(params.scpcatools_slim_container, params.pullthrough_registry)
   tag "${merge_group_id}"
   label 'mem_max'
   label 'long_running'
@@ -36,7 +36,7 @@ process merge_group {
 
 // create merge report
 process generate_merge_report {
-  container params.scpcatools_reports_container
+  container Utils.pullthroughContainer(params.scpcatools_reports_container, params.pullthrough_registry)
   tag "${merge_group_id}"
   publishDir "${params.results_bucket}/${params.release_prefix}/merge-sce/${merge_group_id}"
   label 'mem_max'
@@ -66,7 +66,7 @@ process generate_merge_report {
 }
 
 process export_anndata {
-    container params.scpcatools_anndata_container
+    container Utils.pullthroughContainer(params.scpcatools_anndata_container, params.pullthrough_registry)
     label 'mem_max'
     label 'long_running'
     tag "${merge_group_id}"

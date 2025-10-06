@@ -3,7 +3,7 @@
 // Workflow to format and export openscpca annotations
 
 process format_annotations {
-  container params.scpcatools_slim_container
+  container Utils.pullthroughContainer(params.scpcatools_slim_container, params.pullthrough_registry)
   tag "${sample_id}"
   label 'mem_8'
   publishDir "${params.annotations_bucket}/${params.release_prefix}/${project_id}/${sample_id}", mode: 'copy'

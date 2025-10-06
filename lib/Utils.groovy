@@ -60,7 +60,6 @@ class Utils {
         files = Nextflow.files(parent_dir / "**_${process_level}_*.h5ad")
         break
       case ["sce", "rds"]:
-        def extension="rds"
         files = Nextflow.files(parent_dir / "**_${process_level}.rds")
         break
       default:
@@ -69,5 +68,20 @@ class Utils {
     }
     files = files.findAll{it.size() > 0}
     return files
- }
+  }
+
+ static def pullthroughContainer(image_url, pullthrough_url = ""){
+    def container = image_url
+    def pullthrough_prefixes = [
+      "public.ecr.aws": "public_ecr_aws",
+      "quay.io": "quay_io",
+    ]
+    if (pullthrough_url) {
+      def registry = container.tokenize('/')[0]
+      if (registry in pullthrough_prefixes.keySet()) {
+        container = container.replaceFirst(registry, "${pullthrough_url}/${pullthrough_prefixes[registry]}")
+      }
+    }
+    return container
+  }
 }

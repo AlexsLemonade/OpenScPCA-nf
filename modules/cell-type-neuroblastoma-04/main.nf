@@ -4,7 +4,7 @@
 
 
 process nb_04_convert_nbatlas {
-  container params.cell_type_nb_04_container
+  container Utils.pullthroughContainer(params.cell_type_nb_04_container, params.pullthrough_registry)
   label 'mem_32'
   input:
     path nbatlas_seurat_file
@@ -36,7 +36,7 @@ process nb_04_convert_nbatlas {
 
 
 process nb_04_train_singler_model {
-  container params.cell_type_nb_04_container
+  container Utils.pullthroughContainer(params.cell_type_nb_04_container, params.pullthrough_registry)
   label 'mem_max'
   label 'cpus_4'
   input:
@@ -62,7 +62,7 @@ process nb_04_train_singler_model {
 
 
 process nb_04_train_scanvi_model {
-  container params.cell_type_nb_04_container
+  container Utils.pullthroughContainer(params.cell_type_nb_04_container, params.pullthrough_registry)
   label 'mem_16'
   input:
     path nbatlas_anndata_file
@@ -86,7 +86,7 @@ process nb_04_train_scanvi_model {
 }
 
 process nb_04_classify_singler {
-  container params.cell_type_nb_04_container
+  container Utils.pullthroughContainer(params.cell_type_nb_04_container, params.pullthrough_registry)
   tag "${sample_id}"
   label 'mem_8'
   label 'cpus_2'
@@ -120,7 +120,7 @@ process nb_04_classify_singler {
 
 
 process nb_04_classify_scanvi {
-  container params.cell_type_nb_04_container
+  container Utils.pullthroughContainer(params.cell_type_nb_04_container, params.pullthrough_registry)
   tag "${sample_id}"
   label 'mem_8'
   input:
@@ -163,7 +163,7 @@ process nb_04_classify_scanvi {
 
 
 process nb_04_assign_celltypes {
-  container params.cell_type_nb_04_container
+  container Utils.pullthroughContainer(params.cell_type_nb_04_container, params.pullthrough_registry)
   tag "${sample_id}"
   label 'mem_8'
   publishDir "${params.results_bucket}/${params.release_prefix}/cell-type-neuroblastoma-04/${project_id}/${sample_id}", mode: 'copy'
