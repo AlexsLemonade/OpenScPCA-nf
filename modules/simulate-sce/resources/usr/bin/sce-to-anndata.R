@@ -61,7 +61,6 @@ format_merged_sce <- function(sce) {
 }
 
 
-
 # CZI compliance function ------------------------------------------------------
 
 # this function applies any necessary reformatting or changes needed to make

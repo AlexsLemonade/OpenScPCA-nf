@@ -88,10 +88,11 @@ stopifnot(
 #'
 #' @returns Wide data frame with ontologies and family labels for the given annotation type
 prep_for_annotation <- function(
-    df,
-    annot_type,
-    ontology_df,
-    label_map_df) {
+  df,
+  annot_type,
+  ontology_df,
+  label_map_df
+) {
   df |>
     dplyr::rename(label = annot_type) |>
     ####### Join in the family labels
