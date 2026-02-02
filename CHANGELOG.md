@@ -13,6 +13,8 @@ You may want to add temporary notes here for tracking as features are added, bef
 All reference files and containers from `OpenScPCA-analysis` have been updated to use the `v0.2.4` tag.
 The only change is an update to the reference file used for the `cell-type-consensus` module to now assign a consensus cell type when two of the three automated cell type methods (`SingleR`, `CellAssign`, and `SCimilarity`) agree, but the third method is unable to classify a cell.
 
+Additionally, a `pullthrough_registry` parameter has been added that can be used to pull Docker images via a private pull through repository. Currently only `public.ecr.aws` and `quay.io` are supported as original public repository sources.
+
 ## v0.1.6
 
 - All reference files and containers from `OpenScPCA-analysis` use the `v0.2.3` tag
