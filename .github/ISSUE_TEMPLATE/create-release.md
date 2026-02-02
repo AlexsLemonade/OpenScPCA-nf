@@ -16,6 +16,10 @@ If issues must be resolved before creating a release, mark them as blockers in Z
 - [ ] Any mentions of the workflow version in the repository have been updated, including
   -  [ ] [`nextflow.config`](https://github.com/AlexsLemonade/OpenScPCA-nf/blob/main/nextflow.config) manifest
   -  [ ] [`CHANGELOG.md`](https://github.com/AlexsLemonade/OpenScPCA-nf/blob/main/CHANGELOG.md) (see more below)
+- [ ] Any parameters that use tagged versions of files from `OpenScPCA-analysis` should be updated to use the latest version, including:
+  - [ ] [`module_params.config`](https://github.com/AlexsLemonade/OpenScPCA-nf/blob/main/config/module_params.config)
+  - [ ] [`containers.config`](https://github.com/AlexsLemonade/OpenScPCA-nf/blob/main/config/containers.config)
+  - [ ] [`nextflow_schema.json`](https://github.com/AlexsLemonade/OpenScPCA-nf/blob/main/nextflow_schema.json)
 - [ ] Write release notes and add them to [`CHANGELOG.md`](https://github.com/AlexsLemonade/OpenScPCA-nf/blob/main/CHANGELOG.md), which should include the following:
   - Which modules have been added or removed, if any?
   - Have there been any changes to the workflow configuration or launch instructions?
