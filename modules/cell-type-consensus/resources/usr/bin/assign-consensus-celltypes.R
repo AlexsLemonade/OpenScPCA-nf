@@ -89,6 +89,9 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
+opt$scimilarity_annotations_file <- "~/Downloads/SCPCL000001_processed_scimilarity-celltype-assignments (1).tsv"
+opt$sce_file <- "~/SCPCL000001_processed.rds"
+
 # Set up -----------------------------------------------------------------------
 
 # make sure input files exist
@@ -200,8 +203,15 @@ join_columns <- c("singler_celltype_ontology", "cellassign_celltype_annotation",
 # by default use the lca between cellassign and singler from the `consensus_ref_file` as the consensus cell type
 consensus_column_prefix <- "cellassign_singler_pair"
 
-# if the library has scimilarity annotations add them in to the coldata
-if (file.exists(opt$scimilarity_annotations_file)) {
+# check if scimilarity already exists
+has_scimilarity <- all(
+  c("scimilarity_celltype_ontology", "scimilarity_celltype_annotation") %in% colnames(celltype_df)
+)
+
+# if the library has scimilarity annotations
+# AND if scimilarity is not already present in the coldata
+# read in results and add them to celltype_df
+if (file.exists(opt$scimilarity_annotations_file) & !has_scimilarity) {
   scimilarity_df <- readr::read_tsv(opt$scimilarity_annotations_file) |>
     dplyr::select(
       barcodes = barcode,
@@ -210,9 +220,16 @@ if (file.exists(opt$scimilarity_annotations_file)) {
       scimilarity_annotation_cl = cl_annotation
     )
 
+  # add scimilarity annotations to celltype_df
   celltype_df <- celltype_df |>
     dplyr::left_join(scimilarity_df, by = "barcodes")
 
+  # reset has scimilarity to be sure we capture the correct join columns below
+  has_scimilarity <- TRUE
+}
+
+# if scimilarity results are present then include them in consensus cell type assignment
+if (has_scimilarity) {
   # if scimilarity exists, include it when joining
   join_columns <- c(join_columns, "scimilarity_celltype_ontology")
 
