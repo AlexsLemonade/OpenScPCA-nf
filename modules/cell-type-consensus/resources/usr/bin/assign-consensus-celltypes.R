@@ -89,9 +89,6 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
-opt$scimilarity_annotations_file <- "~/Downloads/SCPCL000001_processed_scimilarity-celltype-assignments (1).tsv"
-opt$sce_file <- "~/SCPCL000001_processed.rds"
-
 # Set up -----------------------------------------------------------------------
 
 # make sure input files exist
