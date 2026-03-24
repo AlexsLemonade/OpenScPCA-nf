@@ -166,6 +166,16 @@ if ("consensus_celltype_annotation" %in% colnames(coldata_df)) {
     )
 }
 
+# rename existing scimilarity cell type columns if they are present
+if ("scimilarity_celltype_annotation" %in% colnames(coldata_df)) {
+  coldata_df <- coldata_df |>
+    # rename old consensus columns to avoid confusion
+    dplyr::rename(
+      existing_scimilarity_celltype_annotation = scimilarity_celltype_annotation,
+      existing_scimilarity_celltype_ontology = scimilarity_celltype_annotation
+    )
+}
+
 # only select sample info and cell type info, we don't need the rest of the coldata
 # if sample is cell line, fill in celltype columns with NA
 if (is_cell_line) {
