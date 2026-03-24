@@ -172,7 +172,7 @@ if ("scimilarity_celltype_annotation" %in% colnames(coldata_df)) {
     # rename old consensus columns to avoid confusion
     dplyr::rename(
       existing_scimilarity_celltype_annotation = scimilarity_celltype_annotation,
-      existing_scimilarity_celltype_ontology = scimilarity_celltype_annotation
+      existing_scimilarity_celltype_ontology = scimilarity_celltype_ontology
     )
 }
 
