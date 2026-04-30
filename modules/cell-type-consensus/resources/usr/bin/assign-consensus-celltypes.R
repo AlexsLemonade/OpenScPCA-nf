@@ -306,7 +306,6 @@ expressed_markers <- intersect(all_markers, expressed_genes)
 # if no markers are found, fill in columns with NA
 if (length(expressed_markers) == 0) {
   (
-
     gene_exp_df <- data.frame(
       barcodes = rownames(sce),
       library_id = library_id,
@@ -315,7 +314,6 @@ if (length(expressed_markers) == 0) {
       validation_group_annotation = NA,
       validation_group_ontology = NA
     )
-
   )
 } else {
   # get logcounts from sce for expressed genes
