@@ -23,12 +23,12 @@ process ewing_aucell {
           path(mean_exp_output_files)
   script:
     aucell_output_files = library_files
-      .collect{ it ->
-        it.name.replaceAll(/(?i).rds$/, "_ewing-aucell-results.tsv")
+      .collect{ f ->
+        f.name.replaceAll(/(?i).rds$/, "_ewing-aucell-results.tsv")
       }
     mean_exp_output_files = library_files
-      .collect{ it ->
-        it.name.replaceAll(/(?i).rds$/, "_ewing-geneset-means.tsv")
+      .collect{ f ->
+        f.name.replaceAll(/(?i).rds$/, "_ewing-geneset-means.tsv")
       }
 
     // combine the custom gene sets into a single input
@@ -54,12 +54,12 @@ process ewing_aucell {
 
   stub:
     aucell_output_files = library_files
-      .collect{ it ->
-        it.name.replaceAll(/(?i).rds$/, "_ewing-aucell-results.tsv")
+      .collect{ f ->
+        f.name.replaceAll(/(?i).rds$/, "_ewing-aucell-results.tsv")
       }
     mean_exp_output_files = library_files
-      .collect{ it ->
-        it.name.replaceAll(/(?i).rds$/, "_ewing-geneset-means.tsv")
+      .collect{ f ->
+        f.name.replaceAll(/(?i).rds$/, "_ewing-geneset-means.tsv")
       }
     """
     for file in ${library_files}; do
@@ -86,8 +86,8 @@ process ewing_assign_celltypes {
           val(project_id),
           path(celltype_assignment_output_files)
   script:
-    library_ids = aucell_files.collect{it -> (it.name =~ /SCPCL\d{6}/)[0]}
-    celltype_assignment_output_files = library_ids.collect{it -> "${it}_ewing-celltype-assignments.tsv"}
+    library_ids = aucell_files.collect{ f -> (f.name =~ /SCPCL\d{6}/)[0]}
+    celltype_assignment_output_files = library_ids.collect{ f -> "${f}_ewing-celltype-assignments.tsv"}
     """
     for library_id in ${library_ids.join(" ")}; do
       # find files that have the appropriate library id in file name
@@ -105,8 +105,8 @@ process ewing_assign_celltypes {
     """
 
   stub:
-    library_ids = aucell_files.collect{it -> (it.name =~ /SCPCL\d{6}/)[0]}
-    celltype_assignment_output_files = library_ids.collect{it -> "${it}_ewing-celltype-assignments.tsv"}
+    library_ids = aucell_files.collect{ f -> (f.name =~ /SCPCL\d{6}/)[0]}
+    celltype_assignment_output_files = library_ids.collect{ f -> "${f}_ewing-celltype-assignments.tsv"}
     """
     for library_id in ${library_ids.join(" ")}; do
       touch \${library_id}_ewing-celltype-assignments.tsv

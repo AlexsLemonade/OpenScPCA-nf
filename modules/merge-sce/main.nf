@@ -126,7 +126,7 @@ workflow merge_sce {
     libraries_ch = project_branch.single_sample
       .map{ project_id, project_dir ->
         def processed_files = Utils.getLibraryFiles(project_dir, format: "sce", process_level: "processed")
-        def library_ids = processed_files.collect{ it -> it.name.replace('_processed.rds', '')}
+        def library_ids = processed_files.collect{ f -> f.name.replace('_processed.rds', '')}
         return [project_id, library_ids, processed_files]
       }
       .branch{ it ->
