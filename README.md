@@ -42,14 +42,14 @@ The workflow also has a couple of entry points other than the main workflow, for
 To run a test version of the workflow to check permissions and infrastructure setup:
 
 ```bash
-nextflow run AlexsLemonade/OpenScPCA-nf -profile batch -entry test
+nextflow run AlexsLemonade/OpenScPCA-nf -profile batch --workflow test
 ```
 
 To run the workflow that creates simulated SCE objects for the OpenScPCA project, you can use the following command, which specifies running the workflow with the `simulate` entry point.
 Note that you will need to specify the directory for the simulation output using the `--sim_pubdir` argument, as the default output bucket is not writeable except by a few specific roles:
 
 ```bash
-nextflow run AlexsLemonade/OpenScPCA-nf -profile batch -entry simulate --sim_pubdir {SIMDIR}
+nextflow run AlexsLemonade/OpenScPCA-nf -profile batch --workflow simulate --sim_pubdir {SIMDIR}
 ```
 
 ### Stub runs

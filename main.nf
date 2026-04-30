@@ -39,31 +39,32 @@ def check_parameters() {
 }
 
 workflow test {
-  check_parameters()
   example()
 }
 
 workflow simulate {
-  check_parameters()
-  def project_ids = params.project?.tokenize(';, ') ?: []
-  def run_all = project_ids.isEmpty() || project_ids[0].toLowerCase() == 'all'
-  def release_dir = Utils.getReleasePath(params.release_bucket, params.release_prefix)
+  take:
+  project_ids
+  run_all
+  release_dir
 
-  project_ch = Channel.fromList(Utils.getProjectTuples(release_dir))
-    .filter{ run_all || it[0] in project_ids }
+  main:
+  project_ch = channel.fromList(Utils.getProjectTuples(release_dir))
+    .filter{ it -> run_all || it[0] in project_ids }
   simulate_sce(project_ch)
 }
 
 // **** Default workflow ****
-workflow {
-  check_parameters()
-  def project_ids = params.project?.tokenize(';, ') ?: []
-  def run_all = project_ids.isEmpty() || project_ids[0].toLowerCase() == 'all'
-  def release_dir = Utils.getReleasePath(params.release_bucket, params.release_prefix)
+workflow openscpca {
+  take:
+  project_ids
+  run_all
+  release_dir
 
+  main:
   // sample channel of [sample_id, project_id, sample_path]
-  sample_ch = Channel.fromList(Utils.getSampleTuples(release_dir))
-    .filter{ run_all || it[1] in project_ids }
+  sample_ch = channel.fromList(Utils.getSampleTuples(release_dir))
+    .filter{ it -> run_all || it[1] in project_ids }
 
 
   // Run the merge workflow
@@ -88,7 +89,7 @@ workflow {
 
   // Run the cell type ewings workflow
   // only runs on SCPCP000015
-  cell_type_ewings(sample_ch.filter{ it[1] == "SCPCP000015" }, cell_type_consensus.out)
+  cell_type_ewings(sample_ch.filter{ it ->it[1] == "SCPCP000015" }, cell_type_consensus.out)
 
   // Run the cell type neuroblastoma 04 workflow
   // only runs on SCPCP000004
@@ -102,4 +103,21 @@ workflow {
   export_ch = cell_type_ewings.out.celltypes
     .mix(cell_type_neuroblastoma_04.out.celltypes)
   export_annotations(export_ch)
+}
+
+// entry workflow
+workflow {
+  check_parameters()
+  def project_ids = params.project?.tokenize(';, ') ?: []
+  def run_all = project_ids.isEmpty() || project_ids[0].toLowerCase() == 'all'
+  def release_dir = Utils.getReleasePath(params.release_bucket, params.release_prefix)
+
+  if (params.workflow == "test") {
+    test()
+  } else if (params.workflow == "simulate") {
+    simulate(project_ids, run_all, release_dir)
+  } else {
+    openscpca(project_ids, run_all, release_dir)
+  }
+
 }

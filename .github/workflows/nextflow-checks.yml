@@ -36,7 +36,7 @@ jobs:
         run: nextflow -log stub-run.log run main.nf -stub -profile stub -ansi-log false
 
       - name: Check simulate workflow
-        run: nextflow -log simulate-run.log run main.nf -stub -profile stub -ansi-log false -entry simulate
+        run: nextflow -log simulate-run.log run main.nf -stub -profile stub -ansi-log false --workflow simulate
 
       - name: Join log files
         if: ${{ !cancelled() }}

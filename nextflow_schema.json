@@ -11,6 +11,12 @@
       "description": "",
       "default": "",
       "properties": {
+        "workflow": {
+          "type": "string",
+          "default": "default",
+          "options": ["default", "test", "simulate"],
+          "description": "Workflow to run, either 'default' for the standard workflow, 'test' for a workflow with parameters set for testing, or 'simulate' to run the workflow on simulated data. Default is 'default'."
+        },
         "release_bucket": {
           "type": "string",
           "default": "s3://openscpca-data-release",
