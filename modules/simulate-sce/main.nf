@@ -7,7 +7,7 @@
 process permute_metadata {
   container Utils.pullthroughContainer(params.simulate_sce_container, params.pullthrough_registry)
   tag "$project_id"
-  publishDir "${params.sim_bucket}/test/${project_id}", mode: 'copy'
+  publishDir { "${params.sim_bucket}/test/${project_id}" }, mode: 'copy'
   input:
     tuple val(project_id),
           path(metadata_file, stageAs: 'input/*')
