@@ -6,7 +6,7 @@ process format_annotations {
   container Utils.pullthroughContainer(params.scpcatools_slim_container, params.pullthrough_registry)
   tag "${sample_id}"
   label 'mem_8'
-  publishDir { "${params.annotations_bucket}/${params.release_prefix}/${project_id}/${sample_id}", mode: 'copy'
+  publishDir { "${params.annotations_bucket}/${params.release_prefix}/${project_id}/${sample_id}" }, mode: 'copy'
   input:
     tuple val(sample_id),
           val(project_id),
