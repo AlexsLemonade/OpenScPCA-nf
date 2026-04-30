@@ -5,7 +5,7 @@
 process create_gene_order_files {
   container Utils.pullthroughContainer(params.scpcatools_slim_container, params.pullthrough_registry)
   label 'mem_8'
-  publishDir "${params.results_bucket}/${params.release_prefix}/infercnv-gene-order", mode: 'copy'
+  publishDir { "${params.results_bucket}/${params.release_prefix}/infercnv-gene-order" }, mode: 'copy'
   input:
     path gtf_file
     path cytoband_file

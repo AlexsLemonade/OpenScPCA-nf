@@ -59,7 +59,7 @@ process simulate_sample {
 process export_anndata {
   container Utils.pullthroughContainer(params.scpcatools_anndata_container, params.pullthrough_registry)
   tag "$project_id-$sample_id"
-  publishDir "${params.sim_bucket}/test/${project_id}", mode: 'copy'
+  publishDir { "${params.sim_bucket}/test/${project_id}" }, mode: 'copy'
   input:
     tuple val(project_id),
           val(sample_id),
@@ -86,7 +86,7 @@ process export_anndata {
 process permute_bulk{
   container Utils.pullthroughContainer(params.simulate_sce_container, params.pullthrough_registry)
   tag "$project_id"
-  publishDir "${params.sim_bucket}/test/${project_id}", mode: 'copy'
+  publishDir { "${params.sim_bucket}/test/${project_id}" }, mode: 'copy'
   input:
     tuple val(project_id),
           path(bulk_quant, stageAs: 'input/*'),

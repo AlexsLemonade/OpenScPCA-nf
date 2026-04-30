@@ -6,7 +6,7 @@ process assign_scimilarity {
   container Utils.pullthroughContainer(params.cell_type_scimilarity_container, params.pullthrough_registry)
   tag "${sample_id}"
   label 'mem_32'
-  publishDir "${params.results_bucket}/${params.release_prefix}/cell-type-scimilarity/${project_id}/${sample_id}", mode: 'copy'
+  publishDir { "${params.results_bucket}/${params.release_prefix}/cell-type-scimilarity/${project_id}/${sample_id}" }, mode: 'copy'
   input:
     tuple val(sample_id),
           val(project_id),

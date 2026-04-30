@@ -9,7 +9,7 @@ process merge_group {
   tag "${merge_group_id}"
   label 'mem_max'
   label 'long_running'
-  publishDir "${params.results_bucket}/${params.release_prefix}/merge-sce/${merge_group_id}"
+  publishDir { "${params.results_bucket}/${params.release_prefix}/merge-sce/${merge_group_id}" }
   input:
     tuple val(merge_group_id), val(library_ids), path(processed_files)
   output:
@@ -38,7 +38,7 @@ process merge_group {
 process generate_merge_report {
   container Utils.pullthroughContainer(params.scpcatools_reports_container, params.pullthrough_registry)
   tag "${merge_group_id}"
-  publishDir "${params.results_bucket}/${params.release_prefix}/merge-sce/${merge_group_id}"
+  publishDir { "${params.results_bucket}/${params.release_prefix}/merge-sce/${merge_group_id}" }
   label 'mem_max'
   input:
     tuple val(merge_group_id), path(merged_sce_file)
@@ -70,7 +70,7 @@ process export_anndata {
     label 'mem_max'
     label 'long_running'
     tag "${merge_group_id}"
-    publishDir "${params.results_bucket}/${params.release_prefix}/merge-sce/${merge_group_id}"
+    publishDir { "${params.results_bucket}/${params.release_prefix}/merge-sce/${merge_group_id}" }
     input:
       tuple val(merge_group_id), path(merged_sce_file)
     output:

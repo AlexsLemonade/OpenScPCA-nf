@@ -6,7 +6,7 @@ process run_scdblfinder {
   container Utils.pullthroughContainer(params.doublet_detection_container, params.pullthrough_registry)
   tag "${sample_id}"
   label 'mem_8'
-  publishDir "${params.results_bucket}/${params.release_prefix}/doublet-detection/${project_id}/${sample_id}", mode: 'copy'
+  publishDir { "${params.results_bucket}/${params.release_prefix}/doublet-detection/${project_id}/${sample_id}" }, mode: 'copy'
   input:
     tuple val(sample_id),
           val(project_id),
