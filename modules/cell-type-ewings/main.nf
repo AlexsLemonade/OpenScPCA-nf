@@ -23,11 +23,11 @@ process ewing_aucell {
           path(mean_exp_output_files)
   script:
     aucell_output_files = library_files
-      .collect{
+      .collect{ it ->
         it.name.replaceAll(/(?i).rds$/, "_ewing-aucell-results.tsv")
       }
     mean_exp_output_files = library_files
-      .collect{
+      .collect{ it ->
         it.name.replaceAll(/(?i).rds$/, "_ewing-geneset-means.tsv")
       }
 
@@ -54,11 +54,11 @@ process ewing_aucell {
 
   stub:
     aucell_output_files = library_files
-      .collect{
+      .collect{ it ->
         it.name.replaceAll(/(?i).rds$/, "_ewing-aucell-results.tsv")
       }
     mean_exp_output_files = library_files
-      .collect{
+      .collect{ it ->
         it.name.replaceAll(/(?i).rds$/, "_ewing-geneset-means.tsv")
       }
     """
@@ -86,8 +86,8 @@ process ewing_assign_celltypes {
           val(project_id),
           path(celltype_assignment_output_files)
   script:
-    library_ids = aucell_files.collect{(it.name =~ /SCPCL\d{6}/)[0]}
-    celltype_assignment_output_files = library_ids.collect{"${it}_ewing-celltype-assignments.tsv"}
+    library_ids = aucell_files.collect{it -> (it.name =~ /SCPCL\d{6}/)[0]}
+    celltype_assignment_output_files = library_ids.collect{it -> "${it}_ewing-celltype-assignments.tsv"}
     """
     for library_id in ${library_ids.join(" ")}; do
       # find files that have the appropriate library id in file name
@@ -105,8 +105,8 @@ process ewing_assign_celltypes {
     """
 
   stub:
-    library_ids = aucell_files.collect{(it.name =~ /SCPCL\d{6}/)[0]}
-    celltype_assignment_output_files = library_ids.collect{"${it}_ewing-celltype-assignments.tsv"}
+    library_ids = aucell_files.collect{it -> (it.name =~ /SCPCL\d{6}/)[0]}
+    celltype_assignment_output_files = library_ids.collect{it -> "${it}_ewing-celltype-assignments.tsv"}
     """
     for library_id in ${library_ids.join(" ")}; do
       touch \${library_id}_ewing-celltype-assignments.tsv
@@ -142,7 +142,7 @@ workflow cell_type_ewings {
     assign_ch = ewing_aucell.out
       // join by sample ID and project ID
       .join(consensus_ch, by: [0, 1]) // sample id, project id, aucell, mean exp, consensus, consensus gene exp
-      .map { it.dropRight(1) } // we don't need the consensus gene exp file
+      .map { it -> it.dropRight(1) } // we don't need the consensus gene exp file
 
     // assign cell types
     ewing_assign_celltypes(assign_ch, file(params.cell_type_ewings_auc_thresholds_file))

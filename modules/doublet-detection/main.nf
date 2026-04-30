@@ -17,7 +17,7 @@ process run_scdblfinder {
           path(output_files)
   script:
     output_files = library_files
-      .collect{
+      .collect{ it ->
         it.name.replaceAll(/(?i).rds$/, "_scdblfinder.tsv")
       }
     """
@@ -32,7 +32,7 @@ process run_scdblfinder {
 
   stub:
     output_files = library_files
-      .collect{
+      .collect{ it ->
         it.name.replaceAll(/(?i).rds$/, "_scdblfinder.tsv")
       }
     """

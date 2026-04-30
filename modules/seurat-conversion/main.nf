@@ -17,7 +17,7 @@ process seurat_convert {
           path(output_files)
   script:
     output_files = library_files
-      .collect{
+      .collect{ it ->
         it.name.replaceAll(/(?i).rds$/, "_seurat.rds")
       }
     """
@@ -27,7 +27,7 @@ process seurat_convert {
 
   stub:
     output_files = library_files
-      .collect{
+      .collect{ it ->
         it.name.replaceAll(/(?i).rds$/, "_seurat.rds")
       }
     """

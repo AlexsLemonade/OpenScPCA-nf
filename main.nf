@@ -93,7 +93,7 @@ workflow openscpca {
 
   // Run the cell type neuroblastoma 04 workflow
   // only runs on SCPCP000004
-  cell_type_neuroblastoma_04(sample_ch.filter{ it[1] == "SCPCP000004" }, cell_type_consensus.out)
+  cell_type_neuroblastoma_04(sample_ch.filter{ it -> it[1] == "SCPCP000004" }, cell_type_consensus.out)
 
   // format and export json files with openscpca annotations
   // input expected to be sample id, project id, tsv files, annotation meta

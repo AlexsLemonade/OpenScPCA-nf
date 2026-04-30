@@ -182,8 +182,8 @@ process nb_04_assign_celltypes {
           val(project_id),
           path(celltype_assignment_output_files)
   script:
-    library_ids = singler_files.collect{(it.name =~ /SCPCL\d{6}/)[0]}
-    celltype_assignment_output_files = library_ids.collect{"${it}_neuroblastoma-04_celltype-assignments.tsv.gz"}
+    library_ids = singler_files.collect{it ->(it.name =~ /SCPCL\d{6}/)[0]}
+    celltype_assignment_output_files = library_ids.collect{ it -> "${it}_neuroblastoma-04_celltype-assignments.tsv.gz"}
     """
     for library_id in ${library_ids.join(" ")}; do
       # find files that have the appropriate library id in file name
@@ -206,8 +206,8 @@ process nb_04_assign_celltypes {
     """
 
   stub:
-    library_ids = singler_files.collect{(it.name =~ /SCPCL\d{6}/)[0]}
-    celltype_assignment_output_files = library_ids.collect{"${it}_neuroblastoma-04_celltype-assignments.tsv.gz"}
+    library_ids = singler_files.collect{ it ->(it.name =~ /SCPCL\d{6}/)[0]}
+    celltype_assignment_output_files = library_ids.collect{ it -> "${it}_neuroblastoma-04_celltype-assignments.tsv.gz"}
     """
     for library_id in ${library_ids.join(" ")}; do
       output_tsv=\${library_id}_neuroblastoma-04_celltype-assignments.tsv.gz
@@ -268,7 +268,7 @@ workflow cell_type_neuroblastoma_04 {
       .join(nb_04_classify_scanvi.out, by: [0, 1]) // sample id, project id, singler, scanvi
       // join consensus by sample ID and project ID
       .join(consensus_ch, by: [0, 1]) // sample id, project id, singler, scanvi, consensus, consensus gene exp
-      .map { it.dropRight(1) } // we don't need the consensus gene exp file
+      .map { it -> it.dropRight(1) } // we don't need the consensus gene exp file
 
     // assign final labels
     nb_04_assign_celltypes(
