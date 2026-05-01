@@ -6,7 +6,7 @@ process assign_scimilarity {
   container Utils.pullthroughContainer(params.cell_type_scimilarity_container, params.pullthrough_registry)
   tag "${sample_id}"
   label 'mem_32'
-  publishDir "${params.results_bucket}/${params.release_prefix}/cell-type-scimilarity/${project_id}/${sample_id}", mode: 'copy'
+  publishDir { "${params.results_bucket}/${params.release_prefix}/cell-type-scimilarity/${project_id}/${sample_id}" }, mode: 'copy'
   input:
     tuple val(sample_id),
           val(project_id),
@@ -48,7 +48,7 @@ workflow cell_type_scimilarity {
       .map{sample_id, project_id, sample_path ->
         def library_files = Utils.getLibraryFiles(sample_path, format: "anndata", process_level: "processed")
         // filter to only include _rna.h5ad files and remove any _adt.h5ad files
-        library_files = library_files.findAll{ it.name =~ /(?i)_rna.h5ad$/ }
+        library_files = library_files.findAll{ it -> it.name =~ /(?i)_rna.h5ad$/ }
         return [sample_id, project_id, library_files]
       }
       // remove any samples that don't have a processed file

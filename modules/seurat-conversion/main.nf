@@ -6,7 +6,7 @@ process seurat_convert {
   container Utils.pullthroughContainer(params.seurat_conversion_container, params.pullthrough_registry)
   tag "${sample_id}"
   label 'mem_8'
-  publishDir "${params.results_bucket}/${params.release_prefix}/seurat-conversion/${project_id}/${sample_id}", mode: 'copy'
+  publishDir { "${params.results_bucket}/${params.release_prefix}/seurat-conversion/${project_id}/${sample_id}" }, mode: 'copy'
   input:
     tuple val(sample_id),
           val(project_id),
@@ -17,8 +17,8 @@ process seurat_convert {
           path(output_files)
   script:
     output_files = library_files
-      .collect{
-        it.name.replaceAll(/(?i).rds$/, "_seurat.rds")
+      .collect{ f ->
+        f.name.replaceAll(/(?i).rds$/, "_seurat.rds")
       }
     """
     # convert all files in the working directory, output to the same directory
@@ -27,8 +27,8 @@ process seurat_convert {
 
   stub:
     output_files = library_files
-      .collect{
-        it.name.replaceAll(/(?i).rds$/, "_seurat.rds")
+      .collect{ f ->
+        f.name.replaceAll(/(?i).rds$/, "_seurat.rds")
       }
     """
     for file in ${library_files}; do

@@ -6,7 +6,7 @@ process assign_consensus {
   container Utils.pullthroughContainer(params.consensus_cell_type_container, params.pullthrough_registry)
   tag "${sample_id}"
   label 'mem_8'
-  publishDir "${params.results_bucket}/${params.release_prefix}/cell-type-consensus/${project_id}/${sample_id}", mode: 'copy'
+  publishDir { "${params.results_bucket}/${params.release_prefix}/cell-type-consensus/${project_id}/${sample_id}" }, mode: 'copy'
   input:
     tuple val(sample_id),
           val(project_id),
@@ -23,7 +23,7 @@ process assign_consensus {
           path("*_processed_consensus-cell-types.tsv.gz"),
           path("*_processed_marker-gene-expression.tsv.gz")
   script:
-    library_ids = library_files.collect{(it.name =~ /SCPCL\d{6}/)[0]}
+    library_ids = library_files.collect{f -> (f.name =~ /SCPCL\d{6}/)[0]}
     """
     for library_id in ${library_ids.join(" ")}; do
       # find files that have the appropriate library id in file name
@@ -50,7 +50,7 @@ process assign_consensus {
     """
 
   stub:
-    library_ids = library_files.collect{(it.name =~ /SCPCL\d{6}/)[0]}
+    library_ids = library_files.collect{f ->(f.name =~ /SCPCL\d{6}/)[0]}
     """
     for library_id in ${library_ids.join(" ")}; do
       touch \${library_id}_processed_consensus-cell-types.tsv.gz

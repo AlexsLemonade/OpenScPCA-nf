@@ -6,7 +6,7 @@ process ewing_aucell {
   container Utils.pullthroughContainer(params.cell_type_ewing_container, params.pullthrough_registry)
   tag "${sample_id}"
   label 'mem_8'
-  publishDir "${params.results_bucket}/${params.release_prefix}/cell-type-ewings/${project_id}/${sample_id}", mode: 'copy'
+  publishDir { "${params.results_bucket}/${params.release_prefix}/cell-type-ewings/${project_id}/${sample_id}" }, mode: 'copy'
   input:
     tuple val(sample_id),
           val(project_id),
@@ -23,12 +23,12 @@ process ewing_aucell {
           path(mean_exp_output_files)
   script:
     aucell_output_files = library_files
-      .collect{
-        it.name.replaceAll(/(?i).rds$/, "_ewing-aucell-results.tsv")
+      .collect{ f ->
+        f.name.replaceAll(/(?i).rds$/, "_ewing-aucell-results.tsv")
       }
     mean_exp_output_files = library_files
-      .collect{
-        it.name.replaceAll(/(?i).rds$/, "_ewing-geneset-means.tsv")
+      .collect{ f ->
+        f.name.replaceAll(/(?i).rds$/, "_ewing-geneset-means.tsv")
       }
 
     // combine the custom gene sets into a single input
@@ -54,12 +54,12 @@ process ewing_aucell {
 
   stub:
     aucell_output_files = library_files
-      .collect{
-        it.name.replaceAll(/(?i).rds$/, "_ewing-aucell-results.tsv")
+      .collect{ f ->
+        f.name.replaceAll(/(?i).rds$/, "_ewing-aucell-results.tsv")
       }
     mean_exp_output_files = library_files
-      .collect{
-        it.name.replaceAll(/(?i).rds$/, "_ewing-geneset-means.tsv")
+      .collect{ f ->
+        f.name.replaceAll(/(?i).rds$/, "_ewing-geneset-means.tsv")
       }
     """
     for file in ${library_files}; do
@@ -73,7 +73,7 @@ process ewing_assign_celltypes {
   container Utils.pullthroughContainer(params.cell_type_ewing_container, params.pullthrough_registry)
   tag "${sample_id}"
   label 'mem_8'
-  publishDir "${params.results_bucket}/${params.release_prefix}/cell-type-ewings/${project_id}/${sample_id}", mode: 'copy'
+  publishDir { "${params.results_bucket}/${params.release_prefix}/cell-type-ewings/${project_id}/${sample_id}" }, mode: 'copy'
   input:
     tuple val(sample_id),
           val(project_id),
@@ -86,8 +86,8 @@ process ewing_assign_celltypes {
           val(project_id),
           path(celltype_assignment_output_files)
   script:
-    library_ids = aucell_files.collect{(it.name =~ /SCPCL\d{6}/)[0]}
-    celltype_assignment_output_files = library_ids.collect{"${it}_ewing-celltype-assignments.tsv"}
+    library_ids = aucell_files.collect{ f -> (f.name =~ /SCPCL\d{6}/)[0]}
+    celltype_assignment_output_files = library_ids.collect{ f -> "${f}_ewing-celltype-assignments.tsv"}
     """
     for library_id in ${library_ids.join(" ")}; do
       # find files that have the appropriate library id in file name
@@ -105,8 +105,8 @@ process ewing_assign_celltypes {
     """
 
   stub:
-    library_ids = aucell_files.collect{(it.name =~ /SCPCL\d{6}/)[0]}
-    celltype_assignment_output_files = library_ids.collect{"${it}_ewing-celltype-assignments.tsv"}
+    library_ids = aucell_files.collect{ f -> (f.name =~ /SCPCL\d{6}/)[0]}
+    celltype_assignment_output_files = library_ids.collect{ f -> "${f}_ewing-celltype-assignments.tsv"}
     """
     for library_id in ${library_ids.join(" ")}; do
       touch \${library_id}_ewing-celltype-assignments.tsv
@@ -142,7 +142,7 @@ workflow cell_type_ewings {
     assign_ch = ewing_aucell.out
       // join by sample ID and project ID
       .join(consensus_ch, by: [0, 1]) // sample id, project id, aucell, mean exp, consensus, consensus gene exp
-      .map { it.dropRight(1) } // we don't need the consensus gene exp file
+      .map { it -> it.dropRight(1) } // we don't need the consensus gene exp file
 
     // assign cell types
     ewing_assign_celltypes(assign_ch, file(params.cell_type_ewings_auc_thresholds_file))

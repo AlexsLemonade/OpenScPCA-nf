@@ -104,7 +104,7 @@ fi
 if [ "$RUN_MODE" == "test" ]; then
   nextflow run AlexsLemonade/OpenScPCA-nf \
     -revision $GITHUB_TAG \
-    -entry test \
+    --workflow test \
     -profile $profile \
     -with-report "${datetime}_test_report.html" \
     -with-trace  "${datetime}_test_trace.txt" \
@@ -137,7 +137,7 @@ fi
 if [ "$RUN_MODE" == "full" ] || [ "$RUN_MODE" == "simulate-only" ]; then
   nextflow run AlexsLemonade/OpenScPCA-nf \
     -revision $GITHUB_TAG \
-    -entry simulate \
+    --workflow simulate \
     -profile $profile \
     -with-report "${datetime}_simulate_report.html" \
     -with-trace  "${datetime}_simulate_trace.txt" \

@@ -9,7 +9,7 @@ process merge_group {
   tag "${merge_group_id}"
   label 'mem_max'
   label 'long_running'
-  publishDir "${params.results_bucket}/${params.release_prefix}/merge-sce/${merge_group_id}"
+  publishDir { "${params.results_bucket}/${params.release_prefix}/merge-sce/${merge_group_id}" }
   input:
     tuple val(merge_group_id), val(library_ids), path(processed_files)
   output:
@@ -38,7 +38,7 @@ process merge_group {
 process generate_merge_report {
   container Utils.pullthroughContainer(params.scpcatools_reports_container, params.pullthrough_registry)
   tag "${merge_group_id}"
-  publishDir "${params.results_bucket}/${params.release_prefix}/merge-sce/${merge_group_id}"
+  publishDir { "${params.results_bucket}/${params.release_prefix}/merge-sce/${merge_group_id}" }
   label 'mem_max'
   input:
     tuple val(merge_group_id), path(merged_sce_file)
@@ -70,7 +70,7 @@ process export_anndata {
     label 'mem_max'
     label 'long_running'
     tag "${merge_group_id}"
-    publishDir "${params.results_bucket}/${params.release_prefix}/merge-sce/${merge_group_id}"
+    publishDir { "${params.results_bucket}/${params.release_prefix}/merge-sce/${merge_group_id}" }
     input:
       tuple val(merge_group_id), path(merged_sce_file)
     output:
@@ -111,13 +111,13 @@ workflow merge_sce {
 
     // create a channel of [project_id, file(project_dir)] with one per project
     project_ch = sample_ch
-      .map{[it[1], it[2].parent]} // parent of the sample_dir is the project_dir
+      .map{ it -> [it[1], it[2].parent]} // parent of the sample_dir is the project_dir
       .unique()
 
     project_branch = project_ch
-      .branch{
+      .branch{ it ->
         // multiplexed libraries are subdirectories with more than one sample id
-        multiplexed: files(it[1] / "*", type: "dir").any{it.name =~ /SCPCS\d+_SCPCS\d+/}
+        multiplexed: files(it[1] / "*", type: "dir").any{f -> f.name =~ /SCPCS\d+_SCPCS\d+/}
         single_sample: true
       }
 
@@ -126,33 +126,33 @@ workflow merge_sce {
     libraries_ch = project_branch.single_sample
       .map{ project_id, project_dir ->
         def processed_files = Utils.getLibraryFiles(project_dir, format: "sce", process_level: "processed")
-        def library_ids = processed_files.collect{it.name.replace('_processed.rds', '')}
+        def library_ids = processed_files.collect{ f -> f.name.replace('_processed.rds', '')}
         return [project_id, library_ids, processed_files]
       }
-      .branch{
+      .branch{ it ->
         // check the number of libraries
         mergeable: it[1].size() < params.merge_max_libraries
         oversized: true
       }
 
     project_branch.multiplexed
-      .subscribe{
+      .subscribe{ it ->
         log.warn("Not merging ${it[0]} because it contains multiplexed libraries.")
       }
 
     libraries_ch.oversized
-      .subscribe{
+      .subscribe{ it ->
         log.warn("Not merging ${it[0]} because it has too many libraries.")
       }
 
     libraries_branch = libraries_ch.mergeable
-      .branch{
+      .branch{ it ->
         has_merge: params.merge_reuse && file("${publish_merge_base}/${it[0]}/${it[0]}_merged.rds").exists()
         make_merge: true
       }
 
     pre_merged_ch = libraries_branch.has_merge
-      .map{[ // [project id, merged_file] to match the output of merge_group
+      .map{ it -> [ // [project id, merged_file] to match the output of merge_group
         it[0],
         file("${publish_merge_base}/${it[0]}/${it[0]}_merged.rds")
       ]}

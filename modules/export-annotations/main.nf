@@ -6,7 +6,7 @@ process format_annotations {
   container Utils.pullthroughContainer(params.scpcatools_slim_container, params.pullthrough_registry)
   tag "${sample_id}"
   label 'mem_8'
-  publishDir "${params.annotations_bucket}/${params.release_prefix}/${project_id}/${sample_id}", mode: 'copy'
+  publishDir { "${params.annotations_bucket}/${params.release_prefix}/${project_id}/${sample_id}" }, mode: 'copy'
   input:
     tuple val(sample_id),
           val(project_id),
@@ -17,7 +17,7 @@ process format_annotations {
           val(project_id),
           path("*_openscpca-annotations.json")
   script:
-    library_ids = annotations_tsv_files.collect{(it.name =~ /SCPCL\d{6}/)[0]}
+    library_ids = annotations_tsv_files.collect{ f -> (f.name =~ /SCPCL\d{6}/)[0]}
     """
     for library_id in ${library_ids.join(" ")};do
       # get the input files for the library id
@@ -35,7 +35,7 @@ process format_annotations {
     """
 
   stub:
-    library_ids = annotations_tsv_files.collect{(it.name =~ /SCPCL\d{6}/)[0]}
+    library_ids = annotations_tsv_files.collect{ f -> (f.name =~ /SCPCL\d{6}/)[0]}
     """
     for library_id in ${library_ids.join(" ")};do
       touch \${library_id}_openscpca-annotations.json
