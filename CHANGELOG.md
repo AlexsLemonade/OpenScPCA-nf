@@ -8,6 +8,12 @@ Add new release notes in reverse numerical order (newest first) below this comme
 You may want to add temporary notes here for tracking as features are added, before a new release is ready.
 -->
 
+## v0.1.8
+
+- Default release date for ScPCA data is set to `2026-03-24`
+- A small bug fix in the `cell-type-scimilarity` module was made to account for existing `SCimilarity` results in ScPCA data
+- Minor updates to follow strict syntax, the default standard in Nextflow v26.04.
+
 ## v0.1.7
 
 All reference files and containers from `OpenScPCA-analysis` have been updated to use the `v0.2.4` tag.
